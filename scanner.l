@@ -24,7 +24,7 @@ LETTER_D  [A-Za-z0-9_]
 "-"                  return yy::parser::token_type::MINUS;
 "*"                  return yy::parser::token_type::MULTIPLY;
 "/"                  return yy::parser::token_type::DIVIDE;
-"%"                  return yy::parser::token_type::DON'T REMEMBER; // TODO: ВСПОМНИТЬ СЛОВО
+"%"                  return yy::parser::token_type::MOD;
 "="                  return yy::parser::token_type::EQUAL;
 
 ">"                  return yy::parser::token_type::GREATER;
