@@ -11,29 +11,23 @@
 //! #include "our_lexer.hh"
 //! #include "numgrammar.tab.hh" - auto generated file from bison
 
+namespace yy {
+class Driver final {
+  private:
+    const char *name_of_file_;
+    our_lexer *plex_; // maybe this is good name
+    std::vector<std::string> line_of_prog;
 
+  public:
+    Driver();
+    Driver(const char *name_of_file);
 
-namespace yy
-{
-    class Driver final
-    {
-    private:
-        const char* name_of_file_;
-        our_lexer* plex_;   // maybe this is good name
-        std::vector<std::string> line_of_prog;
+    bool parse();
+    parser::token_type yylex(parser::semantic_type *yylval);
 
+    ~Driver();
+};
 
-    public:
-        Driver();
-        Driver(const char* name_of_file);
+} // namespace yy
 
-        bool parse();
-        parser::token_type yylex(parser::semantic_type* yylval);
-
-        ~Driver();
-
-    };
-
-}
-
-#endif //PARACL_DRIVER_HH
+#endif // PARACL_DRIVER_HH

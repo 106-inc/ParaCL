@@ -3,14 +3,18 @@
 import argparse
 import os
 
+##################################################################
 code_ext = ['hpp', 'cpp', 'c', 'h', 'hh', 'cc', 'c++', 'cxx']
+
+
+cmd = 'clang-format -i --style="{BasedOnStyle: llvm, IndentWidth: 4}" '
+##################################################################
 
 
 def run_format(files_string, is_print, is_int):
     flist = files_string.split()
     check_list_ftype(flist)
 
-    cmd = 'clang-format -i --style="{BasedOnStyle: llvm, IndentWidth: 4}" '
     for elem in flist:
         is_form = True
         if is_int:
