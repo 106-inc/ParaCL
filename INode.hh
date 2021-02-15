@@ -29,9 +29,9 @@ enum class Ops
 };
 
 INode * make_value ( int val );
-INode * make_op ( INode * l, Ops o, INode * r);
-INode * make_while ( INode * o, INode * s);
-INode * make_if ( INode * o, INode * s);
+INode * make_op ( INode * l, Ops o, INode * r );
+INode * make_while ( INode * o, INode * s );
+INode * make_if ( INode * o, INode * s );
 IScope * create_scope ( );
 
 #endif
