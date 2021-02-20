@@ -1,7 +1,7 @@
 %language "c++"
 %skeleton "lalr1.cc"
 
-%location
+%locations
 
 %code
 {
@@ -14,10 +14,12 @@
 
 #include "parser.hh"
 
-extern IScope * cur_scope;
+extern AST::IScope * cur_scope;
 
 %}
 
+
+/* some tokens */
 
 %token
 
@@ -26,7 +28,7 @@ extern IScope * cur_scope;
   MUL           "*"
   DIV           "/"
   MOD           "%"
-  EQUAL         "="
+  ASSIGN        "="
 
   GREATER       ">"
   LESS          "<"
@@ -50,27 +52,51 @@ extern IScope * cur_scope;
   SCAN          "?"
   PRINT         "print"
 
+  ERR
   ;
+
+%token <int> INT
+%token <std::string> NAME
+
+
+/* left/right associative */
+
+%right ASSIGN
+
+%left ADD SUB
+%left MUL DIV MOD
+%left GREATER LESS GR_EQ LS_EQ IS_EQ NOT_EQ
+
+
+/* nonterminals */
+
+%nterm<AST::IScope *> scope
+
+%nterm<AST::INode *> assign
+%nterm<AST::INode *> if
+%nterm<AST::INode *> while 
+%nterm<AST::INode *> print
 
 %%
 
 
-program:     stms                { curr }
+program:     stms                { std::cout << "program starting" << std::endl };
 
-scope:       op_sc stms cl_sc
+scope:       op_sc stms cl_sc    { };
 
-op_sc:       LB
+op_sc:       LB                  { };
 
-cl_sc:       RB
+cl_sc:       RB                  { };
 
-stms:        stm
-           | stms stm
-           | stms scope
+stms:        stm                 { };
+           | stms stm            { };
+           | stms scope          { };
 
-stm:         assign
-           | if
-           | while
-           | print
+stm:         assign              { };
+           | if                  { };
+           | while               { };
+           | print               { };
 
 
+%%
 
