@@ -3,20 +3,19 @@
 
 /////////////////////////////////////
 ///// STL containers ///////////////
-#include <vector>
 #include <unordered_map>
+#include <vector>
 /////////////////////////////////////
 
 ////// OUR HEADERS //////////////////
 #include "INode.hh"
 /////////////////////////////////////
 
-
 namespace AST
 {
-  // Scope structure
-  class Scope : public IScope // final(?)
-  {
+// Scope structure
+class Scope : public IScope // final(?)
+{
   private:
     // vector with nodes of this scope
     std::vector<INode *> nodes_{};
@@ -28,12 +27,15 @@ namespace AST
 
   public:
     // constructor by parent scope ptr
-    explicit Scope( IScope *parent = nullptr );
+    explicit Scope(IScope *parent = nullptr);
 
-    void push(INode *node) override;
+    IScope *reset_scope() const override { return parent_; }
+
+    void add_branch(INode *branch) override;
+
 
     ~Scope() = default;
-  };
-}
+};
+} // namespace AST
 
 #endif /* NODE_HH */

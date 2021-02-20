@@ -1,16 +1,14 @@
 #include "Node.hh"
 
-
-AST::Scope::Scope( IScope *parent /* = nullptr */ ) : parent_(parent)
+AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
 {
 }
 
 /**
- * push node to scope function
- * @param node to push
- * @return Nothing
+ * @brief Add new branch to scope function
+ * @param branch
  */
-void AST::Scope::push(INode *node)
+void AST::Scope::add_branch(INode *branch)
 {
-
-} /* End of 'push' function */
+  nodes_.push_back(branch);
+} /* Node 'add_branch' function */
