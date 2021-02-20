@@ -8,14 +8,14 @@
 #include <vector>
 
 #include "INode.hh"
-//! #include "our_lexer.hh"
+#include "../parser/parser.hh"
 //! #include "numgrammar.tab.hh" - auto generated file from bison
 
 namespace yy {
 class Driver final {
   private:
     const char *name_of_file_;
-    our_lexer *plex_; // maybe this is good name
+    OurFlexLexer *plex_; // maybe this is good name
     std::vector<std::string> line_of_prog;
 
   public:

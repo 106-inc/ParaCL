@@ -5,7 +5,7 @@ IScope *glob_cur_scope = nullptr;
 yy::Driver::Driver() {}
 
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file) {
-    plex_ = new our_lexer;
+    plex_ = new OurFlexLexer;
     glob_cur_scope = create_scope();
 
     std::ifstream in_file;
@@ -25,8 +25,16 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file) {
 bool yy::Driver::parse() {
     parser parser(this); //! it should be just "parser", but its ugly
 
-    bool res = parser_.parse();
+    bool res = parser.parse();
     return res;
+}
+
+
+//! There is should be:
+//! 1. Take
+yy::parser::token_type yylex(parser::semantic_type *yylval)
+{
+
 }
 
 yy::Driver::~Driver() { delete plex_; }
