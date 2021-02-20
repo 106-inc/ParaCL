@@ -3,6 +3,7 @@
 #define PARACL_DRIVER_HH
 
 #include <FlexLexer.h> // it says me about error : doesnt exist in computer
+
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -11,8 +12,10 @@
 #include "../parser/parser.hh"
 //! #include "numgrammar.tab.hh" - auto generated file from bison
 
-namespace yy {
-class Driver final {
+namespace yy
+{
+class Driver final
+{
   private:
     const char *name_of_file_;
     OurFlexLexer *plex_; // maybe this is good name
