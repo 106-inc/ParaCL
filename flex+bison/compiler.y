@@ -51,6 +51,25 @@
 
   ;
 
+%%
+
+
+program:     stms
+
+scope:       op_sc stms cl_sc
+
+op_sc:       LB
+
+cl_sc:       RB
+
+stms:        stm
+           | stms stm
+           | stms scope
+
+stm:         assign
+           | if
+           | while
+           | print
 
 
 
