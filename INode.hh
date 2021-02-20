@@ -31,4 +31,4 @@ INode *make_while(INode *o, INode *s);
 INode *make_if(INode *o, INode *s);
 IScope *create_scope();
 
-#endif
+#endif /* INODE_HH */
