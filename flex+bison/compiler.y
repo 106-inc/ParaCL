@@ -14,8 +14,9 @@
 
 #include "parser.hh"
 
-%}
+extern IScope * cur_scope;
 
+%}
 
 
 %token
@@ -54,7 +55,7 @@
 %%
 
 
-program:     stms
+program:     stms                { curr }
 
 scope:       op_sc stms cl_sc
 
