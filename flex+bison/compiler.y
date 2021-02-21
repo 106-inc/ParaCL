@@ -73,8 +73,8 @@ extern AST::IScope * cur_scope;
 /* nonterminals */
 
 %nterm<AST::IScope *> scope
-%nterm<AST::INode *> op_sc
-%nterm<AST::INode *> cl_sc
+%nterm<AST::INode *> op_sc /* clarify nonterminal type */
+%nterm<AST::INode *> cl_sc /* clarify nonterminal type */
 
 %nterm<AST::INode *> stm
 %nterm<AST::INode *> stms
@@ -93,19 +93,19 @@ extern AST::IScope * cur_scope;
 %%
 
 
-program:     stms                        { };
+program:     stms                        { /* program starting */ };
 
-scope:       op_sc stms cl_sc            { };
+scope:       op_sc stms cl_sc            { /* cur_scope = cur_scope->enter_new_scope */ };
 
-op_sc:       LB                          { };
+op_sc:       LB                          { /* cur_scope = cur_scope->enter_new_scope */ };
 
-cl_sc:       RB                          { };
+cl_sc:       RB                          { /* cur_scope = cur_scope->parent_scope */ };
 
 stms:        stm                         { };
            | stms stm                    { };
            | stms scope                  { };
 
-stm:         assign                      { };
+stm:         assign                      { /* cur_scope->push(make_op())*/ };
            | if                          { };
            | while                       { };
            | print                       { };
