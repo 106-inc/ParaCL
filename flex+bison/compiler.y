@@ -3,13 +3,24 @@
 
 %locations
 
-%{
+%param {Driver* driver}
 
-#include "INode.hh"
-#include "Driver.hh"
-#include "parser.hh"
+%code requires
+{
+#include "../AST/INode.hh"
+
+namespace yy
+{
+class Driver;
+};
 
 extern AST::IScope * cur_scope;
+}
+
+
+%{
+
+
 
 %}
 
@@ -35,38 +46,28 @@ extern AST::IScope * cur_scope;
   LS_EQ         "<="
   IS_EQ         "=="
   NOT_EQ        "!="
-
   AND           "&&"
   OR            "||"
   ;
-
 %nonassoc
-
   UNMIN
   NOT           "!"
   ;
-
 %token
-
   COMMA         ","
   COLON         ":"
   SCOLON        ";"
-
   LP            "("
   RP            ")"
   LB            "{"
   RB            "}"
-
   IF            "if"
   ELSE          "else"
   WHILE         "while"
-
   SCAN          "?"
   PRINT         "print"
-
   ERR
   ;
-
 %token <int> INT
 %token <std::string> NAME
 
@@ -129,7 +130,7 @@ expr3:       LP expr RP                  { };
            | INT                         { };
 
 if:          IF LP cond RP scope         { };
-           | IF LP cond RP scope 
+           | IF LP cond RP scope
              ELSE scope                  { };
            | IF LP cond RP stm           { };
 
@@ -151,3 +152,10 @@ print:       PRINT expr SCOLON           { };
 
 %%
 
+namespace yy
+{
+	parser::token_type yylex(parser::semantic_type* yylval, Driver* driver)
+	{
+		driver->yylex(yylval);
+	}
+}
