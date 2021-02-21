@@ -31,8 +31,16 @@ namespace AST
 
   enum class Ops
   {
-    // TODO: WRITE OPS
-    // TODO: Idk is it necessary?
+    ADD, SUB,
+    MUL, DIV, MOD,
+
+    GREATER, LESS,
+    GR_EQ, LS_EQ,
+    IS_EQ, NOT_EQ,
+
+    AND, OR,
+
+    UNMIN, NOT
   };
 
   INode *make_value(int val);
