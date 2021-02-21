@@ -35,12 +35,14 @@ class Scope : public IScope // final(?)
 
     void add_branch(INode *branch) override;
 
-    ~Scope() = default;
+    ~Scope() override;
 };
 
-struct VNode final : public INode
+class VNode final : public INode
 {
 private:
+  // No ptrs, because this node will always be a leaf
+
   var_table::iterator location_;
 
 public:
@@ -51,11 +53,32 @@ public:
 
   var_table::iterator get_loc() const;
 
-  int get_val() const;
+  int calc() const override;
 
   void set_val( int val );
 };
 
+class CNode final : public INode
+{
+private:
+  const int val_;
+public:
+  CNode( int val );
+
+  int calc() const override;
+};
+
+class OPNode : public INode
+{
+protected:
+  INode *left_ {};
+  INode *right_{};
+public:
+
+  OPNode( INode *left, INode *right );
+
+  ~OPNode() override;
+};
 
 } // namespace AST
 

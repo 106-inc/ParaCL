@@ -1,5 +1,7 @@
 #include "Node.hh"
 
+
+////////////////////////// SCOPE METHODS /////////////////
 AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
 {
 }
@@ -13,7 +15,18 @@ void AST::Scope::add_branch(INode *branch)
   nodes_.push_back(branch);
 } /* Node 'add_branch' function */
 
+/**
+ * Scope class destructor
+ */
+AST::Scope::~Scope()
+{
+  for (auto node : nodes_)
+    delete node;
+}
 
+//////////////END OF SCOPE METHODS ////////////////////////////////
+
+////////////////VarNode METHODS/////////////////
 /**
  * Varibale node ctor
  * @param name [in] name of a variable
@@ -41,10 +54,10 @@ AST::var_table::iterator AST::VNode::get_loc() const
 }
 
 /**
- * Get value of a variable function
+ * Calculate value of a variable function
  * @return
  */
-int AST::VNode::get_val() const
+int AST::VNode::calc() const
 {
   return location_->second;
 }
@@ -57,3 +70,51 @@ void AST::VNode::set_val( int val )
 {
   location_->second = val;
 }
+////////////////END OF VarNode METHODS/////////////////
+
+////////////////CNode METHODS//////////////////////////
+
+/**
+ * Constant node ctor
+ * @param val [in] - value of a node
+ */
+AST::CNode::CNode( int val ) : val_(val)
+{}
+
+/**
+ * Calculate the value of node
+ * @return value of a node
+ */
+int AST::CNode::calc() const
+{
+  return val_;
+}
+
+/////////END OF CNode METHODS//////////////////////////
+
+////////////////OPNODE METHODS/////////////////////////
+
+/**
+ * Operator's node constructor
+ * @param left  [in] - left node of operator
+ * @param right [in] - right node of operator
+ */
+AST::OPNode::OPNode( INode *left, INode *right ) : left_ (left),
+                                                   right_(right)
+{}
+
+
+/**
+ * OPNode class destructor.
+ * Deletes left ans right nodes
+ */
+AST::OPNode::~OPNode()
+{
+  delete left_;
+  delete right_;
+}
+
+
+
+///////////END OF OPNODE METHODS/////////////////////////
+
