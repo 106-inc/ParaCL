@@ -31,10 +31,10 @@ bool yy::Driver::parse() {
 
 
 //! There is should be:
-//! 1. Take
 yy::parser::token_type yylex(parser::semantic_type *yylval)
 {
-
+    //! 1. Getting token from
+    //! 2. Token processing line by line in our ParaCL program
 }
 
 yy::Driver::~Driver() { delete plex_; }
