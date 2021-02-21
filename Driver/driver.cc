@@ -33,7 +33,7 @@ bool yy::Driver::parse() {
 
 
 //! There is should be:
-yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval)
+yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type* yylloc)
 {
     //! 1. Getting token from
     //! 2. Token processing line by line in our ParaCL program

@@ -26,7 +26,7 @@ class Driver final
     Driver(const char *name_of_file);
 
     bool parse();
-    parser::token_type yylex(parser::semantic_type *yylval);
+    parser::token_type yylex(parser::semantic_type *yylval, parser::location_type* yylloc);
 
     ~Driver();
 };
