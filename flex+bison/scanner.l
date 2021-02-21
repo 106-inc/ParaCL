@@ -4,8 +4,7 @@
 %option yylineno
 
 %option warn nodefault debug
-
-    /* %option yyclass="OurLexerClassName" */
+%option yyclass="OurFlexLexer"
 
 %{
 
