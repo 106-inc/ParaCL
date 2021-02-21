@@ -45,7 +45,7 @@ private:
 
 public:
 
-  VNode( var_table::iterator loc );
+  explicit VNode( var_table::iterator loc );
 
   const std::string &get_name() const;
 
@@ -54,8 +54,9 @@ public:
   int get_val() const;
 
   void set_val( int val );
-
 };
+
+
 } // namespace AST
 
 #endif /* NODE_HH */

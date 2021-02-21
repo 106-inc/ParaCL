@@ -22,22 +22,37 @@ void AST::Scope::add_branch(INode *branch)
 AST::VNode::VNode( var_table::iterator loc ) : location_(loc)
 {}
 
+/**
+ * Get variable name function
+ * @return
+ */
 const std::string &AST::VNode::get_name() const
 {
   return location_->first;
 }
 
-
+/**
+ * Get variable location in table function
+ * @return
+ */
 AST::var_table::iterator AST::VNode::get_loc() const
 {
   return location_;
 }
 
+/**
+ * Get value of a variable function
+ * @return
+ */
 int AST::VNode::get_val() const
 {
   return location_->second;
 }
 
+/**
+ * Set value of variable function
+ * @param val
+ */
 void AST::VNode::set_val( int val )
 {
   location_->second = val;

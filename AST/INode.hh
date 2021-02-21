@@ -45,6 +45,17 @@ INode *make_while(INode *o, INode *s);
 INode *make_if(INode *o, INode *s);
 
 IScope *create_scope();
+
+////////////////// TYPES OF NODES ////////////////////////
+/*
+ * 1. Variable -> just iterator to var table
+ * 2. Inf operator ->
+ * 3. While -> condition + scope
+ * 4. if -> condition + scope
+ * 5. else -> scope only
+ * 5. I think it's all fir now
+ */
+//////////////////////////////////////////////////////////
 } // namespace AST
 
 #endif /* INODE_HH */
