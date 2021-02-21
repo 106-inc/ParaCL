@@ -131,8 +131,8 @@ expr2:       LP expr[e] RP                        { $$ = $e };
            | INT                                  { $$ = make_value($1); };
 
 if:          IF LP cond[c] RP cur_stm[s]          { $$ = make_if($c, $s); };
-           | IF LP cond[c] RP cur_stm[s1]
-             ELSE cur_stm[s2]                     { /* $$ = make_if($c, $s1, $s2); */ };
+           | IF LP cond[c] RP cur_stm[s1]*/                                        /* dangling else */
+             ELSE cur_stm[s2]                     { $$ = make_if($c, $s1, $s2); }; /* this rule creates shift-reduce conflict  */
 
 while:       WHILE LP cond[c] RP cur_stm[s]       { $$ = make_while($c, $s); };
 
