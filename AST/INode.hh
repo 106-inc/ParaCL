@@ -21,7 +21,6 @@ struct IScope : public INode
   // TODO: can't understand the purpose of this func
     virtual IScope *push() = 0;
 
-
     virtual IScope *reset_scope() const = 0;
 
     virtual void add_branch(INode *branch) = 0;
