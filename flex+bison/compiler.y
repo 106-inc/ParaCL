@@ -5,13 +5,22 @@
 
 %param {Driver* driver}
 
-%{
-
+%code requires
+{
 #include "../AST/INode.hh"
-#include "../Driver/driver.hh"
-#include "../parser/parser.hh"
+
+namespace yy
+{
+class Driver;
+};
 
 extern AST::IScope * cur_scope;
+}
+
+
+%{
+
+
 
 %}
 
@@ -37,38 +46,28 @@ extern AST::IScope * cur_scope;
   LS_EQ         "<="
   IS_EQ         "=="
   NOT_EQ        "!="
-
   AND           "&&"
   OR            "||"
   ;
-
 %nonassoc
-
   UNMIN
   NOT           "!"
   ;
-
 %token
-
   COMMA         ","
   COLON         ":"
   SCOLON        ";"
-
   LP            "("
   RP            ")"
   LB            "{"
   RB            "}"
-
   IF            "if"
   ELSE          "else"
   WHILE         "while"
-
   SCAN          "?"
   PRINT         "print"
-
   ERR
   ;
-
 %token <int> INT
 %token <std::string> NAME
 
@@ -129,7 +128,7 @@ expr3:       LP expr RP                  { };
            | INT                         { };
 
 if:          IF LP cond RP scope         { };
-           | IF LP cond RP scope 
+           | IF LP cond RP scope
              ELSE scope                  { };
            | IF LP cond RP stm           { };
 
