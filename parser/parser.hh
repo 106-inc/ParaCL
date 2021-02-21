@@ -3,27 +3,29 @@
 
 #include <iostream>
 #include <FlexLexer.h>
-//! #include "numgrammar.tab.hh" - auto generated file from bison
+#include "../flex+bison/compiler.tab.hh"
 
+namespace yy
+{
 
-namespace yy {
-
-    class OurFlexLexer : public yyFlexLexer {
+    class OurFlexLexer : public yyFlexLexer
+            {
     private:
 
         yy::location cur_location_;
         std::string cur_str_;
 
     public:
-        OurFLexLexer();
-
+        OurFlexLexer();
 
         yy::location get_cur_location();
-
         std::string get_cur_str_();
 
+        void upd_cur_loc();
 
-        void yylex() override;
+        int yylex() override;
+
+        ~OurFlexLexer();
 
     };
 }
