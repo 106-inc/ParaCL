@@ -35,23 +35,29 @@ bool yy::Driver::parse() {
 //! There is should be:
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type* yylloc)
 {
-    //! 1. Getting token from
-    //! 2. Token processing line by line in our ParaCL program
-
     yy::parser::token_type tkn_type = static_cast<yy::parser::token_type>(plex_->yylex());
 
     switch(tkn_type)
     {
         case yy::parser::token_type::INT:
+        {
             yylval->as<int>() = std::stoi(plex_->YYText());
-                break;
+            break;
+        }
 
         case yy::parser::token_type::NAME:
-                break;
+        {
+            std::string tmp{plex_->YYText()};
+            yylval->as<std::string>() = tmp;
+            break;
+        }
+
+        default: break;
+
     }
-
+    *yylloc = plex_->get_cur_location();
     return tkn_type;
-
 }
+
 
 yy::Driver::~Driver() { delete plex_; }
