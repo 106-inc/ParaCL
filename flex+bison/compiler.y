@@ -109,6 +109,7 @@ stm:         assign                      { /* cur_scope->push(make_op())*/ };
            | if                          { };
            | while                       { };
            | print                       { };
+           | . /* Null string (epsilon) */
 
 assign:      NAME ASSIGN expr SCOLON     { };
 
@@ -121,6 +122,7 @@ expr1:       expr2 ADD expr2             { };
 expr2:       expr3 MUL expr3             { };
            | expr3 DIV expr3             { };
            | expr3 MOD expr3             { };
+           | expr3
 
 expr3:       LP expr RP                  { };
            | NAME                        { };
