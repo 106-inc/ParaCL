@@ -3,11 +3,13 @@
 
 %locations
 
+%param {Driver* driver}
+
 %{
 
-#include "INode.hh"
-#include "Driver.hh"
-#include "parser.hh"
+#include "../AST/INode.hh"
+#include "../Driver/driver.hh"
+#include "../parser/parser.hh"
 
 extern AST::IScope * cur_scope;
 
@@ -149,3 +151,10 @@ print:       PRINT expr SCOLON           { };
 
 %%
 
+namespace yy
+{
+	parser::token_type yylex(parser::semantic_type* yylval, Driver* driver)
+	{
+		driver->yylex(yylval);
+	}
+}
