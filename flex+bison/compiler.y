@@ -88,7 +88,6 @@ extern AST::IScope * cur_scope;
 %nterm<AST::INode *> expr1
 %nterm<AST::INode *> expr2
 
-%nterm<AST::Ops> op
 %nterm<AST::Ops> pm
 %nterm<AST::Ops> mdm
 %nterm<AST::Ops> lgc
@@ -140,10 +139,6 @@ while:       WHILE LP cond[c] RP cur_stm[s]       { $$ = make_while($c, $s); };
 cond:        expr lgc expr                        { $$ = make_op($1, $2, $3); };
            | NOT cond                             { /* $$ = handle_name */ };
            | expr                                 { $$ = $1 };
-
-op:          pm                                   { $$ = $1; }; 
-           | mdm                                  { $$ = $1; };  
-           | lgc                                  { $$ = $1; }; 
 
 pm:          ADD                                  { $$ = AST::Ops::ADD; }; 
            | SUB                                  { $$ = AST::Ops::SUB; }; 
