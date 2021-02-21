@@ -8,7 +8,7 @@ namespace AST
 // node interface
 struct INode
 {
-    virtual int calc() = 0;
+    virtual int calc() const = 0;
 
     virtual void dump() = 0;
 
@@ -48,8 +48,8 @@ IScope *create_scope();
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*
- * 1. Variable -> just iterator to var table
- * 2. Inf operator ->
+ * 1. Variable -> just iterator to var table OK
+ * 2. Infix operator ->
  * 3. While -> condition + scope
  * 4. if -> condition + scope
  * 5. else -> scope only
