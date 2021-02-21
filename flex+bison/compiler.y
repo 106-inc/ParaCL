@@ -18,14 +18,16 @@ extern AST::IScope * cur_scope;
 
 %define api.value.type variant
 
-%token
+%right ASSIGN   "="
+
+%left
 
   ADD           "+"
   SUB           "-"
+
   MUL           "*"
   DIV           "/"
   MOD           "%"
-  ASSIGN        "="
 
   GREATER       ">"
   LESS          "<"
@@ -36,6 +38,15 @@ extern AST::IScope * cur_scope;
 
   AND           "&&"
   OR            "||"
+  ;
+
+%nonassoc
+
+  UNMIN
+  NOT           "!"
+  ;
+
+%token
 
   COMMA         ","
   COLON         ":"
@@ -47,6 +58,7 @@ extern AST::IScope * cur_scope;
   RB            "}"
 
   IF            "if"
+  ELSE          "else"
   WHILE         "while"
 
   SCAN          "?"
@@ -57,20 +69,6 @@ extern AST::IScope * cur_scope;
 
 %token <int> INT
 %token <std::string> NAME
-
-
-/* left/right associative */
-
-%right ASSIGN
-
-%left ADD SUB
-%left MUL DIV MOD
-
-%left IS_EQ NOT_EQ
-%left GREATER LESS
-%left GR_EQ LS_EQ
-
-%left AND OR
 
 /* nonterminals */
 
@@ -87,8 +85,9 @@ extern AST::IScope * cur_scope;
 %nterm<AST::INode *> assign
 
 %nterm<AST::INode *> expr
-  /* %nterm<AST::INode *> expr_l1 */
-  /* %nterm<AST::INode *> expr_l2 */
+%nterm<AST::INode *> expr1
+%nterm<AST::INode *> expr2
+%nterm<AST::INode *> expr3
 
 
 %%
@@ -113,21 +112,31 @@ stm:         assign                      { };
 
 assign:      NAME ASSIGN expr SCOLON     { };
 
-expr:        expr ADD expr               { };
-           | expr SUB expr               { };
-           | expr MUL expr               { };
-           | expr DIV expr               { };
-           | expr MOD expr               { };
-           | LP expr RP                  { };
+expr:        expr1                       { };
+
+expr1:       expr2 ADD expr2             { };
+           | expr2 SUB expr2             { };
+           | expr2                       { };
+
+expr2:       expr3 MUL expr3             { };
+           | expr3 DIV expr3             { };
+           | expr3 MOD expr3             { };
+
+expr3:       LP expr RP                  { };
            | NAME                        { };
            | INT                         { };
 
 if:          IF LP cond RP scope         { };
+           | IF LP cond RP scope 
+             ELSE scope                  { };
+           | IF LP cond RP stm           { };
 
 while:       WHILE LP cond RP scope      { };
+           | WHILE LP cond RP stm        { };
 
 cond:        expr AND expr               { };
            | expr OR expr                { };
+           | NOT expr                    { };
            | expr IS_EQ expr             { };
            | expr NOT_EQ expr            { };
            | expr GREATER expr           { };
