@@ -13,6 +13,8 @@
 
 namespace AST
 {
+
+  using var_table = std::unordered_map<std::string, int>;
 // Scope structure
 class Scope : public IScope // final(?)
 {
@@ -23,7 +25,7 @@ class Scope : public IScope // final(?)
     // Pointer to parent scope
     IScope *parent_{};
 
-    std::unordered_map<std::string, int> var_tbl_;
+    var_table var_tbl_;
 
   public:
     // constructor by parent scope ptr
@@ -33,8 +35,26 @@ class Scope : public IScope // final(?)
 
     void add_branch(INode *branch) override;
 
-
     ~Scope() = default;
+};
+
+struct VNode final : public INode
+{
+private:
+  var_table::iterator location_;
+
+public:
+
+  VNode( var_table::iterator loc );
+
+  const std::string &get_name() const;
+
+  var_table::iterator get_loc() const;
+
+  int get_val() const;
+
+  void set_val( int val );
+
 };
 } // namespace AST
 
