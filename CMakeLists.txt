@@ -15,4 +15,4 @@ add_executable(ParaCL
         Driver/driver.cc
         Driver/driver.hh
         main.cc
-        parser.hh AST/Node.cc)
+        parser.hh AST/Node.cc AST/OPNode.cc AST/OPNode.hh)
