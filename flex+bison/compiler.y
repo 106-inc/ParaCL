@@ -17,6 +17,16 @@ class Driver;
 extern AST::IScope * cur_scope;
 }
 
+%code
+{
+
+namespace yy
+{
+parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
+}
+
+}
+
 
 %{
 
@@ -152,7 +162,7 @@ print:       PRINT expr SCOLON           { };
 
 namespace yy
 {
-	parser::token_type yylex(parser::semantic_type* yylval, Driver* driver)
+	parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
 	{
 		driver->yylex(yylval);
 	}
