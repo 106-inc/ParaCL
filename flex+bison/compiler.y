@@ -118,6 +118,7 @@ expr:        expr ADD expr               { };
            | expr MUL expr               { };
            | expr DIV expr               { };
            | expr MOD expr               { };
+           | LP expr RP                  { };
            | NAME                        { };
            | INT                         { };
 
