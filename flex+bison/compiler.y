@@ -33,39 +33,36 @@ extern AST::IScope * cur_scope;
 
 %left
 
-  ADD           "+"
-  SUB           "-"
+  ADD SUB
+  MUL DIV MOD
 
-  MUL           "*"
-  DIV           "/"
-  MOD           "%"
-
-  GREATER       ">"
-  LESS          "<"
-  GR_EQ         ">="
-  LS_EQ         "<="
-  IS_EQ         "=="
-  NOT_EQ        "!="
-  AND           "&&"
-  OR            "||"
+  GREATER LESS
+  GR_EQ LS_EQ
+  IS_EQ NOT_EQ
+  
+  AND OR
   ;
+
 %nonassoc
-  UNMIN
-  NOT           "!"
+
+  UNMIN NOT
   ;
+
 %token
-  COMMA         ","
-  COLON         ":"
-  SCOLON        ";"
-  LP            "("
-  RP            ")"
-  LB            "{"
-  RB            "}"
-  IF            "if"
-  ELSE          "else"
-  WHILE         "while"
-  SCAN          "?"
-  PRINT         "print"
+
+  COMMA
+  COLON
+  SCOLON
+
+  LP RP
+  LB RB
+
+  IF ELSE
+  WHILE
+
+  SCAN
+  PRINT
+
   ERR
   ;
 
@@ -75,7 +72,7 @@ extern AST::IScope * cur_scope;
 /* nonterminals */
 
 %nterm<AST::IScope *> scope
-%nterm<AST::IScope *> cl_sc /* clarify nonterminal type */
+%nterm<AST::IScope *> cl_sc
 
 %nterm<AST::INode *> stm
 %nterm<AST::INode *> stms
