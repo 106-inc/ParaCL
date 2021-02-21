@@ -25,19 +25,32 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file) {
 }
 
 bool yy::Driver::parse() {
-    parser parser(this); //! it should be just "parser", but its ugly
+    yy::parser parser_(this); //! it should be just "parser", but its ugly
 
-    bool res = parser.parse();
+    bool res = parser_.parse();
     return res;
 }
 
 
 //! There is should be:
-yy::parser::token_type yylex(yy::parser::semantic_type *yylval)
+yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval)
 {
     //! 1. Getting token from
     //! 2. Token processing line by line in our ParaCL program
 
+    yy::parser::token_type tkn_type = static_cast<yy::parser::token_type>(plex_->yylex());
+
+    switch(tkn_type)
+    {
+        case yy::parser::token_type::INT:
+            yylval->as<int>() = std::stoi(plex_->YYText());
+                break;
+
+        case yy::parser::token_type::NAME:
+                break;
+    }
+
+    return tkn_type;
 
 }
 

@@ -8,7 +8,6 @@
 #include <iostream>
 #include <vector>
 
-#include "INode.hh"
 #include "../parser/parser.hh"
 #include "../flex+bison/lex.yy.cc"
 //! #include "numgrammar.tab.hh" - auto generated file from bison
