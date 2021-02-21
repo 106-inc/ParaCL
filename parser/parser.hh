@@ -2,7 +2,10 @@
 #define PARACL_PARSER_HH
 
 #include <iostream>
+
 #include <FlexLexer.h>
+
+#include "INode.hh"
 #include "../flex+bison/compiler.tab.hh"
 
 namespace yy
