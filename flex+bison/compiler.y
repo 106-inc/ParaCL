@@ -88,10 +88,10 @@ extern AST::IScope * cur_scope;
 %nterm<AST::INode *> expr1
 %nterm<AST::INode *> expr2
 
-%nterm<AST::Ops> pm
-%nterm<AST::Ops> mdm
-%nterm<AST::Ops> lgc
-%nterm<AST::Ops> cmp
+%nterm<token_type> pm
+%nterm<token_type> mdm
+%nterm<token_type> lgc
+%nterm<token_type> cmp
 
 %%
 
@@ -131,7 +131,7 @@ expr2:       LP expr[e] RP                        { $$ = $e };
            | INT                                  { $$ = make_value($1); };
 
 if:          IF LP cond[c] RP cur_stm[s]          { $$ = make_if($c, $s); };
-           | IF LP cond[c] RP cur_stm[s1]*/                                        /* dangling else */
+           | IF LP cond[c] RP cur_stm[s1]                                          /* dangling else */
              ELSE cur_stm[s2]                     { $$ = make_if($c, $s1, $s2); }; /* this rule creates shift-reduce conflict  */
 
 while:       WHILE LP cond[c] RP cur_stm[s]       { $$ = make_while($c, $s); };
@@ -140,23 +140,23 @@ cond:        expr lgc expr                        { $$ = make_op($1, $2, $3); };
            | NOT cond                             { /* $$ = handle_name */ };
            | expr                                 { $$ = $1 };
 
-pm:          ADD                                  { $$ = AST::Ops::ADD; }; 
-           | SUB                                  { $$ = AST::Ops::SUB; }; 
+pm:          ADD                                  { $$ = token::ADD; }; 
+           | SUB                                  { $$ = token::SUB; }; 
 
-mdm:         MUL                                  { $$ = AST::Ops::MUL; };  
-           | DIV                                  { $$ = AST::Ops::DIV; };
-           | MOD                                  { $$ = AST::Ops::MOD; };
+mdm:         MUL                                  { $$ = token::MUL; };  
+           | DIV                                  { $$ = token::DIV; };
+           | MOD                                  { $$ = token::MOD; };
 
-lgc:         AND                                  { $$ = AST::Ops::AND; };
-           | OR                                   { $$ = AST::Ops::OR; };
+lgc:         AND                                  { $$ = token::AND; };
+           | OR                                   { $$ = token::OR; };
            | cmp                                  { $$ = $1; };
 
-cmp:         IS_EQ                                { $$ = AST::Ops::IS_EQ; };
-           | NOT_EQ                               { $$ = AST::Ops::NOT_EQ; };
-           | GREATER                              { $$ = AST::Ops::GREATER; };
-           | LESS                                 { $$ = AST::Ops::LESS; };
-           | GR_EQ                                { $$ = AST::Ops::GR_EQ; };
-           | LS_EQ                                { $$ = AST::Ops::LS_EQ; };
+cmp:         IS_EQ                                { $$ = token::IS_EQ; };
+           | NOT_EQ                               { $$ = token::NOT_EQ; };
+           | GREATER                              { $$ = token::GREATER; };
+           | LESS                                 { $$ = token::LESS; };
+           | GR_EQ                                { $$ = token::GR_EQ; };
+           | LS_EQ                                { $$ = token::LS_EQ; };
 
 
 print:       PRINT expr SCOLON                    { };
