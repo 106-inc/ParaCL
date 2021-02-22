@@ -8,7 +8,7 @@ namespace AST
   // node interface
   struct INode
   {
-      virtual int calc() = 0;
+      virtual int calc() const = 0;
 
       virtual void dump() = 0;
 
@@ -43,13 +43,13 @@ namespace AST
     UNMIN, NOT
   };
 
-  INode *make_value(int val);
+INode *make_value(int val);
 
-  INode *make_op(INode *l, Ops o, INode *r);
+INode *make_op(INode *l, Ops o, INode *r);
 
-  INode *make_while(INode *o, INode *s);
+INode *make_while(INode *o, INode *s);
 
-  INode *make_if(INode *o, INode *s);
+INode *make_if(INode *o, INode *s);
 
 IScope *create_scope();
 
