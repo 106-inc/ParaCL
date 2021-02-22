@@ -88,10 +88,10 @@ extern AST::IScope * cur_scope;
 %nterm<AST::INode *> expr1
 %nterm<AST::INode *> expr2
 
-%nterm<token_type> pm
-%nterm<token_type> mdm
-%nterm<token_type> lgc
-%nterm<token_type> cmp
+%nterm<token::yytokentype> pm
+%nterm<token::yytokentype> mdm
+%nterm<token::yytokentype> lgc
+%nterm<token::yytokentype> cmp
 
 %%
 
@@ -110,13 +110,13 @@ cl_sc:       RB                                   {
 stms:        cur_stm                              { /* cur_scope.push($1); */ };
            | stms cur_stm                         { /* cur_scope.push($2); */ };
 
-cur_stm:     stm                                  { $$ = $1 };
-           | scope                                { $$ = $1 };
+cur_stm:     stm                                  { $$ = $1; };
+           | scope                                { $$ = $1; };
 
-stm:         assign                               { $$ = $1 };
-           | if                                   { $$ = $1 };
-           | while                                { $$ = $1 };
-           | print                                { $$ = $1 };
+stm:         assign                               { $$ = $1; };
+           | if                                   { $$ = $1; };
+           | while                                { $$ = $1; };
+           | print                                { $$ = $1; };
 
 assign:      NAME[nm] ASSIGN expr[val] SCOLON     { /* $$ = make_assign($nm, $val); */ };
 
@@ -126,7 +126,7 @@ expr:        expr1 pm expr1                       { $$ = make_op($1, $2, $3); };
 expr1:       expr2 mdm expr2                      { $$ = make_op($1, $2, $3); };
            | expr2                                { $$ = $1; };
 
-expr2:       LP expr[e] RP                        { $$ = $e };
+expr2:       LP expr[e] RP                        { $$ = $e; };
            | NAME                                 { /* $$ = handle_name($1); */ };
            | INT                                  { $$ = make_value($1); };
 
@@ -138,7 +138,7 @@ while:       WHILE LP cond[c] RP cur_stm[s]       { $$ = make_while($c, $s); };
 
 cond:        expr lgc expr                        { $$ = make_op($1, $2, $3); };
            | NOT cond                             { /* $$ = handle_name */ };
-           | expr                                 { $$ = $1 };
+           | expr                                 { $$ = $1; };
 
 pm:          ADD                                  { $$ = token::ADD; }; 
            | SUB                                  { $$ = token::SUB; }; 
