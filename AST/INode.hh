@@ -5,44 +5,51 @@
 
 namespace AST
 {
-// node interface
-struct INode
-{
-    virtual int calc() const = 0;
+  // node interface
+  struct INode
+  {
+      virtual int calc() = 0;
 
-    virtual void dump() = 0;
+      virtual void dump() = 0;
 
-    virtual ~INode() = default;
-};
+      virtual ~INode() = default;
+  };
 
-// scope interface
-struct IScope : public INode
-{
-  // TODO: can't understand the purpose of this func
-    virtual IScope *push() = 0;
+  // scope interface
+  struct IScope : public INode
+  {
+      virtual void push(INode *node) = 0;
 
-    virtual IScope *reset_scope() const = 0;
+      virtual IScope *reset_scope()  const = 0;
 
-    virtual void add_branch(INode *branch) = 0;
+      virtual void add_branch(INode *branch) = 0;
 
-    virtual INode *access(std::string const &var_name) = 0;
+      virtual INode *access(std::string const &var_name) = 0;
 
-    virtual INode *visible(std::string const &var_name) = 0;
-};
+      virtual INode *visible(std::string const &var_name) = 0;
+  };
 
-enum class Ops
-{
-    // TODO: WRITE OPS
-    // TODO: Idk is it necessary?
-};
+  enum class Ops
+  {
+    ADD, SUB,
+    MUL, DIV, MOD,
 
-INode *make_value(int val);
+    GREATER, LESS,
+    GR_EQ, LS_EQ,
+    IS_EQ, NOT_EQ,
 
-INode *make_op(INode *l, Ops o, INode *r);
+    AND, OR,
 
-INode *make_while(INode *o, INode *s);
+    UNMIN, NOT
+  };
 
-INode *make_if(INode *o, INode *s);
+  INode *make_value(int val);
+
+  INode *make_op(INode *l, Ops o, INode *r);
+
+  INode *make_while(INode *o, INode *s);
+
+  INode *make_if(INode *o, INode *s);
 
 IScope *create_scope();
 

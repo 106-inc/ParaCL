@@ -4,8 +4,7 @@
 %option yylineno
 
 %option warn nodefault debug
-
-    /* %option yyclass="OurLexerClassName" */
+%option yyclass="OurFlexLexer"
 
 %{
 
@@ -58,7 +57,7 @@ NAME      {LETTER}{LETTER_D}*
 "{"                  return yy::parser::token_type::LB; /* LEFT BRACE       */
 "}"                  return yy::parser::token_type::RB; /* RIGHT BRACE      */
 
-"INT"                return yy::parser::token_type::INT;
+INT                  return yy::parser::token_type::INT;
 
 "if"                 return yy::parser::token_type::IF;
 "while"              return yy::parser::token_type::WHILE;
