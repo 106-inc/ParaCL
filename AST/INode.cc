@@ -1,24 +1,38 @@
 #include "INode.hh"
 
 /**
- * @brief Create value node function
- * @param val value of a node
+ * @brief Create constant node function
+ * @param val value of a constant
  * @return pointer to created Node
  */
-AST::INode *AST::make_value(int val)
+AST::INode *AST::make_cst(int val)
 {
+  return new CNode{val};
 } /* End of 'make_value' function */
 
 /**
  * @brief Create operator node function
- * @param l [in] left node of operator
- * @param o [in] operator type
- * @param r [in] right node of operator
+ * @param l  [in] left node of operator
+ * @param op [in] operator type
+ * @param r  [in] right node of operator
  * @return pointer to created Node
  */
-AST::INode *AST::make_op(INode *l, Ops o, INode *r)
+AST::INode *AST::make_op(INode *l, Ops op, INode *r)
 {
-
+  switch (op)
+  {
+  case Ops::ADD:
+    return new PLNode{l, r};
+  case Ops::SUB:
+    return new SBNode{l, r};
+  case Ops::MUL:
+    return new MLNode{l, r};
+  case Ops::DIV:
+    return new DVNode{l, r};
+  default:
+    std::cout << "Operator is not implemented\n";
+    return nullptr;
+  }
 } /* End of 'make_op' function */
 
 /**

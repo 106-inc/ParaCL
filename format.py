@@ -7,7 +7,7 @@ import os
 code_ext = ['hpp', 'cpp', 'c', 'h', 'hh', 'cc', 'c++', 'cxx']
 
 
-cmd = 'clang-format -i --style="{BasedOnStyle: Microsoft, IndentWidth: 4}" '
+cmd = 'clang-format -i --style="{BasedOnStyle: Microsoft, IndentWidth: 2}" '
 ##################################################################
 
 
