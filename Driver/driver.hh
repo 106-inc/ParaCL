@@ -28,9 +28,7 @@ class Driver final
     bool parse();
     parser::token_type yylex(parser::semantic_type *yylval, parser::location_type *yylloc);
 
-    void report_syntax_error(const parser::context &ctx)
-
-        ~Driver();
+    ~Driver();
 };
 
 } // namespace yy
