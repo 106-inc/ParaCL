@@ -11,6 +11,7 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
     plex_ = new OurFlexLexer;
     glob_cur_scope = AST::create_scope();
 
+
     std::ifstream in_file;
     in_file.open(name_of_file);
 
@@ -29,11 +30,14 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 
 bool yy::Driver::parse()
 {
+
     yy::parser parser_(this); //! it should be just "parser", but its ugly
+
 
     bool res = parser_.parse();
     return res;
 }
+
 
 //! There is should be:
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type *yylloc)
