@@ -1,6 +1,5 @@
 #include "Node.hh"
 
-
 ////////////////////////// SCOPE METHODS /////////////////
 AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
 {

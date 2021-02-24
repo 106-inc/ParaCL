@@ -43,127 +43,142 @@ parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* y
 
 %left
 
-  ADD           "+"
-  SUB           "-"
+  ADD SUB
+  MUL DIV MOD
 
-  MUL           "*"
-  DIV           "/"
-  MOD           "%"
-
-  GREATER       ">"
-  LESS          "<"
-  GR_EQ         ">="
-  LS_EQ         "<="
-  IS_EQ         "=="
-  NOT_EQ        "!="
-  AND           "&&"
-  OR            "||"
+  GREATER LESS
+  GR_EQ LS_EQ
+  IS_EQ NOT_EQ
+  
+  AND OR
   ;
+
 %nonassoc
-  UNMIN
-  NOT           "!"
+
+  UNMIN NOT
   ;
+
 %token
-  COMMA         ","
-  COLON         ":"
-  SCOLON        ";"
-  LP            "("
-  RP            ")"
-  LB            "{"
-  RB            "}"
-  IF            "if"
-  ELSE          "else"
-  WHILE         "while"
-  SCAN          "?"
-  PRINT         "print"
+
+  COMMA
+  COLON
+  SCOLON
+
+  LP RP
+  LB RB
+
+  IF ELSE
+  WHILE
+
+  SCAN
+  PRINT
+
   ERR
   ;
+
 %token <int> INT
 %token <std::string> NAME
 
 /* nonterminals */
 
 %nterm<AST::IScope *> scope
-%nterm<AST::INode *> op_sc /* clarify nonterminal type */
-%nterm<AST::INode *> cl_sc /* clarify nonterminal type */
+%nterm<AST::IScope *> cl_sc
 
 %nterm<AST::INode *> stm
 %nterm<AST::INode *> stms
+%nterm<AST::INode *> cur_stm
 
 %nterm<AST::INode *> if
 %nterm<AST::INode *> while
 %nterm<AST::INode *> print
 %nterm<AST::INode *> assign
 
+%nterm<AST::INode *> cond
 %nterm<AST::INode *> expr
 %nterm<AST::INode *> expr1
 %nterm<AST::INode *> expr2
-%nterm<AST::INode *> expr3
 
+%nterm<AST::Ops> pm
+%nterm<AST::Ops> mdm
+%nterm<AST::Ops> lgc
+%nterm<AST::Ops> cmp
 
 %%
 
 
-program:     stms                        { /* program starting */ };
+program:     stms                                 { /* program starting */ };
 
-scope:       op_sc stms cl_sc            { /* cur_scope = cur_scope->enter_new_scope */ };
+scope:       op_sc stms cl_sc                     { $$ = $3; };
 
-op_sc:       LB                          { /* cur_scope = cur_scope->enter_new_scope */ };
+op_sc:       LB                                   { /* cur_scope = cur_scope->enter_new_scope(); */ };
 
-cl_sc:       RB                          { /* cur_scope = cur_scope->parent_scope */ };
+cl_sc:       RB                                   {
+                                                    /* $$ = cur_scope; */
+                                                    /* cur_scope = cur_scope->parent_scope(); */
+                                                  };
 
-stms:        stm                         { };
-           | stms stm                    { };
-           | stms scope                  { };
+stms:        cur_stm                              { /* cur_scope.push($1); */ };
+           | stms cur_stm                         { /* cur_scope.push($2); */ };
 
-stm:         assign                      { /* cur_scope->push(make_op())*/ };
-           | if                          { };
-           | while                       { };
-           | print                       { };
+cur_stm:     stm                                  { $$ = $1; };
+           | scope                                { $$ = $1; };
 
-assign:      NAME ASSIGN expr SCOLON     { };
+stm:         assign                               { $$ = $1; };
+           | if                                   { $$ = $1; };
+           | while                                { $$ = $1; };
+           | print                                { $$ = $1; };
 
-expr:        expr1                       { };
+assign:      NAME[nm] ASSIGN expr[val] SCOLON     { /* $$ = AST::make_assign($nm, $val); */ };
 
-expr1:       expr2 ADD expr2             { };
-           | expr2 SUB expr2             { };
-           | expr2                       { };
+expr:        expr1 pm expr1                       { $$ = AST::make_op($1, $2, $3); };
+           | expr1                                { $$ = $1; };
 
-expr2:       expr3 MUL expr3             { };
-           | expr3 DIV expr3             { };
-           | expr3 MOD expr3             { };
+expr1:       expr2 mdm expr2                      { $$ = AST::make_op($1, $2, $3); };
+           | expr2                                { $$ = $1; };
 
-expr3:       LP expr RP                  { };
-           | NAME                        { };
-           | INT                         { };
+expr2:       LP expr[e] RP                        { $$ = $e; };
+           | NAME                                 { /* $$ = handle_name($1); */ };
+           | INT                                  { $$ = AST::make_value($1); };
 
-if:          IF LP cond RP scope         { };
-           | IF LP cond RP scope
-             ELSE scope                  { };
-           | IF LP cond RP stm           { };
+if:          IF LP cond[c] RP cur_stm[s]          { $$ = AST::make_if($c, $s); };
+           | IF LP cond[c] RP cur_stm[s1]                                                     /* dangling else */
+             ELSE cur_stm[s2]                     { /* $$ = AST::make_if($c, $s1, $s2); */ }; /* this rule creates shift-reduce conflict  */
 
-while:       WHILE LP cond RP scope      { };
-           | WHILE LP cond RP stm        { };
+while:       WHILE LP cond[c] RP cur_stm[s]       { $$ = AST::make_while($c, $s); };
 
-cond:        expr AND expr               { };
-           | expr OR expr                { };
-           | NOT expr                    { };
-           | expr IS_EQ expr             { };
-           | expr NOT_EQ expr            { };
-           | expr GREATER expr           { };
-           | expr LESS expr              { };
-           | expr GR_EQ expr             { };
-           | expr LS_EQ expr             { };
-           | expr                        { };
+cond:        expr lgc expr                        { $$ = AST::make_op($1, $2, $3); };
+           | NOT cond                             { /* $$ = handle_name */ };
+           | expr                                 { $$ = $1; };
 
-print:       PRINT expr SCOLON           { };
+pm:          ADD                                  { $$ = AST::Ops::ADD; }; 
+           | SUB                                  { $$ = AST::Ops::SUB; }; 
+
+mdm:         MUL                                  { $$ = AST::Ops::MUL; };  
+           | DIV                                  { $$ = AST::Ops::DIV; };
+           | MOD                                  { $$ = AST::Ops::MOD; };
+
+lgc:         AND                                  { $$ = AST::Ops::AND; };
+           | OR                                   { $$ = AST::Ops::OR; };
+           | cmp                                  { $$ = $1; };
+
+cmp:         IS_EQ                                { $$ = AST::Ops::IS_EQ; };
+           | NOT_EQ                               { $$ = AST::Ops::NOT_EQ; };
+           | GREATER                              { $$ = AST::Ops::GREATER; };
+           | LESS                                 { $$ = AST::Ops::LESS; };
+           | GR_EQ                                { $$ = AST::Ops::GR_EQ; };
+           | LS_EQ                                { $$ = AST::Ops::LS_EQ; };
+
+
+print:       PRINT expr SCOLON                    { };
 
 %%
 
 namespace yy
 {
+
 	parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
 	{
 		driver->yylex(yylval);
 	}
 }
+

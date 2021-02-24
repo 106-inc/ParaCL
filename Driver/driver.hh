@@ -8,8 +8,8 @@
 #include <iostream>
 #include <vector>
 
-#include "../parser/parser.hh"
 #include "../flex+bison/lex.yy.cc"
+#include "../parser/parser.hh"
 //! #include "numgrammar.tab.hh" - auto generated file from bison
 
 namespace yy
@@ -26,12 +26,11 @@ class Driver final
     Driver(const char *name_of_file);
 
     bool parse();
-    parser::token_type yylex(parser::semantic_type *yylval, parser::location_type* yylloc);
+    parser::token_type yylex(parser::semantic_type *yylval, parser::location_type *yylloc);
 
-    void report_syntax_error (const parser::context& ctx)
+    void report_syntax_error(const parser::context &ctx)
 
-
-    ~Driver();
+        ~Driver();
 };
 
 } // namespace yy

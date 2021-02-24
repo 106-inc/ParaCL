@@ -8,11 +8,8 @@ include_directories(AST)
 include_directories(Driver)
 
 add_executable(ParaCL
-        AST/INode.hh
         AST/INode.cc
-        AST/Node.hh
-        AST/Symtab.hh
+        AST/OPNode.cc
         Driver/driver.cc
-        Driver/driver.hh
         main.cc
-        parser.hh AST/Node.cc AST/OPNode.cc AST/OPNode.hh)
+        AST/Node.cc)

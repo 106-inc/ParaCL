@@ -2,11 +2,20 @@
 
 AST::IScope *glob_cur_scope = nullptr;
 
-yy::Driver::Driver() {}
+yy::Driver::Driver()
+{
+}
 
+<<<<<<<<< Temporary merge branch 1
+yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
+{
+    plex_ = new our_lexer;
+    glob_cur_scope = create_scope();
+=========
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file) {
     plex_ = new OurFlexLexer;
     glob_cur_scope = AST::create_scope();
+>>>>>>>>> Temporary merge branch 2
 
     std::ifstream in_file;
     in_file.open(name_of_file);
@@ -24,13 +33,25 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file) {
     // plex_->switch_stream(in_file, std::cout);
 }
 
+<<<<<<<<< Temporary merge branch 1
+bool yy::Driver::parse()
+{
+    parser parser(this); //! it should be just "parser", but its ugly
+=========
 bool yy::Driver::parse() {
     yy::parser parser_(this); //! it should be just "parser", but its ugly
+>>>>>>>>> Temporary merge branch 2
 
     bool res = parser_.parse();
     return res;
 }
 
+<<<<<<<<< Temporary merge branch 1
+yy::Driver::~Driver()
+{
+    delete plex_;
+}
+=========
 
 //! There is should be:
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type* yylloc)
@@ -61,3 +82,4 @@ yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, pars
 
 
 yy::Driver::~Driver() { delete plex_; }
+>>>>>>>>> Temporary merge branch 2
