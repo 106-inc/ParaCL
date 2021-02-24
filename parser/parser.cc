@@ -4,16 +4,16 @@
 
 #include "parser.hh"
 
-yy::OurFlexLexer::OurFlexLexer() : cur_location_({})
+OurFlexLexer::OurFlexLexer() : cur_location_({})
 {
 }
 
-yy::location yy::OurFlexLexer::get_cur_location()
+yy::location OurFlexLexer::get_cur_location()
 {
     return cur_location_;
 }
 
-std::string yy::OurFlexLexer::get_cur_str_()
+std::string OurFlexLexer::get_cur_str_()
 {
     return cur_str_;
 }
