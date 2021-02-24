@@ -2,10 +2,9 @@
 #ifndef PARACL_DRIVER_HH
 #define PARACL_DRIVER_HH
 
-#ifndef yyFlexLexer
+#if !defined(yyFlexLexerOnce)
 #include <FlexLexer.h> // it says me about error : doesnt exist in computer
 #endif
-
 
 #include <fstream>
 #include <iostream>
@@ -13,7 +12,8 @@
 
 // #include "../FB_BLD/lex.yy.cc"
 #include "../parser/parser.hh"
-//! #include "numgrammar.tab.hh" - auto generated file from bison
+// #include "numgrammar.tab.hh"  
+// auto generated file from bison
 
 namespace yy
 {

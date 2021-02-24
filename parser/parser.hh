@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#ifndef yyFlexLexer
+#if !defined(yyFlexLexerOnce)
 #include <FlexLexer.h>
 #endif
 
