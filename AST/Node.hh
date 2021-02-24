@@ -14,7 +14,7 @@
 namespace AST
 {
 
-  using var_table = std::unordered_map<std::string, int>;
+using var_table = std::unordered_map<std::string, int>;
 
 // Scope structure
 class Scope : public IScope // final(?)
@@ -32,74 +32,59 @@ class Scope : public IScope // final(?)
     // constructor by parent scope ptr
     explicit Scope(IScope *parent = nullptr);
 
-
-    IScope *reset_scope() const override { return parent_; }
+    IScope *reset_scope() const override
+    {
+        return parent_;
+    }
 
     void add_branch(INode *branch) override;
-
-    void add_var(const std::string &name) override;
 
     ~Scope() override;
 };
 
-/**
- * @brief Variable node class
- */
 class VNode final : public INode
 {
-private:
-  // No ptrs, because this node will always be a leaf
+  private:
+    // No ptrs, because this node will always be a leaf
 
-  
-  var_table::iterator location_{};
+    var_table::iterator location_;
 
-public:
+  public:
+    explicit VNode(var_table::iterator loc);
 
-  explicit VNode( var_table::iterator loc );
+    const std::string &get_name() const;
 
-  const std::string &get_name() const;
+    var_table::iterator get_loc() const;
 
-  var_table::iterator get_loc() const;
+    int calc() const override;
 
-  int calc() const override;
-
-  void set_val( int val );
+    void set_val(int val);
 };
 
-
-/**
- * @brief Constant node class
- */
 class CNode final : public INode
 {
-private:
-  const int val_;
-public:
-  CNode( int val );
+  private:
+    const int val_;
 
-  int calc() const override;
+  public:
+    CNode(int val);
+
+    int calc() const override;
 };
 
-/**
- * @brief Operator node class
- */
 class OPNode : public INode
 {
-protected:
-  INode *left_ {};
-  INode *right_{};
-public:
+  protected:
+    INode *left_{};
+    INode *right_{};
 
-  OPNode( INode *left, INode *right );
+  public:
+    OPNode(INode *left, INode *right);
 
-
-  ~OPNode() override;
+    ~OPNode() override;
 };
 
+}; // namespace AST
 
-    ~Scope() = default;
-};
-
-} // namespace AST
 
 #endif /* NODE_HH */

@@ -15,24 +15,11 @@ void AST::Scope::add_branch(INode *branch)
 } /* Node 'add_branch' function */
 
 /**
- * @brief Add new var to scope function
- * @note reloading for variable node
- * @param branch 
- * @param name - name of a variable to add
- */
-void AST::Scope::add_var(const std::string &name)
-{
-  auto it_pair = var_tbl_.try_emplace(name, 0);
-
-  nodes_.push_back(new VNode{it_pair.first});
-} /* Node 'add_var' function */
-
-/**
  * Scope class destructor
  */
 AST::Scope::~Scope()
 {
-  for (const auto &node : nodes_)
+  for (auto node : nodes_)
     delete node;
 }
 

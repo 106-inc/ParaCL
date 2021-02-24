@@ -9,37 +9,37 @@
 
 namespace AST
 {
-  class PLNode final : public OPNode
-  {
+class PLNode final : public OPNode
+{
   public:
-    PLNode( INode *left, INode *right );
+    PLNode(INode *left, INode *right);
 
     int calc() const override;
-  };
+};
 
-  class SBNode final : public OPNode
-  {
+class SBNode final : public OPNode
+{
   public:
-    SBNode( INode *left, INode *right );
+    SBNode(INode *left, INode *right);
 
     int calc() const override;
-  };
+};
 
-  class MLNode final : public OPNode
-  {
+class MLNode final : public OPNode
+{
   public:
-    MLNode( INode *left, INode *right );
+    MLNode(INode *left, INode *right);
 
     int calc() const override;
-  };
+};
 
-  class DVNode final : public OPNode
-  {
+class DVNode final : public OPNode
+{
   public:
-    DVNode( INode *left, INode *right );
+    DVNode(INode *left, INode *right);
 
     int calc() const override;
-  };
-}
+};
+} // namespace AST
 
-#endif //PARACL_OPNODE_HH
+#endif // PARACL_OPNODE_HH
