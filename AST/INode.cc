@@ -7,7 +7,6 @@
  */
 AST::INode *AST::make_value(int val)
 {
-
 } /* End of 'make_value' function */
 
 /**
@@ -41,9 +40,7 @@ AST::INode *AST::make_while(INode *o, INode *s)
  */
 AST::INode *AST::make_if(INode *o, INode *s)
 {
-
 } /* End of 'make_if' function */
-
 
 /**
  * Create scope function
@@ -51,5 +48,4 @@ AST::INode *AST::make_if(INode *o, INode *s)
  */
 AST::IScope *AST::create_scope()
 {
-
 } /* End of 'create_scope' function */
