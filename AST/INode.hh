@@ -10,24 +10,24 @@ namespace AST
   {
       virtual int calc() const = 0;
 
-      virtual void dump() = 0;
+    virtual void dump() = 0;
 
-      virtual ~INode() = default;
-  };
+    virtual ~INode() = default;
+};
 
-  // scope interface
-  struct IScope : public INode
-  {
-      virtual void push(INode *node) = 0;
+// scope interface
+struct IScope : public INode
+{
+    virtual void push(INode *node) = 0;
 
-      virtual IScope *reset_scope()  const = 0;
+    virtual IScope *reset_scope() const = 0;
 
-      virtual void add_branch(INode *branch) = 0;
+    virtual void add_branch(INode *branch) = 0;
 
-      virtual INode *access(std::string const &var_name) = 0;
+    virtual INode *access(std::string const &var_name) = 0;
 
-      virtual INode *visible(std::string const &var_name) = 0;
-  };
+    virtual INode *visible(std::string const &var_name) = 0;
+};
 
   enum class Ops
   {
@@ -63,6 +63,7 @@ IScope *create_scope();
  * 5. I think it's all fir now
  */
 //////////////////////////////////////////////////////////
+
 } // namespace AST
 
 #endif /* INODE_HH */

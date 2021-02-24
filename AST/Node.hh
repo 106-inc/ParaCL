@@ -15,6 +15,7 @@ namespace AST
 {
 
   using var_table = std::unordered_map<std::string, int>;
+
 // Scope structure
 class Scope : public IScope // final(?)
 {
@@ -30,6 +31,7 @@ class Scope : public IScope // final(?)
   public:
     // constructor by parent scope ptr
     explicit Scope(IScope *parent = nullptr);
+
 
     IScope *reset_scope() const override { return parent_; }
 
@@ -77,7 +79,12 @@ public:
 
   OPNode( INode *left, INode *right );
 
+
   ~OPNode() override;
+};
+
+
+    ~Scope() = default;
 };
 
 } // namespace AST
