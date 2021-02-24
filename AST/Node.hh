@@ -38,6 +38,9 @@ class Scope : public IScope // final(?)
     ~Scope() override;
 };
 
+/**
+ * @brief Variable node class
+ */
 class VNode final : public INode
 {
 private:
@@ -58,6 +61,10 @@ public:
   void set_val( int val );
 };
 
+
+/**
+ * @brief Constant node class
+ */
 class CNode final : public INode
 {
 private:
@@ -68,6 +75,9 @@ public:
   int calc() const override;
 };
 
+/**
+ * @brief Operator node class
+ */
 class OPNode : public INode
 {
 protected:
