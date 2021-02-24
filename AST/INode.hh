@@ -5,10 +5,10 @@
 
 namespace AST
 {
-  // node interface
-  struct INode
-  {
-      virtual int calc() const = 0;
+// node interface
+struct INode
+{
+    virtual int calc() const = 0;
 
     virtual void dump() = 0;
 
@@ -29,28 +29,32 @@ struct IScope : public INode
     virtual INode *visible(std::string const &var_name) = 0;
 };
 
-  enum class Ops
-  {
-    ADD, SUB,
-    MUL, DIV, MOD,
+enum class Ops
+{
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    MOD,
 
-    GREATER, LESS,
-    GR_EQ, LS_EQ,
-    IS_EQ, NOT_EQ,
+    GREATER,
+    LESS,
+    GR_EQ,
+    LS_EQ,
+    IS_EQ,
+    NOT_EQ,
 
-    AND, OR,
+    AND,
+    OR,
 
-    UNMIN, NOT
-  };
+    UNMIN,
+    NOT
+};
 
 INode *make_value(int val);
-
 INode *make_op(INode *l, Ops o, INode *r);
-
 INode *make_while(INode *o, INode *s);
-
 INode *make_if(INode *o, INode *s);
-
 IScope *create_scope();
 
 ////////////////// TYPES OF NODES ////////////////////////

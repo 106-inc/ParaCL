@@ -11,7 +11,7 @@ AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
  */
 void AST::Scope::add_branch(INode *branch)
 {
-  nodes_.push_back(branch);
+    nodes_.push_back(branch);
 } /* Node 'add_branch' function */
 
 /**
@@ -19,8 +19,8 @@ void AST::Scope::add_branch(INode *branch)
  */
 AST::Scope::~Scope()
 {
-  for (auto node : nodes_)
-    delete node;
+    for (auto node : nodes_)
+        delete node;
 }
 
 //////////////END OF SCOPE METHODS ////////////////////////////////
@@ -31,8 +31,9 @@ AST::Scope::~Scope()
  * @param name [in] name of a variable
  * @param loc
  */
-AST::VNode::VNode( var_table::iterator loc ) : location_(loc)
-{}
+AST::VNode::VNode(var_table::iterator loc) : location_(loc)
+{
+}
 
 /**
  * Get variable name function
@@ -40,7 +41,7 @@ AST::VNode::VNode( var_table::iterator loc ) : location_(loc)
  */
 const std::string &AST::VNode::get_name() const
 {
-  return location_->first;
+    return location_->first;
 }
 
 /**
@@ -49,7 +50,7 @@ const std::string &AST::VNode::get_name() const
  */
 AST::var_table::iterator AST::VNode::get_loc() const
 {
-  return location_;
+    return location_;
 }
 
 /**
@@ -58,16 +59,16 @@ AST::var_table::iterator AST::VNode::get_loc() const
  */
 int AST::VNode::calc() const
 {
-  return location_->second;
+    return location_->second;
 }
 
 /**
  * Set value of variable function
  * @param val
  */
-void AST::VNode::set_val( int val )
+void AST::VNode::set_val(int val)
 {
-  location_->second = val;
+    location_->second = val;
 }
 ////////////////END OF VarNode METHODS/////////////////
 
@@ -77,8 +78,9 @@ void AST::VNode::set_val( int val )
  * Constant node ctor
  * @param val [in] - value of a node
  */
-AST::CNode::CNode( int val ) : val_(val)
-{}
+AST::CNode::CNode(int val) : val_(val)
+{
+}
 
 /**
  * Calculate the value of node
@@ -86,7 +88,7 @@ AST::CNode::CNode( int val ) : val_(val)
  */
 int AST::CNode::calc() const
 {
-  return val_;
+    return val_;
 }
 
 /////////END OF CNode METHODS//////////////////////////
@@ -98,10 +100,9 @@ int AST::CNode::calc() const
  * @param left  [in] - left node of operator
  * @param right [in] - right node of operator
  */
-AST::OPNode::OPNode( INode *left, INode *right ) : left_ (left),
-                                                   right_(right)
-{}
-
+AST::OPNode::OPNode(INode *left, INode *right) : left_(left), right_(right)
+{
+}
 
 /**
  * OPNode class destructor.
@@ -109,11 +110,8 @@ AST::OPNode::OPNode( INode *left, INode *right ) : left_ (left),
  */
 AST::OPNode::~OPNode()
 {
-  delete left_;
-  delete right_;
+    delete left_;
+    delete right_;
 }
 
-
-
 ///////////END OF OPNODE METHODS/////////////////////////
-
