@@ -8,8 +8,8 @@
 
 %{
 
-#include "flex+bison/compiler.tab.hh"
-#include "parser/parser.hh"
+#include "../FB_BLD/compiler.tab.hh"
+#include "../parser/parser.hh"
 
 // TODO: ТУТ ЯВНО НЕ ВСЕ - РАЗОБРАТЬСЯ
 

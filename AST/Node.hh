@@ -84,9 +84,7 @@ class OPNode : public INode
     ~OPNode() override;
 };
 
-~Scope() = default;
 }; // namespace AST
 
-} // namespace AST
 
 #endif /* NODE_HH */

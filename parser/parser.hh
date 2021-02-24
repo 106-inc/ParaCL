@@ -5,8 +5,8 @@
 
 #include <FlexLexer.h>
 
-#include "../flex+bison/compiler.tab.hh"
-#include "INode.hh"
+#include "../FB_BLD/compiler.tab.hh"
+#include "../AST/INode.hh"
 
 namespace yy
 {

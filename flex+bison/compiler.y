@@ -22,7 +22,7 @@ extern AST::IScope * cur_scope;
 
 namespace yy
 {
-parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
+parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver);
 }
 
 }
@@ -178,7 +178,7 @@ namespace yy
 
 	parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
 	{
-		driver->yylex(yylval);
+		//return driver->yylex(yylval);
 	}
 }
 
