@@ -20,7 +20,7 @@ void AST::Scope::add_branch(INode *branch)
  */
 AST::Scope::~Scope()
 {
-  for (auto node : nodes_)
+  for (const auto &node : nodes_)
     delete node;
 }
 
