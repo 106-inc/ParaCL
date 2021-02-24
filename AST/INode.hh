@@ -11,7 +11,8 @@ namespace AST
   {
       virtual int calc() const = 0;
 
-      virtual void dump() = 0;
+      // MB for ruture
+      //virtual void dump() = 0;
 
       virtual ~INode() = default;
   };
@@ -24,6 +25,8 @@ namespace AST
       virtual IScope *reset_scope()  const = 0;
 
       virtual void add_branch(INode *branch) = 0;
+
+      virtual void add_var(const std::string &name) = 0;
 
       virtual INode *access(std::string const &var_name) = 0;
 
