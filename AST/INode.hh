@@ -1,6 +1,7 @@
 #ifndef INODE_HH
 #define INODE_HH
 
+#include <iostream>
 #include <string>
 
 namespace AST
@@ -43,9 +44,11 @@ namespace AST
     UNMIN, NOT
   };
 
-INode *make_value(int val);
+extern IScope * Cur_scope;
 
-INode *make_op(INode *l, Ops o, INode *r);
+INode *make_cst(int val);
+
+INode *make_op(INode *l, Ops op, INode *r);
 
 INode *make_while(INode *o, INode *s);
 
@@ -56,13 +59,15 @@ IScope *create_scope();
 ////////////////// TYPES OF NODES ////////////////////////
 /*
  * 1. Variable -> just iterator to var table OK
- * 2. Infix operator ->
- * 3. While -> condition + scope
+ * 2. Infix operator -> OK
+ * 3. While -> condition + scope 
  * 4. if -> condition + scope
  * 5. else -> scope only
  * 5. I think it's all fir now
  */
 //////////////////////////////////////////////////////////
 } // namespace AST
+
+
 
 #endif /* INODE_HH */
