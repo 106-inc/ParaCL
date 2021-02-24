@@ -3,17 +3,18 @@
 %option noyywrap
 %option yylineno
 
-%option warn nodefault debug
+%option warn nodefault debug noinput 
 %option yyclass="OurFlexLexer"
 
-%{
+%top{
 
 #include "../FB_BLD/compiler.tab.hh"
 #include "../parser/parser.hh"
+#include "../Driver/driver.hh"
 
 // TODO: ТУТ ЯВНО НЕ ВСЕ - РАЗОБРАТЬСЯ
 
-%}
+}
 
 WS        [ \t\n\v]+
 
@@ -35,7 +36,7 @@ NAME      {LETTER}{LETTER_D}*
 "*"                  return yy::parser::token_type::MUL;
 "/"                  return yy::parser::token_type::DIV;
 "%"                  return yy::parser::token_type::MOD;
-"="                  return yy::parser::token_type::EQUAL;
+"="                  return yy::parser::token_type::ASSIGN;
 
 "||"                 return yy::parser::token_type::OR;
 "&&"                 return yy::parser::token_type::AND;

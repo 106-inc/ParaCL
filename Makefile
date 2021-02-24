@@ -3,13 +3,18 @@ BLD = PCL_BLD
 FNB = flex+bison
 DVR = Driver
 
-all: start
+CC = g++ --std=c++2a
 
-start: bld_dir fb_bld bison flex driver AST
-	g++ -o $(BLD)/paracl main.cc $(BLD)/scanner.o $(BLD)/compiler.o $(BLD)/driver.o $(BLD)/node.c
+all: start_tmp1
 
-start_tmp: bld_dir fb_bld flex bison
-	g++ -o $(BLD)/paracl main.cc $(FB_BLD)/lex.yy.cc $(FB_BLD)/compiler.tab.cc $(DVR)/driver.cc AST/INode.cc AST/Node.cc AST/OPNode.cc
+start: bld_dir fb_bld bison flex driver ast
+	$(CC) -o $(BLD)/paracl main.cc $(BLD)/scanner.o $(BLD)/compiler.o $(BLD)/driver.o $(BLD)/*.o
+
+start_tmp1: bld_dir fb_bld bison flex driver ast
+	$(CC) -o $(BLD)/paracl main.cc $(BLD)/*.o $(FB_BLD)/compiler.tab.cc $(FB_BLD)/lex.yy.cc
+
+start_tmp2: bld_dir fb_bld flex bison
+	$(CC) -o $(BLD)/paracl main.cc $(FB_BLD)/lex.yy.cc $(FB_BLD)/compiler.tab.cc $(DVR)/driver.cc AST/INode.cc AST/Node.cc AST/OPNode.cc
 
 bld_dir:
 	mkdir -p $(BLD)
@@ -19,14 +24,16 @@ fb_bld:
 
 flex: $(FNB)/scanner.l
 	flex -o $(FB_BLD)/lex.yy.cc $(FNB)/scanner.l
-	g++ -c -o $(BLD)/scanner.o $(FB_BLD)/lex.yy.cc
+	#$(CC) -c -o $(BLD)/scanner.o $(FB_BLD)/lex.yy.cc
 
 bison: $(FNB)/compiler.y
 	bison -d -o $(FB_BLD)/compiler.tab.cc $(FNB)/compiler.y
-	g++ -c -o $(BLD)/compiler.o $(FB_BLD)/compiler.tab.cc
+	#$(CC) -c -o $(BLD)/compiler.o $(FB_BLD)/compiler.tab.cc
 
 driver: $(DVR)/driver.cc
-	g++ -c -o $(BLD)/driver.o $(DVR)/driver.cc
+	$(CC) -c -o $(BLD)/driver.o $(DVR)/driver.cc
 
-AST: AST/INode.cc AST/Node.cc AST/OPNode.cc
-	g++ -c -o $(BLD)/node.o AST/INode.cc AST/Node.cc AST/OPNode.cc
+ast: AST/INode.cc AST/Node.cc AST/OPNode.cc
+	$(CC) -c -o $(BLD)/inode.o AST/INode.cc
+	$(CC) -c -o $(BLD)/node.o AST/Node.cc
+	$(CC) -c -o $(BLD)/opnode.o AST/OPNode.cc

@@ -3,13 +3,12 @@
 
 #include <iostream>
 
+#ifndef yyFlexLexer
 #include <FlexLexer.h>
+#endif
 
 #include "../FB_BLD/compiler.tab.hh"
 #include "../AST/INode.hh"
-
-namespace yy
-{
 
 class OurFlexLexer : public yyFlexLexer
 {
@@ -27,8 +26,7 @@ class OurFlexLexer : public yyFlexLexer
 
     int yylex() override;
 
-    ~OurFlexLexer();
+    ~OurFlexLexer() = default;
 };
-} // namespace yy
 
 #endif // PARACL_PARSER_HH

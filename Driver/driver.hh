@@ -2,7 +2,10 @@
 #ifndef PARACL_DRIVER_HH
 #define PARACL_DRIVER_HH
 
+#ifndef yyFlexLexer
 #include <FlexLexer.h> // it says me about error : doesnt exist in computer
+#endif
+
 
 #include <fstream>
 #include <iostream>
