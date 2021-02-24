@@ -44,7 +44,6 @@ AST::INode *AST::make_if(INode *o, INode *s)
 
 } /* End of 'make_if' function */
 
-
 /**
  * Create scope function
  * @return pointer to created Scope

@@ -1,7 +1,6 @@
 #include "Node.hh"
 
-
-AST::Scope::Scope( IScope *parent /* = nullptr */ ) : parent_(parent)
+AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
 {
 }
 

@@ -5,36 +5,30 @@
 
 #include <FlexLexer.h>
 
-#include "INode.hh"
 #include "../flex+bison/compiler.tab.hh"
+#include "INode.hh"
 
 namespace yy
 {
 
-    class OurFlexLexer : public yyFlexLexer
-            {
-    private:
+class OurFlexLexer : public yyFlexLexer
+{
+  private:
+    yy::location cur_location_;
+    std::string cur_str_;
 
-        yy::location cur_location_;
-        std::string cur_str_;
+  public:
+    OurFlexLexer();
 
-    public:
-        OurFlexLexer();
+    yy::location get_cur_location();
+    std::string get_cur_str_();
 
-        yy::location get_cur_location();
-        std::string get_cur_str_();
+    void upd_cur_loc();
 
-        void upd_cur_loc();
+    int yylex() override;
 
-        int yylex() override;
-
-        ~OurFlexLexer();
-
-    };
-}
-
-
-
-
+    ~OurFlexLexer();
+};
+} // namespace yy
 
 #endif // PARACL_PARSER_HH
