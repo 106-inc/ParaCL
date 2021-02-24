@@ -35,6 +35,8 @@ class Scope : public IScope // final(?)
 
     void add_branch(INode *branch) override;
 
+    void add_var(const std::string &name) override;
+
     ~Scope() override;
 };
 
@@ -46,7 +48,8 @@ class VNode final : public INode
 private:
   // No ptrs, because this node will always be a leaf
 
-  var_table::iterator location_;
+  
+  var_table::iterator location_{};
 
 public:
 
