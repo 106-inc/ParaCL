@@ -14,6 +14,9 @@ namespace AST
   public:
     PLNode( INode *left, INode *right );
 
+    PLNode( const PLNode & ) = delete;
+    PLNode &operator =( const PLNode & ) = delete;
+
     int calc() const override;
   };
 
@@ -21,6 +24,9 @@ namespace AST
   {
   public:
     SBNode( INode *left, INode *right );
+
+    SBNode( const SBNode & ) = delete;
+    SBNode &operator =( const SBNode & ) = delete;
 
     int calc() const override;
   };
@@ -30,6 +36,9 @@ namespace AST
   public:
     MLNode( INode *left, INode *right );
 
+   MLNode( const MLNode & ) = delete;
+   MLNode &operator =( const MLNode & ) = delete;
+
     int calc() const override;
   };
 
@@ -37,6 +46,9 @@ namespace AST
   {
   public:
     DVNode( INode *left, INode *right );
+
+    DVNode( const DVNode & ) = delete;
+    DVNode &operator =( const DVNode & ) = delete;
 
     int calc() const override;
   };

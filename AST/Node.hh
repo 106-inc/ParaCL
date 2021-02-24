@@ -31,6 +31,10 @@ class Scope : public IScope // final(?)
     // constructor by parent scope ptr
     explicit Scope(IScope *parent = nullptr);
 
+    Scope( const Scope &sc ) = delete;
+
+    Scope &operator =( const Scope &sc ) = delete;
+
     IScope *reset_scope() const override { return parent_; }
 
     void add_branch(INode *branch) override;
@@ -55,6 +59,9 @@ public:
 
   explicit VNode( var_table::iterator loc );
 
+  VNode( const VNode & ) = delete;
+  VNode &operator =( const VNode & ) = delete;
+
   const std::string &get_name() const;
 
   var_table::iterator get_loc() const;
@@ -75,6 +82,9 @@ private:
 public:
   CNode( int val );
 
+  CNode( const CNode & ) = delete;
+  CNode &operator =( const CNode & ) = delete;
+
   int calc() const override;
 };
 
@@ -91,6 +101,27 @@ public:
   OPNode( INode *left, INode *right );
 
   ~OPNode() override;
+};
+
+/**
+ * @brief While node class 
+ */
+class WHNode final : public INode
+{
+private:
+  IScope *scope_;
+
+  INode *cond_;
+public:
+
+  WHNode( IScope *scope, INode *cond );
+
+  WHNode( const WHNode & ) = delete;
+  WHNode &operator =( const WHNode & ) = delete;
+
+  int calc() const override;
+
+  ~WHNode();
 };
 
 } // namespace AST

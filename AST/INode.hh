@@ -57,7 +57,8 @@ INode *make_while(INode *o, INode *s);
 
 INode *make_if(INode *o, INode *s);
 
-IScope *create_scope();
+// MB for future
+// IScope *create_scope();
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*
