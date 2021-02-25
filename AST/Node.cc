@@ -23,7 +23,7 @@ void AST::Scope::add_branch(INode *branch)
  */
 void AST::Scope::add_var(const std::string &name)
 {
-  auto it_pair = var_tbl_.try_emplace(name, 0);
+  auto it_pair = var_tbl_.try_emplace(name);
 
   nodes_.push_back(new VNode{it_pair.first});
 } /* Node 'add_var' function */
