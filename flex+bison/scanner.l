@@ -6,7 +6,7 @@
 %option warn nodefault debug noinput 
 %option yyclass="OurFlexLexer"
 
-%top{
+%{
 
 #include "../FB_BLD/compiler.tab.hh"
 #include "../parser/parser.hh"
@@ -14,7 +14,7 @@
 
 // TODO: ТУТ ЯВНО НЕ ВСЕ - РАЗОБРАТЬСЯ
 
-}
+%}
 
 WS        [ \t\n\v]+
 

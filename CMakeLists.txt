@@ -10,6 +10,9 @@ include_directories(Driver)
 add_executable(ParaCL
         AST/INode.cc
         AST/OPNode.cc
+        AST/Node.cc
         Driver/driver.cc
-        main.cc
-        AST/Node.cc)
+        parser/parser.cc
+        FB_BLD/lex.yy.cc
+        FB_BLD/compiler.tab.cc
+        main.cc)

@@ -8,7 +8,9 @@
 #endif
 
 #include "../FB_BLD/compiler.tab.hh"
+#include "../FB_BLD/location.hh"
 #include "../AST/INode.hh"
+
 
 class OurFlexLexer : public yyFlexLexer
 {

@@ -12,7 +12,7 @@
 
 // #include "../FB_BLD/lex.yy.cc"
 #include "../parser/parser.hh"
-// #include "numgrammar.tab.hh"  
+#include "../FB_BLD/compiler.tab.hh"
 // auto generated file from bison
 
 namespace yy
