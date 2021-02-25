@@ -52,7 +52,7 @@ class VNode final : public INode
 private:
   // No ptrs, because this node will always be a leaf
 
-  
+
   var_table::iterator location_{};
 
 public:
@@ -104,7 +104,7 @@ public:
 };
 
 /**
- * @brief While node class 
+ * @brief While node class
  */
 class WHNode final : public INode
 {

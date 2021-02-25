@@ -1,6 +1,6 @@
 #include "driver.hh"
 
-IScope *glob_cur_scope = nullptr;
+AST::IScope *glob_cur_scope = nullptr;
 
 yy::Driver::Driver()
 {
@@ -8,8 +8,8 @@ yy::Driver::Driver()
 
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
-    plex_ = new our_lexer;
-    glob_cur_scope = create_scope();
+    plex_ = new OurFlexLexer;
+    glob_cur_scope = AST::create_scope();
 
     std::ifstream in_file;
     in_file.open(name_of_file);
@@ -29,10 +29,36 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 
 bool yy::Driver::parse()
 {
-    parser parser(this); //! it should be just "parser", but its ugly
+
+    yy::parser parser_(this); //! it should be just "parser", but its ugly
 
     bool res = parser_.parse();
     return res;
+}
+
+//! There is should be:
+yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type *yylloc)
+{
+    yy::parser::token_type tkn_type = static_cast<yy::parser::token_type>(plex_->yylex());
+
+    switch (tkn_type)
+    {
+    case yy::parser::token_type::INT: {
+        yylval->as<int>() = std::stoi(plex_->YYText());
+        break;
+    }
+
+    case yy::parser::token_type::NAME: {
+        std::string tmp{plex_->YYText()};
+        yylval->as<std::string>() = tmp;
+        break;
+    }
+
+    default:
+        break;
+    }
+    *yylloc = plex_->get_cur_location();
+    return tkn_type;
 }
 
 yy::Driver::~Driver()

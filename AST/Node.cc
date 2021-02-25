@@ -18,7 +18,7 @@ void AST::Scope::add_branch(INode *branch)
 /**
  * @brief Add new var to scope function
  * @note reloading for variable node
- * @param branch 
+ * @param branch
  * @param name - name of a variable to add
  */
 void AST::Scope::add_var(const std::string &name)

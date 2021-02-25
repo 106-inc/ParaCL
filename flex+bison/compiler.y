@@ -1,33 +1,30 @@
 %language "c++"
 %skeleton "lalr1.cc"
 
-%locations
-
 %param {Driver* driver}
+%locations
 
 %code requires
 {
 #include "../AST/INode.hh"
 
 namespace yy
+{ class Driver; };
+}
+
+%code
 {
-class Driver;
-};
+#include "../Driver/driver.hh"
+
+namespace yy
+{ parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver); }
 
 extern AST::IScope * cur_scope;
 }
 
-
-%{
-
-
-
-%}
-
+%define api.value.type variant
 
 /* some tokens */
-
-%define api.value.type variant
 
 %right ASSIGN   "="
 
@@ -165,9 +162,10 @@ print:       PRINT expr SCOLON                    { };
 
 namespace yy
 {
-  parser::token_type yylex(parser::semantic_type* yylval, Driver* driver)
-  {
-    driver->yylex(yylval);
-  }
+
+    parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
+        {
+            //return driver->yylex(yylval);
+        }
 }
 

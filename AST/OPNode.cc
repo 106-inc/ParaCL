@@ -6,8 +6,9 @@
 
 /////////////////////////PLNode METHODS //////////////////
 
-AST::PLNode::PLNode( INode *left, INode *right ) : OPNode(left, right)
-{}
+AST::PLNode::PLNode(INode *left, INode *right) : OPNode(left, right)
+{
+}
 
 /**
  * Calculate value of node function
@@ -15,15 +16,16 @@ AST::PLNode::PLNode( INode *left, INode *right ) : OPNode(left, right)
  */
 int AST::PLNode::calc() const
 {
-  return left_->calc() + right_->calc();
+    return left_->calc() + right_->calc();
 }
 
 //////////////////END OF PLNode METHODS //////////////////
 
 /////////////////////////SBNode METHODS //////////////////
 
-AST::SBNode::SBNode( INode *left, INode *right ) : OPNode(left, right)
-{}
+AST::SBNode::SBNode(INode *left, INode *right) : OPNode(left, right)
+{
+}
 
 /**
  * Calculate value of node function
@@ -31,15 +33,16 @@ AST::SBNode::SBNode( INode *left, INode *right ) : OPNode(left, right)
  */
 int AST::SBNode::calc() const
 {
-  return left_->calc() - right_->calc();
+    return left_->calc() - right_->calc();
 }
 
 //////////////////END OF SBNode METHODS //////////////////
 
 /////////////////////////MLNode METHODS //////////////////
 
-AST::MLNode::MLNode( INode *left, INode *right ) : OPNode(left, right)
-{}
+AST::MLNode::MLNode(INode *left, INode *right) : OPNode(left, right)
+{
+}
 
 /**
  * Calculate value of node function
@@ -47,15 +50,16 @@ AST::MLNode::MLNode( INode *left, INode *right ) : OPNode(left, right)
  */
 int AST::MLNode::calc() const
 {
-  return left_->calc() * right_->calc();
+    return left_->calc() * right_->calc();
 }
 
 //////////////////END OF MLNode METHODS //////////////////
 
 /////////////////////////DVNode METHODS //////////////////
 
-AST::DVNode::DVNode( INode *left, INode *right ) : OPNode(left, right)
-{}
+AST::DVNode::DVNode(INode *left, INode *right) : OPNode(left, right)
+{
+}
 
 /**
  * Calculate value of node function
@@ -63,7 +67,7 @@ AST::DVNode::DVNode( INode *left, INode *right ) : OPNode(left, right)
  */
 int AST::DVNode::calc() const
 {
-  return left_->calc() / right_->calc();
+    return left_->calc() / right_->calc();
 }
 
 //////////////////END OF PLNode METHODS //////////////////

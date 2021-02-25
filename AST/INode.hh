@@ -38,9 +38,12 @@ namespace AST
     ADD, SUB,
     MUL, DIV, MOD,
 
-    GREATER, LESS,
-    GR_EQ, LS_EQ,
-    IS_EQ, NOT_EQ,
+    GREATER,
+    LESS,
+    GR_EQ,
+    LS_EQ,
+    IS_EQ,
+    NOT_EQ,
 
     AND, OR,
 
@@ -64,12 +67,13 @@ INode *make_if(INode *o, INode *s);
 /*
  * 1. Variable -> just iterator to var table OK
  * 2. Infix operator -> OK
- * 3. While -> condition + scope 
+ * 3. While -> condition + scope
  * 4. if -> condition + scope
  * 5. else -> scope only
  * 5. I think it's all fir now
  */
 //////////////////////////////////////////////////////////
+
 } // namespace AST
 
 
