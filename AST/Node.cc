@@ -2,7 +2,7 @@
 
 
 ////////////////////////// SCOPE METHODS /////////////////
-AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
+AST::Scope::Scope(Scope *parent /* = nullptr */) : parent_(parent)
 {
 }
 
@@ -23,9 +23,24 @@ void AST::Scope::add_branch(INode *branch)
  */
 void AST::Scope::add_var(const std::string &name)
 {
-  auto it_pair = var_tbl_.try_emplace(name);
+  // find var in parent's scopes
+  Scope *pscope = this;
+  var_table::iterator it{};
 
-  nodes_.push_back(new VNode{it_pair.first});
+  while (pscope != nullptr)
+  {
+    it = pscope->var_tbl_.find(name);
+    if (it != pscope->var_tbl_.end())
+      pscope->nodes_.push_back(new VNode{it});
+    else /* variable wasn't found */
+      pscope = pscope->parent_;
+  }
+  // It's completely new variable
+
+  // add variable to current scope
+  auto pair = var_tbl_.insert({name, {}});
+
+  nodes_.push_back(new VNode{pair.first});
 } /* Node 'add_var' function */
 
 /**

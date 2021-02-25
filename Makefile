@@ -4,7 +4,7 @@ FNB = flex+bison
 DVR = Driver
 PSR = parser
 
-CC = g++ --std=c++2a
+CC = g++ --std=c++2a -Wall -Wextra
 
 all: start_tmp2
 
