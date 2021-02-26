@@ -1,16 +1,6 @@
 #include "INode.hh"
 
 /**
- * @brief Create constant node function
- * @param val value of a constant
- * @return pointer to created Node
- */
-AST::INode *AST::make_cst(int val)
-{
-  return new CNode{val};
-} /* End of 'make_value' function */
-
-/**
  * @brief Create operator node function
  * @param l  [in] left node of operator
  * @param op [in] operator type
