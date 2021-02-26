@@ -69,7 +69,9 @@ public:
 
   int calc() const override;
 };
-
+// TODO: 
+// ADD Logical operators classes
+/////////////////////////
 } // namespace AST
 
 #endif // PARACL_OPNODE_HH
