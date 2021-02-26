@@ -23,6 +23,8 @@ int AST::Scope::calc() const
 {
   for (auto node : nodes_)
     node->calc();
+
+  return 0;
 } /* End of 'calc' function */
 
 /**
@@ -155,4 +157,23 @@ AST::OPNode::~OPNode()
 
 
 ///////////END OF OPNODE METHODS/////////////////////////
+
+/////////////WHNode METHODS//////////////////////////////
+
+AST::WHNode::WHNode( IScope *scope, INode *cond ) : scope_(scope),
+                                                    cond_(cond)
+{}
+
+/**
+ * @brief Calculate while node function
+ * @return int 
+ */
+int AST::WHNode::calc() const
+{
+  while (cond_->calc())
+    scope_->calc();
+
+  return 0;
+}
+//////////END OF WHNode METHODS//////////////////////////////
 
