@@ -126,6 +126,13 @@ public:
   ~WHNode();
 };
 
+
+/**
+ * @brief If node class
+ */
+// TODO: 
+// REALIZATION!!!
+
 } // namespace AST
 
 #endif /* NODE_HH */
