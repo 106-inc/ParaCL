@@ -39,6 +39,8 @@ class Scope : public IScope // final(?)
 
     void add_branch(INode *branch) override;
 
+    int calc() const override;
+
     void add_var(const std::string &name) override;
 
     ~Scope() override;

@@ -13,7 +13,17 @@ AST::Scope::Scope(Scope *parent /* = nullptr */) : parent_(parent)
 void AST::Scope::add_branch(INode *branch)
 {
   nodes_.push_back(branch);
-} /* Node 'add_branch' function */
+} /* End 'add_branch' function */
+
+/**
+ * @brief Interpret the scope function (claculate)
+ * @return int 
+ */
+int AST::Scope::calc() const
+{
+  for (auto node : nodes_)
+    node->calc();
+} /* End of 'calc' function */
 
 /**
  * @brief Add new var to scope function
@@ -41,7 +51,7 @@ void AST::Scope::add_var(const std::string &name)
   auto pair = var_tbl_.insert({name, {}});
 
   nodes_.push_back(new VNode{pair.first});
-} /* Node 'add_var' function */
+} /* End 'add_var' function */
 
 /**
  * Scope class destructor
