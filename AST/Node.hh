@@ -23,13 +23,13 @@ class Scope : public IScope // final(?)
     std::vector<INode *> nodes_{};
 
     // Pointer to parent scope
-    IScope *parent_{};
+    Scope *parent_{};
 
     var_table var_tbl_;
 
   public:
     // constructor by parent scope ptr
-    explicit Scope(IScope *parent = nullptr);
+    explicit Scope(Scope *parent = nullptr);
 
     Scope( const Scope &sc ) = delete;
 
@@ -52,7 +52,7 @@ class VNode final : public INode
 private:
   // No ptrs, because this node will always be a leaf
 
-  
+
   var_table::iterator location_{};
 
 public:
@@ -104,7 +104,7 @@ public:
 };
 
 /**
- * @brief While node class 
+ * @brief While node class
  */
 class WHNode final : public INode
 {

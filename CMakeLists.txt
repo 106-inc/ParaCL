@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.16)
 project(ParaCL)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 include_directories(.)
 include_directories(AST)
@@ -10,6 +10,9 @@ include_directories(Driver)
 add_executable(ParaCL
         AST/INode.cc
         AST/OPNode.cc
+        AST/Node.cc
         Driver/driver.cc
-        main.cc
-        AST/Node.cc)
+        parser/parser.cc
+        FB_BLD/lex.yy.cc
+        FB_BLD/compiler.tab.cc
+        main.cc)
