@@ -14,7 +14,7 @@ namespace yy
 class Driver;
 };
 
-extern AST::IScope * cur_scope;
+extern AST::IScope * Cur_scope;
 }
 
 
@@ -100,15 +100,15 @@ program:     stms                                 { /* program starting */ };
 
 scope:       op_sc stms cl_sc                     { $$ = $3; };
 
-op_sc:       LB                                   { /* cur_scope = cur_scope->enter_new_scope(); */ };
+op_sc:       LB                                   { /* Cur_scope = Cur_scope->enter_new_scope(); */ };
 
 cl_sc:       RB                                   {
-                                                    /* $$ = cur_scope; */
-                                                    /* cur_scope = cur_scope->parent_scope(); */
+                                                    /* $$ = Cur_scope; */
+                                                    /* Cur_scope = Cur_scope->parent_scope(); */
                                                   };
 
-stms:        cur_stm                              { /* cur_scope.push($1); */ };
-           | stms cur_stm                         { /* cur_scope.push($2); */ };
+stms:        cur_stm                              { /* Cur_scope.push($1); */ };
+           | stms cur_stm                         { /* Cur_scope.push($2); */ };
 
 cur_stm:     stm                                  { $$ = $1; };
            | scope                                { $$ = $1; };
