@@ -52,6 +52,24 @@ class DVNode final : public OPNode
 
     int calc() const override;
 };
+
+/**
+ * @brief Assignment operator's node
+ */
+class ASNode final : public INode
+{
+private:
+  VNode *dst_; // variable to assign
+  INode *expr_; // expression
+public:
+  ASNode(VNode *dst, INode *expr);
+
+  ASNode( const ASNode & ) = delete;
+  ASNode &operator =( const ASNode & ) = delete;
+
+  int calc() const override;
+};
+
 } // namespace AST
 
 #endif // PARACL_OPNODE_HH
