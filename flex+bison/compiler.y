@@ -102,15 +102,17 @@ program:     stms                                 { /* program starting */ };
 
 scope:       op_sc stms cl_sc                     { $$ = $3; };
 
-op_sc:       LB                                   { /* Cur_scope = Cur_scope->enter_new_scope(); */ };
+op_sc:       LB                                   { CUR_SCOPE = AST::make_scope(CUR_SCOPE); };
 
 cl_sc:       RB                                   {
-                                                    /* $$ = Cur_scope; */
-                                                    /* Cur_scope = Cur_scope->parent_scope(); */
+                                                    $$ = CUR_SCOPE;
+                                                    CUR_SCOPE = CUR_SCOPE->reset_scope();
                                                   };
 
-stms:        cur_stm                              { /* Cur_scope.push($1); */ };
-           | stms cur_stm                         { /* Cur_scope.push($2); */ };
+stms:        stm                                  { CUR_SCOPE->push($1); };
+           | stms stm                             { CUR_SCOPE->push($2); };
+           | scope                                { CUR_SCOPE->push($1); };
+           | stms scope                           { CUR_SCOPE->push($2); };
 
 cur_stm:     stm                                  { $$ = AST::make_scope(CUR_SCOPE); };
            | scope                                { $$ = $1; };
@@ -120,7 +122,7 @@ stm:         assign                               { $$ = $1; };
            | while                                { $$ = $1; };
            | print                                { $$ = $1; };
 
-assign:      NAME[nm] ASSIGN expr[val] SCOLON     { /* $$ = AST::make_assign($nm, $val); */ };
+assign:      NAME ASSIGN expr SCOLON              { /* $$ = AST::make_ass(NAME, $3); */ };
 
 expr:        expr1 pm expr1                       { $$ = AST::make_op($1, $2, $3); };
            | expr1                                { $$ = $1; };
@@ -133,8 +135,8 @@ expr2:       LP expr[e] RP                        { $$ = $e; };
            | INT                                  { $$ = AST::make_cst($1); };
 
 if:          IF LP cond[c] RP cur_stm[s]          { $$ = AST::make_if($c, $s); };
-           | IF LP cond[c] RP cur_stm[s1]                                                     /* dangling else */
-             ELSE cur_stm[s2]                     { /* $$ = AST::make_if($c, $s1, $s2); */ }; /* this rule creates shift-reduce conflict  */
+           | IF LP cond[c] RP cur_stm[s1]                                               /* dangling else */
+             ELSE cur_stm[s2]                     { $$ = AST::make_if($c, $s1, $s2); }; /* this rule creates shift-reduce conflict  */
 
 while:       WHILE LP cond[c] RP cur_stm[s]       { $$ = AST::make_while($c, $s); };
 
@@ -169,12 +171,12 @@ namespace yy
 {
   void parser::error( const location_type& loc, const std::string &msg )
   {
-    std::cerr << msg << " at " << loc << std::endl;
+    std::cerr << msg << " in (line.column): " << loc << std::endl;
   }
 
-    parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
-        {
-            return driver->yylex(yylval, yylloc);
-        }
+  parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
+  {
+    return driver->yylex(yylval, yylloc);
+  }
 }
 

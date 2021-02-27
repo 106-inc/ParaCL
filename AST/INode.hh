@@ -40,6 +40,8 @@ struct IScope : public INode
 
 enum class Ops
 {
+  ASSIGN,
+
   ADD,
   SUB,
   MUL,
