@@ -35,7 +35,6 @@ public:
   Driver(const Driver &drvr) = delete;
   Driver &operator=(const Driver &) = delete;
 
-  Driver(Driver &&drvr) = delete;
 
   bool parse();
   parser::token_type yylex(parser::semantic_type *yylval, parser::location_type *yylloc);

@@ -9,6 +9,7 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 
   in_file.open(name_of_file);
 
+  /* this part of code exist for future compilation */
   /*
   if (in_file.is_open())
   {
@@ -20,6 +21,7 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
     }
   }
   */
+  /* but no there is just interpratation */
 
   plex_->switch_streams(in_file, std::cout);
 }

@@ -22,8 +22,6 @@ public:
   OurFlexLexer(const OurFlexLexer &flx) = delete;
   OurFlexLexer &operator=(const OurFlexLexer &) = delete;
 
-  OurFlexLexer(OurFlexLexer &&flx) = delete;
-
   yy::location get_cur_location();
   std::string get_cur_str_();
 
