@@ -47,13 +47,30 @@ void AST::Scope::add_var(const std::string &name)
     else /* variable wasn't found */
       pscope = pscope->parent_;
   }
-  // It's completely new variable
+  /* It's completely new variable */
 
   // add variable to current scope
   auto pair = var_tbl_.insert({name, {}});
 
   nodes_.push_back(new VNode{pair.first});
 } /* End 'add_var' function */
+
+/**
+ * @brief Get an access to variable function
+ * @param var_name [in] name of a var to get access to
+ * @return pair of iterator to var table and bool, which:
+ * TRUE - iterator is valid, variable found,
+ * FALSE - iterator is not valid (end()), variable was not found
+ */
+std::pair<AST::var_table::iterator, bool> AST::Scope::access( const std::string &var_name )
+{
+  std::pair<var_table::iterator, bool> pair{};
+
+  pair.first = var_tbl_.find(var_name);
+  pair.second = var_tbl_.end() != pair.first;
+
+  return pair;
+} /* End of 'access' function */
 
 /**
  * Scope class destructor
@@ -160,8 +177,8 @@ AST::OPNode::~OPNode()
 
 /////////////WHNode METHODS//////////////////////////////
 
-AST::WHNode::WHNode( IScope *scope, INode *cond ) : scope_(scope),
-                                                    cond_(cond)
+AST::WHNode::WHNode( INode *cond, IScope *scope ) : cond_(cond),
+                                                    scope_(scope)
 {}
 
 /**

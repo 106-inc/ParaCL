@@ -3,7 +3,6 @@
 
 /////////////////////////////////////
 ///// STL containers ///////////////
-#include <unordered_map>
 #include <vector>
 /////////////////////////////////////
 
@@ -14,7 +13,6 @@
 namespace AST
 {
 
-  using var_table = std::unordered_map<std::string, int>;
 // Scope structure
 class Scope : public IScope // final(?)
 {
@@ -42,6 +40,8 @@ class Scope : public IScope // final(?)
     int calc() const override;
 
     void add_var(const std::string &name) override;
+
+    std::pair<var_table::iterator, bool> access(const std::string &var_name) override;
 
     ~Scope() override;
 };
@@ -111,11 +111,10 @@ public:
 class WHNode final : public INode
 {
 private:
-  IScope *scope_{};
-
   INode *cond_{};
+  IScope *scope_{};
 public:
-  WHNode( IScope *scope, INode *cond );
+  WHNode( INode *cond, IScope *scope );
 
   WHNode( const WHNode & ) = delete;
   WHNode &operator =( const WHNode & ) = delete;
