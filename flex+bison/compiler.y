@@ -169,7 +169,7 @@ namespace yy
 {
   void parser::error( const location_type& loc, const std::string &msg )
   {
-    std::cerr << msg << std::endl;
+    std::cerr << msg << " at " << loc << std::endl;
   }
 
     parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
