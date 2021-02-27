@@ -54,10 +54,6 @@ extern IScope * Cur_scope;
 
 INode *make_op(INode *l, Ops op, INode *r);
 
-INode *make_while(INode *o, INode *s);
-
-INode *make_if(INode *o, INode *s);
-
 // MB for future
 // IScope *create_scope();
 
