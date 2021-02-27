@@ -63,7 +63,7 @@ AST::DVNode::DVNode(INode *left, INode *right) : OPNode(left, right)
 
 /**
  * Calculate value of node function
- * @return
+ * @return calculation result
  */
 int AST::DVNode::calc() const
 {
@@ -71,3 +71,21 @@ int AST::DVNode::calc() const
 }
 
 //////////////////END OF PLNode METHODS //////////////////
+
+////////////////////ASNode METHODS///////////////////////
+AST::ASNode::ASNode(VNode *dst, INode *expr) : dst_(dst),
+                                               expr_(expr)
+{}
+
+/**
+ * @brief Interpret the node function
+ */
+int AST::ASNode::calc() const
+{
+  int expr_res = expr_->calc();
+
+  dst_->set_val(expr_res);
+
+  return expr_res;
+}
+////////////////END OF ASNode METHODS////////////////////

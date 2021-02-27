@@ -52,8 +52,6 @@ namespace AST
 
 extern IScope * Cur_scope;
 
-INode *make_cst(int val);
-
 INode *make_op(INode *l, Ops op, INode *r);
 
 INode *make_while(INode *o, INode *s);

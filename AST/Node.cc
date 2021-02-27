@@ -2,7 +2,7 @@
 
 
 ////////////////////////// SCOPE METHODS /////////////////
-AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
+AST::Scope::Scope(Scope *parent /* = nullptr */) : parent_(parent)
 {
 }
 
@@ -13,7 +13,19 @@ AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
 void AST::Scope::add_branch(INode *branch)
 {
   nodes_.push_back(branch);
-} /* Node 'add_branch' function */
+} /* End 'add_branch' function */
+
+/**
+ * @brief Interpret the scope function (claculate)
+ * @return int 
+ */
+int AST::Scope::calc() const
+{
+  for (auto node : nodes_)
+    node->calc();
+
+  return 0;
+} /* End of 'calc' function */
 
 /**
  * @brief Add new var to scope function
@@ -23,10 +35,25 @@ void AST::Scope::add_branch(INode *branch)
  */
 void AST::Scope::add_var(const std::string &name)
 {
-  auto it_pair = var_tbl_.try_emplace(name);
+  // find var in parent's scopes
+  Scope *pscope = this;
+  var_table::iterator it{};
 
-  nodes_.push_back(new VNode{it_pair.first});
-} /* Node 'add_var' function */
+  while (pscope != nullptr)
+  {
+    it = pscope->var_tbl_.find(name);
+    if (it != pscope->var_tbl_.end())
+      pscope->nodes_.push_back(new VNode{it});
+    else /* variable wasn't found */
+      pscope = pscope->parent_;
+  }
+  // It's completely new variable
+
+  // add variable to current scope
+  auto pair = var_tbl_.insert({name, {}});
+
+  nodes_.push_back(new VNode{pair.first});
+} /* End 'add_var' function */
 
 /**
  * Scope class destructor
@@ -130,4 +157,23 @@ AST::OPNode::~OPNode()
 
 
 ///////////END OF OPNODE METHODS/////////////////////////
+
+/////////////WHNode METHODS//////////////////////////////
+
+AST::WHNode::WHNode( IScope *scope, INode *cond ) : scope_(scope),
+                                                    cond_(cond)
+{}
+
+/**
+ * @brief Calculate while node function
+ * @return int 
+ */
+int AST::WHNode::calc() const
+{
+  while (cond_->calc())
+    scope_->calc();
+
+  return 0;
+}
+//////////END OF WHNode METHODS//////////////////////////////
 

@@ -23,13 +23,13 @@ class Scope : public IScope // final(?)
     std::vector<INode *> nodes_{};
 
     // Pointer to parent scope
-    IScope *parent_{};
+    Scope *parent_{};
 
     var_table var_tbl_;
 
   public:
     // constructor by parent scope ptr
-    explicit Scope(IScope *parent = nullptr);
+    explicit Scope(Scope *parent = nullptr);
 
     Scope( const Scope &sc ) = delete;
 
@@ -38,6 +38,8 @@ class Scope : public IScope // final(?)
     IScope *reset_scope() const override { return parent_; }
 
     void add_branch(INode *branch) override;
+
+    int calc() const override;
 
     void add_var(const std::string &name) override;
 
@@ -123,6 +125,13 @@ public:
 
   ~WHNode();
 };
+
+
+/**
+ * @brief If node class
+ */
+// TODO: 
+// REALIZATION!!!
 
 } // namespace AST
 
