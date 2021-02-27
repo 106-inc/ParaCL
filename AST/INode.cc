@@ -63,7 +63,7 @@ AST::INode *AST::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */ )
  * @param par [in] - pointer to parent node
  * @return pointer to created Scope
  */
-AST::IScope *AST::make_scope(Scope *par /* = nullptr */)
+AST::IScope *AST::make_scope(IScope *par /* = nullptr */)
 {
   return new Scope{par};
 } /* End of 'create_scope' function */

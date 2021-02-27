@@ -64,7 +64,7 @@ INode *make_cst(int val);
 INode *make_op(INode *l, Ops op, INode *r);
 INode *make_while(INode *cond, IScope *sc);
 INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
-IScope *make_scope( Scope *par = nullptr );
+IScope *make_scope( IScope *par = nullptr );
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*
