@@ -4,13 +4,15 @@ AST::IScope *glob_cur_scope = nullptr;
 
 yy::Driver::Driver()
 {
+    plex_ = new OurFlexLexer;
+    glob_cur_scope = AST::create_scope();
 }
+
 
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
     plex_ = new OurFlexLexer;
-    //glob_cur_scope = AST::create_scope();
-    glob_cur_scope = new AST::IScope;
+    glob_cur_scope = AST::create_scope();
 
     std::ifstream in_file;
     in_file.open(name_of_file);
@@ -25,19 +27,23 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
         }
     }
 
-    // plex_->switch_stream(in_file, std::cout);
+
+    plex_->switch_streams(in_file, std::cout);
 }
 
 bool yy::Driver::parse()
 {
-
-    yy::parser parser_(this); //! it should be just "parser", but its ugly
+    yy::parser parser_(this);
 
     bool res = parser_.parse();
     return res;
 }
 
-//! There is should be:
+
+//! The lexical analyzer function, yylex, recognizes tokens from the input stream and returns them to the parser.
+//! \param yylval
+//! \param yylloc
+//! \return token type
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type *yylloc)
 {
     yy::parser::token_type tkn_type = static_cast<yy::parser::token_type>(plex_->yylex());
