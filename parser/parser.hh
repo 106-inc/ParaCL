@@ -8,9 +8,6 @@
 #include "../FB_BLD/compiler.tab.hh"
 #include "../AST/INode.hh"
 
-namespace yy
-{
-
 class OurFlexLexer : public yyFlexLexer
 {
   private:
@@ -19,6 +16,11 @@ class OurFlexLexer : public yyFlexLexer
 
   public:
     OurFlexLexer();
+
+    OurFlexLexer(const OurFlexLexer& flx) = delete;
+    OurFlexLexer &operator =(const OurFlexLexer &) = delete;
+
+    OurFlexLexer(OurFlexLexer&& flx) = delete;
 
     yy::location get_cur_location();
     std::string get_cur_str_();
@@ -29,6 +31,6 @@ class OurFlexLexer : public yyFlexLexer
 
     ~OurFlexLexer();
 };
-} // namespace yy
+
 
 #endif // PARACL_PARSER_HH

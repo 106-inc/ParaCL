@@ -9,7 +9,8 @@ yy::Driver::Driver()
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
     plex_ = new OurFlexLexer;
-    glob_cur_scope = AST::create_scope();
+    //glob_cur_scope = AST::create_scope();
+    glob_cur_scope = new AST::IScope;
 
     std::ifstream in_file;
     in_file.open(name_of_file);
