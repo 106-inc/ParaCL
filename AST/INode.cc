@@ -66,8 +66,27 @@ AST::INode *AST::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
 AST::IScope *AST::make_scope(IScope *par /* = nullptr */)
 {
   return new Scope{par};
+
 } /* End of 'create_scope' function */
 
+
+/**
+ * @brief Make var node for expression
+ * @param var_name name of a variable
+ * @warning DEBUG version - std::terminate!!!!!!!!!
+ * @return pointer to created node
+ */
+AST::INode *AST::make_ref(const std::string &var_name)
+{
+  auto it_bl = CUR_SCOPE->check_var(var_name);
+
+  // TODO: delete termination
+  if (!it_bl.second)
+    std::terminate(0);
+    /* std::hdd::format(); */
+
+  return new VNode{it_bl.first};
+} /* End of 'make_ref' function */
 
 /**
  * @brief Make assignment node function
