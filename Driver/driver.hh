@@ -24,6 +24,8 @@ class Driver final
 {
 private:
   const char *name_of_file_;
+  std::ifstream in_file;
+
   OurFlexLexer *plex_; // maybe this is good name
   std::vector<std::string> line_of_prog;
 

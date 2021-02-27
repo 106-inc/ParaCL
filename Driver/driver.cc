@@ -7,9 +7,9 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
   plex_ = new OurFlexLexer;
   CUR_SCOPE = AST::make_scope();
 
-  std::ifstream in_file;
   in_file.open(name_of_file);
 
+  /*
   if (in_file.is_open())
   {
     while (in_file)
@@ -19,6 +19,7 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
       line_of_prog.push_back(tmp_str);
     }
   }
+  */
 
   plex_->switch_streams(in_file, std::cout);
 }
