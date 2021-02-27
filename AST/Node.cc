@@ -25,25 +25,11 @@ int AST::Scope::calc() const
  */
 void AST::Scope::add_var(const std::string &name)
 {
-  // find var in parent's scopes
-  IScope *pscope = this;
-  std::pair<var_table::iterator, bool> it_n_bool{};
 
-  while (pscope != nullptr)
-  {
-    it_n_bool = pscope->access(name);
-
-    if (it_n_bool.second)
-      pscope->push(new VNode{it_n_bool.first});
-    else /* variable wasn't found */
-      pscope = pscope->reset_scope();
-  }
   /* It's completely new variable */
 
   // add variable to current scope
-  auto pair = var_tbl_.insert({name, {}});
-
-  nodes_.push_back(new VNode{pair.first});
+  var_tbl_.insert({name, {}});
 } /* End 'add_var' function */
 
 /**
@@ -57,21 +43,63 @@ void AST::Scope::push(INode *node)
 } /* End of 'push' function */
 
 /**
- * @brief Get an access to variable function
+ * @brief Check var in all available scopes function
  * @param var_name [in] name of a var to get access to
  * @return pair of iterator to var table and bool, which:
  * TRUE - iterator is valid, variable found,
  * FALSE - iterator is not valid (end()), variable was not found
  */
-std::pair<AST::var_table::iterator, bool> AST::Scope::access(const std::string &var_name)
+std::pair<AST::var_table::iterator, bool> AST::Scope::check_var(const std::string &var_name)
 {
-  std::pair<var_table::iterator, bool> pair{};
+  // find var in parent's scopes
+  IScope *pscope = this;
+  std::pair<var_table::iterator, bool> it_n_bool{};
 
-  pair.first = var_tbl_.find(var_name);
-  pair.second = var_tbl_.end() != pair.first;
+  while (pscope != nullptr)
+  {
+    it_n_bool = pscope->loc_check(var_name);
 
-  return pair;
+    if (it_n_bool.second)
+      break;
+    else /* variable wasn't found */
+      pscope = pscope->reset_scope();
+  }
+
+  return it_n_bool;
 } /* End of 'access' function */
+
+/**
+ * @brief Check variable in current scope function.
+ * @param var_name [in] name of a var to find
+ * @return pair of iterator to var table and bool, which:
+ * TRUE - iterator is valid, variable found,
+ * FALSE - iterator is not valid (end()), variable was not found
+ */
+AST::Scope::it_bool AST::Scope::loc_check(const std::string &var_name)
+{
+  it_bool itbl{};
+
+  itbl.first = var_tbl_.find(var_name);
+  itbl.second = (var_tbl_.end() != itbl.first);
+
+  return itbl;
+} /* End of 'loc_check' function */
+
+/**
+ *
+ * @param var_name
+ * @return
+ */
+AST::var_table::iterator AST::Scope::check_n_insert( const std::string &var_name )
+{
+  it_bool it_n_bool = check_var(var_name);
+
+  if (!it_n_bool.second)
+    it_n_bool.first = insert_var(var_name);
+
+
+  return it_n_bool.first;
+} /* End of 'check_n_insert' function */
 
 /**
  * Scope class destructor
@@ -81,6 +109,19 @@ AST::Scope::~Scope()
   for (const auto &node : nodes_)
     delete node;
 }
+
+/**
+ * @brief Insert variable to table of current scope
+ * @warning NO VALIDATION OF UNIQUE!!!
+ * @param var_name
+ * @return iterator to inserted variable
+ */
+AST::var_table::iterator AST::Scope::insert_var( const std::string &var_name )
+{
+  auto it_bl = var_tbl_.insert({var_name, {}});
+
+  return it_bl.first;
+} /* End of 'insert_var' function */
 
 //////////////END OF SCOPE METHODS ////////////////////////////////
 

@@ -32,7 +32,11 @@ struct IScope : public INode
 
   virtual void add_var(const std::string &name) = 0;
 
-  virtual std::pair<var_table::iterator, bool> access(const std::string &var_name) = 0;
+  virtual std::pair<var_table::iterator, bool> check_var(const std::string &var_name) = 0;
+
+  virtual std::pair<var_table::iterator, bool> loc_check(const std::string &var_name) = 0;
+
+  virtual var_table::iterator check_n_insert(const std::string &var_name) = 0;
   /*
   virtual INode *visible(std::string const &var_name) = 0;
    */
@@ -62,7 +66,7 @@ enum class Ops
   NOT
 };
 
-extern IScope *Cur_scope;
+extern IScope *CUR_SCOPE;
 
 // class predeclaration
 class Scope;
@@ -71,6 +75,7 @@ INode *make_cst(int val);
 INode *make_op(INode *l, Ops op, INode *r);
 INode *make_while(INode *cond, IScope *sc);
 INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
+INode *make_ass(const std::string &var_name, INode *expr);
 IScope *make_scope(IScope *par = nullptr);
 
 ////////////////// TYPES OF NODES ////////////////////////

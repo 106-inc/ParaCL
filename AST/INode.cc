@@ -67,3 +67,19 @@ AST::IScope *AST::make_scope(IScope *par /* = nullptr */)
 {
   return new Scope{par};
 } /* End of 'create_scope' function */
+
+
+/**
+ * @brief Make assignment node function
+ * @param var_name
+ * @param expr
+ * @return pointer to created node
+ */
+AST::INode *AST::make_ass(const std::string &var_name, INode *expr)
+{
+  auto it = CUR_SCOPE->check_n_insert(var_name);
+
+  auto pvar = new VNode{it};
+
+  return ASNode{pvar, expr};
+} /* End of 'make_ass' function */

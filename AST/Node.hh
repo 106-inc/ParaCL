@@ -17,6 +17,8 @@ namespace AST
 class Scope : public IScope // final(?)
 {
 private:
+  using it_bool = std::pair<var_table::iterator, bool>;
+
   // vector with nodes of this scope
   std::vector<INode *> nodes_{};
 
@@ -44,9 +46,17 @@ public:
 
   void add_var(const std::string &name) override;
 
-  std::pair<var_table::iterator, bool> access(const std::string &var_name) override;
+  it_bool check_var(const std::string &var_name) override;
+
+  it_bool loc_check(const std::string &var_name) override;
+
+  var_table::iterator check_n_insert(const std::string &var_name) override;
 
   ~Scope() override;
+
+private:
+
+  var_table::iterator insert_var( const std::string &var_name );
 };
 
 /**
