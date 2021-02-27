@@ -175,5 +175,64 @@ int AST::WHNode::calc() const
 
   return 0;
 }
+
+/**
+ * While node class destructor
+ */
+AST::WHNode::~WHNode()
+{
+  delete scope_;
+  delete cond_;
+}
 //////////END OF WHNode METHODS//////////////////////////////
 
+///////////////IFNode METHODS///////////////////////////////
+AST::IFNode::IFNode(INode *cond, IScope *if_sc,
+                    IScope *el_sc /* = nullptr */) : cond_(cond),
+                                     if_scope_(if_sc),
+                                     else_scope_(el_sc)
+{}
+
+/**
+ * Interpret If node function
+ * @return calculated result
+ */
+int AST::IFNode::calc() const
+{
+  if (cond_->calc())
+    if_scope_->calc();
+  else if (else_scope_ != nullptr)
+    else_scope_->calc();
+
+  return 0;
+}
+
+/**
+ * If node dtor function
+ */
+AST::IFNode::~IFNode()
+{
+  delete cond_;
+  delete if_scope_;
+  delete else_scope_;
+}
+///////////END OF IFNode METHODS///////////////////////////////
+
+////////////////////PNode METHODS//////////////////////////////
+AST::PNode::PNode( INode *expr ) : expr_(expr)
+{}
+
+/**
+ * Interpret print node function
+ */
+int AST::PNode::calc() const
+{
+  std::cout << expr_->calc() << std::endl;
+  return 0;
+}
+
+AST::PNode::~PNode()
+{
+  delete expr_;
+}
+/////////////////END OF PNode METHODS//////////////////////////////

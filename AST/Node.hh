@@ -102,7 +102,7 @@ public:
 
   OPNode( INode *left, INode *right );
 
-  ~OPNode() override;
+  ~OPNode();
 };
 
 /**
@@ -111,11 +111,10 @@ public:
 class WHNode final : public INode
 {
 private:
-  IScope *scope_;
+  IScope *scope_{};
 
-  INode *cond_;
+  INode *cond_{};
 public:
-
   WHNode( IScope *scope, INode *cond );
 
   WHNode( const WHNode & ) = delete;
@@ -130,9 +129,42 @@ public:
 /**
  * @brief If node class
  */
-// TODO: 
-// REALIZATION!!!
+class IFNode final : public INode
+{
+private:
+  INode *cond_{};
+  IScope *if_scope_{}; // scope if condition is correct
 
+  /* scope if condition is incorrect (optionally) */
+  IScope *else_scope_{};
+public:
+  IFNode(INode *cond, IScope *if_sc, IScope *el_sc = nullptr);
+
+  IFNode( const IFNode & ) = delete;
+  IFNode &operator =( const IFNode & ) = delete;
+
+  int calc() const override;
+
+  ~IFNode();
+};
+
+/**
+ * Print node class function
+ */
+class PNode final : public INode
+{
+private:
+  INode *expr_;
+public:
+  PNode( INode *expr );
+
+  PNode(const PNode &) = delete;
+  PNode &operator =(const PNode &) = delete;
+
+  int calc() const override;
+
+  ~PNode();
+};
 } // namespace AST
 
 #endif /* NODE_HH */
