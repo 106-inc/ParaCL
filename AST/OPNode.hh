@@ -11,46 +11,46 @@ namespace AST
 {
 class PLNode final : public OPNode
 {
-  public:
-    PLNode(INode *left, INode *right);
+public:
+  PLNode(INode *left, INode *right);
 
-    PLNode( const PLNode & ) = delete;
-    PLNode &operator =( const PLNode & ) = delete;
+  PLNode(const PLNode &) = delete;
+  PLNode &operator=(const PLNode &) = delete;
 
-    int calc() const override;
+  int calc() const override;
 };
 
 class SBNode final : public OPNode
 {
-  public:
-    SBNode(INode *left, INode *right);
+public:
+  SBNode(INode *left, INode *right);
 
-    SBNode( const SBNode & ) = delete;
-    SBNode &operator =( const SBNode & ) = delete;
+  SBNode(const SBNode &) = delete;
+  SBNode &operator=(const SBNode &) = delete;
 
-    int calc() const override;
+  int calc() const override;
 };
 
 class MLNode final : public OPNode
 {
-  public:
-    MLNode(INode *left, INode *right);
+public:
+  MLNode(INode *left, INode *right);
 
-   MLNode( const MLNode & ) = delete;
-   MLNode &operator =( const MLNode & ) = delete;
+  MLNode(const MLNode &) = delete;
+  MLNode &operator=(const MLNode &) = delete;
 
-    int calc() const override;
+  int calc() const override;
 };
 
 class DVNode final : public OPNode
 {
-  public:
-    DVNode(INode *left, INode *right);
+public:
+  DVNode(INode *left, INode *right);
 
-    DVNode( const DVNode & ) = delete;
-    DVNode &operator =( const DVNode & ) = delete;
+  DVNode(const DVNode &) = delete;
+  DVNode &operator=(const DVNode &) = delete;
 
-    int calc() const override;
+  int calc() const override;
 };
 
 /**
@@ -59,17 +59,17 @@ class DVNode final : public OPNode
 class ASNode final : public INode
 {
 private:
-  VNode *dst_; // variable to assign
+  VNode *dst_;  // variable to assign
   INode *expr_; // expression
 public:
   ASNode(VNode *dst, INode *expr);
 
-  ASNode( const ASNode & ) = delete;
-  ASNode &operator =( const ASNode & ) = delete;
+  ASNode(const ASNode &) = delete;
+  ASNode &operator=(const ASNode &) = delete;
 
   int calc() const override;
 };
-// TODO: 
+// TODO:
 // ADD Logical operators classes
 /////////////////////////
 } // namespace AST

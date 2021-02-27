@@ -5,32 +5,31 @@
 
 #include <FlexLexer.h>
 
-#include "../FB_BLD/compiler.tab.hh"
 #include "../AST/INode.hh"
+#include "../FB_BLD/compiler.tab.hh"
 
 class OurFlexLexer : public yyFlexLexer
 {
-  private:
-    yy::location cur_location_;
-    std::string cur_str_;
+private:
+  yy::location cur_location_;
+  std::string cur_str_;
 
-  public:
-    OurFlexLexer();
+public:
+  OurFlexLexer();
 
-    OurFlexLexer(const OurFlexLexer& flx) = delete;
-    OurFlexLexer &operator =(const OurFlexLexer &) = delete;
+  OurFlexLexer(const OurFlexLexer &flx) = delete;
+  OurFlexLexer &operator=(const OurFlexLexer &) = delete;
 
-    OurFlexLexer(OurFlexLexer&& flx) = delete;
+  OurFlexLexer(OurFlexLexer &&flx) = delete;
 
-    yy::location get_cur_location();
-    std::string get_cur_str_();
+  yy::location get_cur_location();
+  std::string get_cur_str_();
 
-    void upd_cur_loc();
+  void upd_cur_loc();
 
-    int yylex() override;
+  int yylex() override;
 
-    ~OurFlexLexer();
+  ~OurFlexLexer();
 };
-
 
 #endif // PARACL_PARSER_HH

@@ -16,7 +16,7 @@ AST::PLNode::PLNode(INode *left, INode *right) : OPNode(left, right)
  */
 int AST::PLNode::calc() const
 {
-    return left_->calc() + right_->calc();
+  return left_->calc() + right_->calc();
 }
 
 //////////////////END OF PLNode METHODS //////////////////
@@ -33,7 +33,7 @@ AST::SBNode::SBNode(INode *left, INode *right) : OPNode(left, right)
  */
 int AST::SBNode::calc() const
 {
-    return left_->calc() - right_->calc();
+  return left_->calc() - right_->calc();
 }
 
 //////////////////END OF SBNode METHODS //////////////////
@@ -50,7 +50,7 @@ AST::MLNode::MLNode(INode *left, INode *right) : OPNode(left, right)
  */
 int AST::MLNode::calc() const
 {
-    return left_->calc() * right_->calc();
+  return left_->calc() * right_->calc();
 }
 
 //////////////////END OF MLNode METHODS //////////////////
@@ -67,15 +67,15 @@ AST::DVNode::DVNode(INode *left, INode *right) : OPNode(left, right)
  */
 int AST::DVNode::calc() const
 {
-    return left_->calc() / right_->calc();
+  return left_->calc() / right_->calc();
 }
 
 //////////////////END OF PLNode METHODS //////////////////
 
 ////////////////////ASNode METHODS///////////////////////
-AST::ASNode::ASNode(VNode *dst, INode *expr) : dst_(dst),
-                                               expr_(expr)
-{}
+AST::ASNode::ASNode(VNode *dst, INode *expr) : dst_(dst), expr_(expr)
+{
+}
 
 /**
  * @brief Interpret the node function

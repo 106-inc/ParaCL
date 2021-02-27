@@ -1,6 +1,5 @@
 #include "Node.hh"
 
-
 ////////////////////////// SCOPE METHODS /////////////////
 AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
 {
@@ -8,7 +7,7 @@ AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
 
 /**
  * @brief Interpret the scope function (claculate)
- * @return int 
+ * @return int
  */
 int AST::Scope::calc() const
 {
@@ -64,7 +63,7 @@ void AST::Scope::push(INode *node)
  * TRUE - iterator is valid, variable found,
  * FALSE - iterator is not valid (end()), variable was not found
  */
-std::pair<AST::var_table::iterator, bool> AST::Scope::access( const std::string &var_name )
+std::pair<AST::var_table::iterator, bool> AST::Scope::access(const std::string &var_name)
 {
   std::pair<var_table::iterator, bool> pair{};
 
@@ -91,8 +90,9 @@ AST::Scope::~Scope()
  * @param name [in] name of a variable
  * @param loc
  */
-AST::VNode::VNode( var_table::iterator loc ) : location_(loc)
-{}
+AST::VNode::VNode(var_table::iterator loc) : location_(loc)
+{
+}
 
 /**
  * Get variable name function
@@ -125,7 +125,7 @@ int AST::VNode::calc() const
  * Set value of variable function
  * @param val
  */
-void AST::VNode::set_val( int val )
+void AST::VNode::set_val(int val)
 {
   location_->second = val;
 }
@@ -137,8 +137,9 @@ void AST::VNode::set_val( int val )
  * Constant node ctor
  * @param val [in] - value of a node
  */
-AST::CNode::CNode( int val ) : val_(val)
-{}
+AST::CNode::CNode(int val) : val_(val)
+{
+}
 
 /**
  * Calculate the value of node
@@ -158,10 +159,9 @@ int AST::CNode::calc() const
  * @param left  [in] - left node of operator
  * @param right [in] - right node of operator
  */
-AST::OPNode::OPNode( INode *left, INode *right ) : left_ (left),
-                                                   right_(right)
-{}
-
+AST::OPNode::OPNode(INode *left, INode *right) : left_(left), right_(right)
+{
+}
 
 /**
  * OPNode class destructor.
@@ -173,19 +173,17 @@ AST::OPNode::~OPNode()
   delete right_;
 }
 
-
-
 ///////////END OF OPNODE METHODS/////////////////////////
 
 /////////////WHNode METHODS//////////////////////////////
 
-AST::WHNode::WHNode( INode *cond, IScope *scope ) : cond_(cond),
-                                                    scope_(scope)
-{}
+AST::WHNode::WHNode(INode *cond, IScope *scope) : cond_(cond), scope_(scope)
+{
+}
 
 /**
  * @brief Calculate while node function
- * @return int 
+ * @return int
  */
 int AST::WHNode::calc() const
 {
@@ -206,11 +204,10 @@ AST::WHNode::~WHNode()
 //////////END OF WHNode METHODS//////////////////////////////
 
 ///////////////IFNode METHODS///////////////////////////////
-AST::IFNode::IFNode(INode *cond, IScope *if_sc,
-                    IScope *el_sc /* = nullptr */) : cond_(cond),
-                                     if_scope_(if_sc),
-                                     else_scope_(el_sc)
-{}
+AST::IFNode::IFNode(INode *cond, IScope *if_sc, IScope *el_sc /* = nullptr */)
+    : cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
+{
+}
 
 /**
  * Interpret If node function
@@ -238,8 +235,9 @@ AST::IFNode::~IFNode()
 ///////////END OF IFNode METHODS///////////////////////////////
 
 ////////////////////PNode METHODS//////////////////////////////
-AST::PNode::PNode( INode *expr ) : expr_(expr)
-{}
+AST::PNode::PNode(INode *expr) : expr_(expr)
+{
+}
 
 /**
  * Interpret print node function

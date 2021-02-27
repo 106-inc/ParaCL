@@ -7,55 +7,60 @@
 
 namespace AST
 {
-  /* Useful typedef */
-  using var_table = std::unordered_map<std::string, int>;
+/* Useful typedef */
+using var_table = std::unordered_map<std::string, int>;
 
-  // node interface
-  struct INode
-  {
-      virtual int calc() const = 0;
+// node interface
+struct INode
+{
+  virtual int calc() const = 0;
 
-      // MB for ruture
-      //virtual void dump() = 0;
+  // MB for ruture
+  // virtual void dump() = 0;
 
-      virtual ~INode() = default;
-  };
+  virtual ~INode() = default;
+};
 
-  // scope interface
-  struct IScope : public INode
-  {
-      virtual void push(INode *node) = 0;
+// scope interface
+struct IScope : public INode
+{
+  virtual void push(INode *node) = 0;
 
-      virtual IScope *reset_scope()  const = 0;
+  virtual IScope *reset_scope() const = 0;
 
-      //virtual void add_branch(INode *branch) = 0;
+  // virtual void add_branch(INode *branch) = 0;
 
-      virtual void add_var(const std::string &name) = 0;
+  virtual void add_var(const std::string &name) = 0;
 
-      virtual std::pair<var_table::iterator, bool> access(const std::string &var_name) = 0;
-      /*
-      virtual INode *visible(std::string const &var_name) = 0;
-       */
-  };
+  virtual std::pair<var_table::iterator, bool> access(const std::string &var_name) = 0;
+  /*
+  virtual INode *visible(std::string const &var_name) = 0;
+   */
+};
 
-  enum class Ops
-  {
-    ADD, SUB,
-    MUL, DIV, MOD,
+enum class Ops
+{
+  ADD,
+  SUB,
+  MUL,
+  DIV,
+  MOD,
 
-    GREATER,
-    LESS,
-    GR_EQ,
-    LS_EQ,
-    IS_EQ,
-    NOT_EQ,
+  GREATER,
+  LESS,
+  GR_EQ,
+  LS_EQ,
+  IS_EQ,
+  NOT_EQ,
 
-    AND, OR,
+  AND,
+  OR,
 
-    UNMIN, NOT
-  };
+  UNMIN,
+  NOT
+};
 
-extern IScope * Cur_scope;
+extern IScope *Cur_scope;
 
 // class predeclaration
 class Scope;
@@ -64,7 +69,7 @@ INode *make_cst(int val);
 INode *make_op(INode *l, Ops op, INode *r);
 INode *make_while(INode *cond, IScope *sc);
 INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
-IScope *make_scope( IScope *par = nullptr );
+IScope *make_scope(IScope *par = nullptr);
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*
@@ -78,7 +83,5 @@ IScope *make_scope( IScope *par = nullptr );
 //////////////////////////////////////////////////////////
 
 } // namespace AST
-
-
 
 #endif /* INODE_HH */

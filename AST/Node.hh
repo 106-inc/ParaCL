@@ -16,34 +16,37 @@ namespace AST
 // Scope structure
 class Scope : public IScope // final(?)
 {
-  private:
-    // vector with nodes of this scope
-    std::vector<INode *> nodes_{};
+private:
+  // vector with nodes of this scope
+  std::vector<INode *> nodes_{};
 
-    // Pointer to parent scope
-    IScope *parent_{};
+  // Pointer to parent scope
+  IScope *parent_{};
 
-    var_table var_tbl_;
+  var_table var_tbl_;
 
-  public:
-    // constructor by parent scope ptr
-    explicit Scope(IScope *parent = nullptr);
+public:
+  // constructor by parent scope ptr
+  explicit Scope(IScope *parent = nullptr);
 
-    Scope( const Scope &sc ) = delete;
+  Scope(const Scope &sc) = delete;
 
-    Scope &operator =( const Scope &sc ) = delete;
+  Scope &operator=(const Scope &sc) = delete;
 
-    IScope *reset_scope() const override { return parent_; }
+  IScope *reset_scope() const override
+  {
+    return parent_;
+  }
 
-    int calc() const override;
+  int calc() const override;
 
-    void push(INode *node) override;
+  void push(INode *node) override;
 
-    void add_var(const std::string &name) override;
+  void add_var(const std::string &name) override;
 
-    std::pair<var_table::iterator, bool> access(const std::string &var_name) override;
+  std::pair<var_table::iterator, bool> access(const std::string &var_name) override;
 
-    ~Scope() override;
+  ~Scope() override;
 };
 
 /**
@@ -54,15 +57,13 @@ class VNode final : public INode
 private:
   // No ptrs, because this node will always be a leaf
 
-
   var_table::iterator location_{};
 
 public:
+  explicit VNode(var_table::iterator loc);
 
-  explicit VNode( var_table::iterator loc );
-
-  VNode( const VNode & ) = delete;
-  VNode &operator =( const VNode & ) = delete;
+  VNode(const VNode &) = delete;
+  VNode &operator=(const VNode &) = delete;
 
   const std::string &get_name() const;
 
@@ -70,9 +71,8 @@ public:
 
   int calc() const override;
 
-  void set_val( int val );
+  void set_val(int val);
 };
-
 
 /**
  * @brief Constant node class
@@ -81,11 +81,12 @@ class CNode final : public INode
 {
 private:
   const int val_;
-public:
-  CNode( int val );
 
-  CNode( const CNode & ) = delete;
-  CNode &operator =( const CNode & ) = delete;
+public:
+  CNode(int val);
+
+  CNode(const CNode &) = delete;
+  CNode &operator=(const CNode &) = delete;
 
   int calc() const override;
 };
@@ -96,11 +97,11 @@ public:
 class OPNode : public INode
 {
 protected:
-  INode *left_ {};
+  INode *left_{};
   INode *right_{};
-public:
 
-  OPNode( INode *left, INode *right );
+public:
+  OPNode(INode *left, INode *right);
 
   ~OPNode();
 };
@@ -113,17 +114,17 @@ class WHNode final : public INode
 private:
   INode *cond_{};
   IScope *scope_{};
-public:
-  WHNode( INode *cond, IScope *scope );
 
-  WHNode( const WHNode & ) = delete;
-  WHNode &operator =( const WHNode & ) = delete;
+public:
+  WHNode(INode *cond, IScope *scope);
+
+  WHNode(const WHNode &) = delete;
+  WHNode &operator=(const WHNode &) = delete;
 
   int calc() const override;
 
   ~WHNode();
 };
-
 
 /**
  * @brief If node class
@@ -136,11 +137,12 @@ private:
 
   /* scope if condition is incorrect (optionally) */
   IScope *else_scope_{};
+
 public:
   IFNode(INode *cond, IScope *if_sc, IScope *el_sc = nullptr);
 
-  IFNode( const IFNode & ) = delete;
-  IFNode &operator =( const IFNode & ) = delete;
+  IFNode(const IFNode &) = delete;
+  IFNode &operator=(const IFNode &) = delete;
 
   int calc() const override;
 
@@ -154,11 +156,12 @@ class PNode final : public INode
 {
 private:
   INode *expr_;
+
 public:
-  PNode( INode *expr );
+  PNode(INode *expr);
 
   PNode(const PNode &) = delete;
-  PNode &operator =(const PNode &) = delete;
+  PNode &operator=(const PNode &) = delete;
 
   int calc() const override;
 

@@ -53,7 +53,7 @@ AST::INode *AST::make_while(INode *cond, IScope *sc)
  * @param s
  * @return pointer to created Node
  */
-AST::INode *AST::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */ )
+AST::INode *AST::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
 {
   return new IFNode{cond, isc, esc};
 } /* End of 'make_if' function */
