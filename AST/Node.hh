@@ -14,8 +14,7 @@
 namespace AST
 {
 
-using var_table = std::unordered_map<std::string, int>;
-
+  using var_table = std::unordered_map<std::string, int>;
 // Scope structure
 class Scope : public IScope // final(?)
 {
@@ -32,59 +31,99 @@ class Scope : public IScope // final(?)
     // constructor by parent scope ptr
     explicit Scope(IScope *parent = nullptr);
 
-    IScope *reset_scope() const override
-    {
-        return parent_;
-    }
+    Scope( const Scope &sc ) = delete;
+
+    Scope &operator =( const Scope &sc ) = delete;
+
+    IScope *reset_scope() const override { return parent_; }
 
     void add_branch(INode *branch) override;
+
+    void add_var(const std::string &name) override;
 
     ~Scope() override;
 };
 
+/**
+ * @brief Variable node class
+ */
 class VNode final : public INode
 {
-  private:
-    // No ptrs, because this node will always be a leaf
+private:
+  // No ptrs, because this node will always be a leaf
 
-    var_table::iterator location_;
 
-  public:
-    explicit VNode(var_table::iterator loc);
+  var_table::iterator location_{};
 
-    const std::string &get_name() const;
+public:
 
-    var_table::iterator get_loc() const;
+  explicit VNode( var_table::iterator loc );
 
-    int calc() const override;
+  VNode( const VNode & ) = delete;
+  VNode &operator =( const VNode & ) = delete;
 
-    void set_val(int val);
+  const std::string &get_name() const;
+
+  var_table::iterator get_loc() const;
+
+  int calc() const override;
+
+  void set_val( int val );
 };
 
+
+/**
+ * @brief Constant node class
+ */
 class CNode final : public INode
 {
-  private:
-    const int val_;
+private:
+  const int val_;
+public:
+  CNode( int val );
 
-  public:
-    CNode(int val);
+  CNode( const CNode & ) = delete;
+  CNode &operator =( const CNode & ) = delete;
 
-    int calc() const override;
+  int calc() const override;
 };
 
+/**
+ * @brief Operator node class
+ */
 class OPNode : public INode
 {
-  protected:
-    INode *left_{};
-    INode *right_{};
+protected:
+  INode *left_ {};
+  INode *right_{};
+public:
 
-  public:
-    OPNode(INode *left, INode *right);
+  OPNode( INode *left, INode *right );
 
-    ~OPNode() override;
+  ~OPNode() override;
 };
 
-}; // namespace AST
+/**
+ * @brief While node class
+ */
+class WHNode final : public INode
+{
+private:
+  IScope *scope_;
 
+  INode *cond_;
+public:
+
+  WHNode( IScope *scope, INode *cond );
+
+  WHNode( const WHNode & ) = delete;
+  WHNode &operator =( const WHNode & ) = delete;
+
+  int calc() const override;
+
+  ~WHNode();
+};
+
+} // namespace AST
 
 #endif /* NODE_HH */

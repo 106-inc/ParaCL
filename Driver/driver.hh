@@ -2,14 +2,15 @@
 #ifndef PARACL_DRIVER_HH
 #define PARACL_DRIVER_HH
 
-//#include <FlexLexer.h> // it says me about error : doesnt exist in computer
+#include <FlexLexer.h> // it says me about error : doesnt exist in computer
 
 #include <fstream>
 #include <iostream>
 #include <vector>
 
-#include "../FB_BLD/lex.yy.cc"
+// #include "../FB_BLD/lex.yy.cc"
 #include "../parser/parser.hh"
+//! #include "numgrammar.tab.hh" - auto generated file from bison
 
 namespace yy
 {
@@ -26,6 +27,8 @@ class Driver final
 
     bool parse();
     parser::token_type yylex(parser::semantic_type *yylval, parser::location_type *yylloc);
+
+    /*void report_syntax_error(const parser::context &ctx);*/
 
     ~Driver();
 };

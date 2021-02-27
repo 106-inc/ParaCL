@@ -1,16 +1,18 @@
 #ifndef INODE_HH
 #define INODE_HH
 
+#include <iostream>
 #include <string>
 
 namespace AST
 {
-// node interface
-struct INode
-{
-    virtual int calc() const = 0;
+  // node interface
+  struct INode
+  {
+      virtual int calc() const = 0;
 
-      virtual void dump() = 0;
+      // MB for ruture
+      //virtual void dump() = 0;
 
       virtual ~INode() = default;
   };
@@ -24,18 +26,17 @@ struct INode
 
       virtual void add_branch(INode *branch) = 0;
 
+      virtual void add_var(const std::string &name) = 0;
+
       virtual INode *access(std::string const &var_name) = 0;
 
       virtual INode *visible(std::string const &var_name) = 0;
   };
 
-enum class Ops
-{
-    ADD,
-    SUB,
-    MUL,
-    DIV,
-    MOD,
+  enum class Ops
+  {
+    ADD, SUB,
+    MUL, DIV, MOD,
 
     GREATER,
     LESS,
@@ -44,29 +45,37 @@ enum class Ops
     IS_EQ,
     NOT_EQ,
 
-    AND,
-    OR,
+    AND, OR,
 
-    UNMIN,
-    NOT
-};
+    UNMIN, NOT
+  };
 
-INode *make_value(int val);
-INode *make_op(INode *l, Ops o, INode *r);
+extern IScope * Cur_scope;
+
+INode *make_cst(int val);
+
+INode *make_op(INode *l, Ops op, INode *r);
+
 INode *make_while(INode *o, INode *s);
+
 INode *make_if(INode *o, INode *s);
-IScope *create_scope();
+
+// MB for future
+// IScope *create_scope();
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*
  * 1. Variable -> just iterator to var table OK
- * 2. Infix operator ->
+ * 2. Infix operator -> OK
  * 3. While -> condition + scope
  * 4. if -> condition + scope
  * 5. else -> scope only
  * 5. I think it's all fir now
  */
 //////////////////////////////////////////////////////////
+
 } // namespace AST
+
+
 
 #endif /* INODE_HH */
