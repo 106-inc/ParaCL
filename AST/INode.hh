@@ -37,9 +37,6 @@ struct IScope : public INode
   virtual std::pair<var_table::iterator, bool> loc_check(const std::string &var_name) = 0;
 
   virtual var_table::iterator check_n_insert(const std::string &var_name) = 0;
-  /*
-  virtual INode *visible(std::string const &var_name) = 0;
-   */
 };
 
 enum class Ops
@@ -76,6 +73,7 @@ INode *make_op(INode *l, Ops op, INode *r);
 INode *make_while(INode *cond, IScope *sc);
 INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
 INode *make_ass(const std::string &var_name, INode *expr);
+INode *make_ref(const std::string &var_name);
 IScope *make_scope(IScope *par = nullptr);
 
 ////////////////// TYPES OF NODES ////////////////////////
