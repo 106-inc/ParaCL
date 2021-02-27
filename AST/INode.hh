@@ -3,9 +3,13 @@
 
 #include <iostream>
 #include <string>
+#include <unordered_map>
 
 namespace AST
 {
+  /* Useful typedef */
+  using var_table = std::unordered_map<std::string, int>;
+
   // node interface
   struct INode
   {
@@ -28,9 +32,10 @@ namespace AST
 
       virtual void add_var(const std::string &name) = 0;
 
-      virtual INode *access(std::string const &var_name) = 0;
-
+      virtual std::pair<var_table::iterator, bool> access(const std::string &var_name) = 0;
+      /*
       virtual INode *visible(std::string const &var_name) = 0;
+       */
   };
 
   enum class Ops
@@ -52,10 +57,14 @@ namespace AST
 
 extern IScope * Cur_scope;
 
-INode *make_op(INode *l, Ops op, INode *r);
+// class predeclaration
+class Scope;
 
-// MB for future
-// IScope *create_scope();
+INode *make_cst(int val);
+INode *make_op(INode *l, Ops op, INode *r);
+INode *make_while(INode *cond, IScope *sc);
+INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
+IScope *create_scope( Scope *par = nullptr );
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*
