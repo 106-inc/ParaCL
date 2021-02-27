@@ -28,7 +28,7 @@ namespace AST
 
       virtual IScope *reset_scope()  const = 0;
 
-      virtual void add_branch(INode *branch) = 0;
+      //virtual void add_branch(INode *branch) = 0;
 
       virtual void add_var(const std::string &name) = 0;
 
@@ -64,7 +64,7 @@ INode *make_cst(int val);
 INode *make_op(INode *l, Ops op, INode *r);
 INode *make_while(INode *cond, IScope *sc);
 INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
-IScope *create_scope( Scope *par = nullptr );
+IScope *make_scope( Scope *par = nullptr );
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*

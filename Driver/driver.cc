@@ -1,18 +1,18 @@
 #include "driver.hh"
 
-AST::IScope *glob_cur_scope = nullptr;
+AST::IScope *CUR_SCOPE = nullptr;
 
 yy::Driver::Driver()
 {
     plex_ = new OurFlexLexer;
-    glob_cur_scope = AST::create_scope();
+    CUR_SCOPE = AST::make_scope();
 }
 
 
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
     plex_ = new OurFlexLexer;
-    glob_cur_scope = AST::create_scope();
+    CUR_SCOPE = AST::make_scope();
 
     std::ifstream in_file;
     in_file.open(name_of_file);

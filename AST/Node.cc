@@ -2,18 +2,9 @@
 
 
 ////////////////////////// SCOPE METHODS /////////////////
-AST::Scope::Scope(Scope *parent /* = nullptr */) : parent_(parent)
+AST::Scope::Scope(IScope *parent /* = nullptr */) : parent_(parent)
 {
 }
-
-/**
- * @brief Add new branch to scope function
- * @param branch
- */
-void AST::Scope::add_branch(INode *branch)
-{
-  nodes_.push_back(branch);
-} /* End 'add_branch' function */
 
 /**
  * @brief Interpret the scope function (claculate)
@@ -36,16 +27,17 @@ int AST::Scope::calc() const
 void AST::Scope::add_var(const std::string &name)
 {
   // find var in parent's scopes
-  Scope *pscope = this;
-  var_table::iterator it{};
+  IScope *pscope = this;
+  std::pair<var_table::iterator, bool> it_n_bool{};
 
   while (pscope != nullptr)
   {
-    it = pscope->var_tbl_.find(name);
-    if (it != pscope->var_tbl_.end())
-      pscope->nodes_.push_back(new VNode{it});
+    it_n_bool = pscope->access(name);
+
+    if (it_n_bool.second)
+      pscope->push(new VNode{it_n_bool.first});
     else /* variable wasn't found */
-      pscope = pscope->parent_;
+      pscope = pscope->reset_scope();
   }
   /* It's completely new variable */
 
@@ -54,6 +46,16 @@ void AST::Scope::add_var(const std::string &name)
 
   nodes_.push_back(new VNode{pair.first});
 } /* End 'add_var' function */
+
+/**
+ * @brief Add node to scope function
+ * @param node [in] node to add
+ * @return none
+ */
+void AST::Scope::push(INode *node)
+{
+  nodes_.push_back(node);
+} /* End of 'push' function */
 
 /**
  * @brief Get an access to variable function
