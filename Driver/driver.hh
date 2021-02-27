@@ -2,14 +2,20 @@
 #ifndef PARACL_DRIVER_HH
 #define PARACL_DRIVER_HH
 
-#include <FlexLexer.h>
-
 #include <fstream>
 #include <iostream>
 #include <vector>
 
-// #include "../FB_BLD/lex.yy.cc"
 #include "../parser/parser.hh"
+
+#ifndef yyFlexLexer
+#include <FlexLexer.h>
+#endif /* yyFlexLexer */
+
+#ifndef yyFlexLexer
+//#include "../FB_BLD/lex.yy.cc"
+#endif /* yyFlexLexer */
+
 //! #include "numgrammar.tab.hh" - auto generated file from bison
 
 namespace yy
@@ -22,7 +28,6 @@ private:
   std::vector<std::string> line_of_prog;
 
 public:
-  Driver();
   Driver(const char *name_of_file);
 
   Driver(const Driver &drvr) = delete;

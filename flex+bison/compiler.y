@@ -4,6 +4,9 @@
 %param {Driver* driver}
 %locations
 
+%define api.value.type variant
+%define parse.error simple
+
 %code requires
 {
 #include "../AST/INode.hh"
@@ -25,8 +28,6 @@ namespace yy
 
 extern AST::IScope * CUR_SCOPE;
 }
-
-%define api.value.type variant
 
 /* some tokens */
 
@@ -166,10 +167,14 @@ print:       PRINT expr SCOLON                    { };
 
 namespace yy
 {
+  void parser::error( const location_type& loc, const std::string &msg )
+  {
+    std::cerr << msg << std::endl;
+  }
 
     parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
         {
-            //return driver->yylex(yylval);
+            return driver->yylex(yylval, yylloc);
         }
 }
 

@@ -2,12 +2,6 @@
 
 AST::IScope *CUR_SCOPE = nullptr;
 
-yy::Driver::Driver()
-{
-  plex_ = new OurFlexLexer;
-  CUR_SCOPE = AST::make_scope();
-}
-
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
   plex_ = new OurFlexLexer;

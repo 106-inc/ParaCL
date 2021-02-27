@@ -3,7 +3,9 @@
 
 #include <iostream>
 
+#ifndef yyFlexLexer
 #include <FlexLexer.h>
+#endif /* yyFlexLexer */
 
 #include "../AST/INode.hh"
 #include "../FB_BLD/compiler.tab.hh"
@@ -11,11 +13,11 @@
 class OurFlexLexer : public yyFlexLexer
 {
 private:
-  yy::location cur_location_;
-  std::string cur_str_;
+  yy::location cur_location_{};
+  std::string cur_str_{};
 
 public:
-  OurFlexLexer();
+  OurFlexLexer() = default;
 
   OurFlexLexer(const OurFlexLexer &flx) = delete;
   OurFlexLexer &operator=(const OurFlexLexer &) = delete;
@@ -29,7 +31,7 @@ public:
 
   int yylex() override;
 
-  ~OurFlexLexer();
+  ~OurFlexLexer() = default;
 };
 
 #endif // PARACL_PARSER_HH

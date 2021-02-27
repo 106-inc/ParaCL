@@ -11,13 +11,13 @@ all: start_tmp2
 compile: 
 	$(CC) $(BLD)/scanner.o $(BLD)/compiler.o $(BLD)/driver.o $(BLD)/parser.o $(BLD)/inode.o $(BLD)/opnode.o $(BLD)/node.o
 
-start: bld_dir fb_bld bison flex driver ast
-	$(CC) -o $(BLD)/paracl main.cc $(BLD)/scanner.o $(BLD)/compiler.o $(BLD)/driver.o $(BLD)/*.o
+start: bld_dir fb_bld flex bison parser ast driver
+	$(CC) -o $(BLD)/paracl main.cc $(BLD)/scanner.o $(BLD)/compiler.o $(BLD)/parser.o $(BLD)/inode.o $(BLD)/node.o $(BLD)/opnode.o $(BLD)/driver.o 
 
 start_tmp1: bld_dir fb_bld bison flex driver ast
 	$(CC) -o $(BLD)/paracl main.cc $(BLD)/*.o $(FB_BLD)/compiler.tab.cc $(FB_BLD)/lex.yy.cc
 
-start_tmp2: bld_dir fb_bld driver parser ast bison flex
+start_tmp2: bld_dir fb_bld parser driver ast bison flex
 	$(CC) -o $(BLD)/paracl main.cc $(BLD)/*.o
 
 bld_dir:
