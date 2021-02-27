@@ -1,4 +1,15 @@
 #include "INode.hh"
+#include "OPNode.hh"
+
+/**
+ * @brief Make constant calue node function
+ * @param val [in] value to put to node
+ * @return pointer to created node
+ */
+AST::INode *AST::make_cst(int val)
+{
+  return new CNode{val};
+} /* End of 'make_cst' function */
 
 /**
  * @brief Create operator node function
@@ -31,9 +42,9 @@ AST::INode *AST::make_op(INode *l, Ops op, INode *r)
  * @param s []
  * @return pointer to created Node
  */
-AST::INode *AST::make_while(INode *o, INode *s)
+AST::INode *AST::make_while(INode *cond, IScope *sc)
 {
-
+  return new WHNode{cond, sc};
 } /* End of 'make_while' function */
 
 /**
@@ -42,14 +53,17 @@ AST::INode *AST::make_while(INode *o, INode *s)
  * @param s
  * @return pointer to created Node
  */
-AST::INode *AST::make_if(INode *o, INode *s)
+AST::INode *AST::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */ )
 {
+  return new IFNode{cond, isc, esc};
 } /* End of 'make_if' function */
 
 /**
- * Create scope function
+ * @brief Create scope function
+ * @param par [in] - pointer to parent node
  * @return pointer to created Scope
  */
-AST::IScope *AST::create_scope()
+AST::IScope *AST::create_scope(Scope *par /* = nullptr */)
 {
+  return new Scope{par};
 } /* End of 'create_scope' function */
