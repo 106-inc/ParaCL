@@ -94,6 +94,13 @@ AST::INode *AST::make_ref(const std::string &var_name)
   return new VNode{it_bl.first};
 } /* End of 'make_ref' function */
 
+
+//TODO: docs
+AST::INode *AST::make_print(AST::INode *expr)
+{
+  return new PNode{expr};
+}
+
 /**
  * @brief Make assignment node function
  * @param var_name
