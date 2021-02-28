@@ -119,7 +119,10 @@ stms:        stm                                  { CUR_SCOPE->push($1); };
            | scope                                { CUR_SCOPE->push($1); };
            | stms scope                           { CUR_SCOPE->push($2); };
 
-cur_stm:     stm                                  { $$ = AST::make_scope(CUR_SCOPE); };
+cur_stm:     stm                                  {
+                                                     $$ = AST::make_scope(CUR_SCOPE);
+                                                     $$->push($1);
+                                                  };
            | scope                                { $$ = $1; };
 
 stm:         assign                               { $$ = $1; };
@@ -168,7 +171,7 @@ cmp:         IS_EQ                                { $$ = AST::Ops::IS_EQ; };
            | LS_EQ                                { $$ = AST::Ops::LS_EQ; };
 
 
-print:       PRINT expr SCOLON                    { };
+print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
 
 %%
 
