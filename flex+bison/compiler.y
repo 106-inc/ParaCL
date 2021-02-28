@@ -74,7 +74,7 @@ extern AST::IScope * CUR_SCOPE;
   ;
 
 %token <int> INT
-%token <std::string *> NAME
+%token <std::string> NAME
 
 /* nonterminals */
 
@@ -127,7 +127,7 @@ stm:         assign                               { $$ = $1; };
            | while                                { $$ = $1; };
            | print                                { $$ = $1; };
 
-assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_ass(*$1, $3); };
+assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_ass($1, $3); };
 
 expr:        expr1 pm expr1                       { $$ = AST::make_op($1, $2, $3); };
            | expr1                                { $$ = $1; };
@@ -136,7 +136,7 @@ expr1:       expr2 mdm expr2                      { $$ = AST::make_op($1, $2, $3
            | expr2                                { $$ = $1; };
 
 expr2:       LP expr[e] RP                        { $$ = $e; };
-           | NAME                                 { $$ = AST::make_ref(*$1); };
+           | NAME                                 { $$ = AST::make_ref($1); };
            | INT                                  { $$ = AST::make_cst($1); };
 
 if:          IF LP cond[c] RP cur_stm[s]          { $$ = AST::make_if($c, $s); };

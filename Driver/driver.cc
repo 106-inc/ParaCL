@@ -45,14 +45,12 @@ yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, pars
   switch (tkn_type)
   {
   case yy::parser::token_type::INT: {
-    yylval->as<int>() = std::stoi(plex_->YYText());
+    yylval->emplace<int>(std::stoi(plex_->YYText()));
     break;
   }
 
   case yy::parser::token_type::NAME: {
-    std::string * tmp = new std::string{plex_->YYText()};
-    yylval->as<std::string *>() = tmp;
-
+    yylval->emplace<std::string>(std::string{plex_->YYText()});
     break;
   }
 
