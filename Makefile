@@ -1,7 +1,7 @@
 FB_BLD = FB_BLD
 BLD = PCL_BLD
-FNB = flex+bison
-DVR = Driver
+FNB = grammar
+DVR = driver
 PSR = parser
 
 CC = g++ --std=c++2a -Wall -Wextra
