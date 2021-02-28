@@ -50,9 +50,14 @@ yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, pars
   }
 
   case yy::parser::token_type::NAME: {
-    std::string tmp{plex_->YYText()};
-    yylval->as<std::string>() = tmp;
+    std::string * tmp = new std::string{plex_->YYText()};
+    yylval->as<std::string *>() = tmp;
+
     break;
+  }
+
+  case yy::parser::token_type::ERR: {
+    std::cerr << "I DON'T FUCKIN KNOW WHAT IS THIS" << std::endl;
   }
 
   default:

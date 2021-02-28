@@ -19,12 +19,11 @@
 WS        [ \t\n\v]+
 
 DIGIT     [0-9]
-DIGIT1    [1-9]
 
-LETTER    [A-Za-z]
+LETTER    [a-zA-Z]
 LETTER_D  [A-Za-z0-9_]
 
-INT       [0] | {DIGIT1}{DIGIT}*
+INT       {DIGIT}{DIGIT}*
 NAME      {LETTER}{LETTER_D}*
 
 %%
@@ -58,7 +57,7 @@ NAME      {LETTER}{LETTER_D}*
 "{"                  return yy::parser::token_type::LB; /* LEFT BRACE       */
 "}"                  return yy::parser::token_type::RB; /* RIGHT BRACE      */
 
-INT                  return yy::parser::token_type::INT;
+{INT}                return yy::parser::token_type::INT;
 
 "if"                 return yy::parser::token_type::IF;
 "while"              return yy::parser::token_type::WHILE;
@@ -66,7 +65,7 @@ INT                  return yy::parser::token_type::INT;
 "?"                  return yy::parser::token_type::SCAN;
 "print"              return yy::parser::token_type::PRINT;
 
-NAME                 return yy::parser::token_type::NAME;
+{NAME}               return yy::parser::token_type::NAME;
 
 .                    return yy::parser::token_type::ERR;
 

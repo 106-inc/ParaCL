@@ -11,4 +11,5 @@ int main(int argc, char **argv)
   yy::Driver driver(argv[1]);
   driver.parse();
   delete CUR_SCOPE;
+  return 0;
 }
