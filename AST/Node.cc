@@ -293,3 +293,18 @@ AST::PNode::~PNode()
   delete expr_;
 }
 /////////////////END OF PNode METHODS//////////////////////////////
+/////////////////RNode METHODS/////////////////////////////////////
+
+/**
+ * @brief Interpret read node function
+ * @return read value
+ */
+int AST::RNode::calc() const
+{
+  int value{};
+
+  std::cin >> value;
+
+  return value;
+} /* End of 'calc' function */
+////////////////END OF RNode METHODS///////////////////////////////
