@@ -8,6 +8,7 @@
  */
 AST::INode *AST::make_cst(int val)
 {
+  IMMA_DOIN("CST");
   return new CNode{val};
 } /* End of 'make_cst' function */
 
@@ -20,6 +21,7 @@ AST::INode *AST::make_cst(int val)
  */
 AST::INode *AST::make_op(INode *l, Ops op, INode *r)
 {
+  IMMA_DOIN("OP");
   switch (op)
   {
   case Ops::ADD:
@@ -44,6 +46,7 @@ AST::INode *AST::make_op(INode *l, Ops op, INode *r)
  */
 AST::INode *AST::make_while(INode *cond, IScope *sc)
 {
+  IMMA_DOIN("WHILE");
   return new WHNode{cond, sc};
 } /* End of 'make_while' function */
 
@@ -55,6 +58,7 @@ AST::INode *AST::make_while(INode *cond, IScope *sc)
  */
 AST::INode *AST::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
 {
+  IMMA_DOIN("IF");
   return new IFNode{cond, isc, esc};
 } /* End of 'make_if' function */
 
@@ -65,6 +69,7 @@ AST::INode *AST::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
  */
 AST::IScope *AST::make_scope(IScope *par /* = nullptr */)
 {
+  IMMA_DOIN("SCOPE");
   return new Scope{par};
 
 } /* End of 'create_scope' function */
@@ -78,6 +83,7 @@ AST::IScope *AST::make_scope(IScope *par /* = nullptr */)
  */
 AST::INode *AST::make_ref(const std::string &var_name)
 {
+  IMMA_DOIN("VAR USAGE");
   auto it_bl = CUR_SCOPE->check_var(var_name);
 
   // TODO: delete termination
@@ -96,9 +102,19 @@ AST::INode *AST::make_ref(const std::string &var_name)
  */
 AST::INode *AST::make_ass(const std::string &var_name, INode *expr)
 {
+  IMMA_DOIN("ASS");
   auto it = CUR_SCOPE->check_n_insert(var_name);
 
   auto pvar = new VNode{it};
 
   return new ASNode{pvar, expr};
 } /* End of 'make_ass' function */
+
+/**
+ * @brief debug function
+ * @param doin_wha
+ */
+void AST::IMMA_DOIN(const char * doin_wha)
+{
+  std::cout << "I'MMA DOIN " << doin_wha << std::endl;
+}

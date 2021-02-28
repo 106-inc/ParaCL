@@ -66,6 +66,8 @@ enum class Ops
 // class predeclaration
 class Scope;
 
+void IMMA_DOIN(const char * doin_wha);
+
 INode *make_cst(int val);
 INode *make_op(INode *l, Ops op, INode *r);
 INode *make_while(INode *cond, IScope *sc);
