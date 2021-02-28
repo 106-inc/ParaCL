@@ -26,7 +26,7 @@ extern AST::IScope * CUR_SCOPE;
 
 %code
 {
-#include "../Driver/driver.hh"
+#include "../driver/driver.hh"
 
 namespace yy
 { parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver); }
@@ -88,6 +88,7 @@ extern AST::IScope * CUR_SCOPE;
 %nterm<AST::INode *> if
 %nterm<AST::INode *> while
 %nterm<AST::INode *> print
+%nterm<AST::INode *> scan
 %nterm<AST::INode *> assign
 
 %nterm<AST::INode *> cond
@@ -99,6 +100,7 @@ extern AST::IScope * CUR_SCOPE;
 %nterm<AST::Ops> mdm
 %nterm<AST::Ops> lgc
 %nterm<AST::Ops> cmp
+
 
 %%
 
@@ -129,6 +131,7 @@ stm:         assign                               { $$ = $1; };
            | if                                   { $$ = $1; };
            | while                                { $$ = $1; };
            | print                                { $$ = $1; };
+           | scan                                 { $$ = $1; };
 
 assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_ass($1, $3); };
 
@@ -172,6 +175,8 @@ cmp:         IS_EQ                                { $$ = AST::Ops::IS_EQ; };
 
 
 print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
+
+scan:        NAME ASSIGN SCAN SCOLON              { $$ = AST::make_ass($1, AST::make_scan()); };
 
 %%
 
