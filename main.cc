@@ -8,11 +8,17 @@ int main(int argc, char **argv)
     return 0;
   }
 
+
+  //TODO: create class root handler
   auto root = AST::make_scope();
 
   CUR_SCOPE = root;
   yy::Driver driver(argv[1]);
-  driver.parse();
+  if (!driver.parse())
+  {
+    delete root;
+    return 1;
+  }
 
   root->calc();
   delete root;

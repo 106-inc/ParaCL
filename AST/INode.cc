@@ -123,5 +123,5 @@ AST::INode *AST::make_ass(const std::string &var_name, INode *expr)
  */
 void AST::IMMA_DOIN(const char * doin_wha)
 {
-  std::cout << "I'MMA DOIN " << doin_wha << std::endl;
+  //std::cout << "I'MMA DOIN " << doin_wha << std::endl;
 }
