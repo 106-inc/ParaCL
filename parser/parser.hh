@@ -15,6 +15,7 @@ class OurFlexLexer : public yyFlexLexer
 private:
   yy::location cur_location_{};
   std::string cur_str_{};
+  int last_num_of_line = 0;
 
 public:
   OurFlexLexer() = default;
