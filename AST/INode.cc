@@ -25,12 +25,16 @@ AST::INode *AST::make_op(INode *l, Ops op, INode *r)
   switch (op)
   {
   case Ops::ADD:
+    IMMA_DOIN("+");
     return new PLNode{l, r};
   case Ops::SUB:
+    IMMA_DOIN("-");
     return new SBNode{l, r};
   case Ops::MUL:
+    IMMA_DOIN("*");
     return new MLNode{l, r};
   case Ops::DIV:
+    IMMA_DOIN("/");
     return new DVNode{l, r};
   default:
     std::cout << "Operator is not implemented\n";
@@ -112,6 +116,7 @@ AST::INode *AST::make_ass(const std::string &var_name, INode *expr)
   IMMA_DOIN("ASS");
   auto it = CUR_SCOPE->check_n_insert(var_name);
 
+  IMMA_DOIN("VAR CREATE");
   auto pvar = new VNode{it};
 
   return new ASNode{pvar, expr};
