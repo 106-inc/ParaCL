@@ -5,7 +5,7 @@ AST::IScope *CUR_SCOPE = nullptr;
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
   plex_ = new OurFlexLexer;
-
+ 
   in_file.open(name_of_file);
 
   /* this part of code exist for future compilation */
