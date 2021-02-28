@@ -74,6 +74,7 @@ INode *make_while(INode *cond, IScope *sc);
 INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
 INode *make_ass(const std::string &var_name, INode *expr);
 INode *make_ref(const std::string &var_name);
+INode *make_print(INode *expr);
 IScope *make_scope(IScope *par = nullptr);
 
 ////////////////// TYPES OF NODES ////////////////////////

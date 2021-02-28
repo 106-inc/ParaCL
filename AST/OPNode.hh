@@ -68,6 +68,8 @@ public:
   ASNode &operator=(const ASNode &) = delete;
 
   int calc() const override;
+
+  ~ASNode();
 };
 // TODO:
 // ADD Logical operators classes

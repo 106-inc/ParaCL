@@ -88,4 +88,13 @@ int AST::ASNode::calc() const
 
   return expr_res;
 }
+
+/**
+ * @brief Assignment class destructor
+ */
+AST::ASNode::~ASNode()
+{
+  delete dst_;
+  delete expr_;
+}
 ////////////////END OF ASNode METHODS////////////////////
