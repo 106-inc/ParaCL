@@ -122,7 +122,7 @@ stm:         assign                               { $$ = $1; };
            | while                                { $$ = $1; };
            | print                                { $$ = $1; };
 
-assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_ass(NAME, $3); };
+assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_ass($1, $3); };
 
 expr:        expr1 pm expr1                       { $$ = AST::make_op($1, $2, $3); };
            | expr1                                { $$ = $1; };

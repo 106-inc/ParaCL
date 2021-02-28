@@ -82,7 +82,7 @@ AST::INode *AST::make_ref(const std::string &var_name)
 
   // TODO: delete termination
   if (!it_bl.second)
-    std::terminate(0);
+    std::terminate();
     /* std::hdd::format(); */
 
   return new VNode{it_bl.first};
@@ -100,5 +100,5 @@ AST::INode *AST::make_ass(const std::string &var_name, INode *expr)
 
   auto pvar = new VNode{it};
 
-  return ASNode{pvar, expr};
+  return new ASNode{pvar, expr};
 } /* End of 'make_ass' function */

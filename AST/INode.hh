@@ -63,8 +63,6 @@ enum class Ops
   NOT
 };
 
-extern IScope *CUR_SCOPE;
-
 // class predeclaration
 class Scope;
 
@@ -88,5 +86,7 @@ IScope *make_scope(IScope *par = nullptr);
 //////////////////////////////////////////////////////////
 
 } // namespace AST
+
+extern AST::IScope *CUR_SCOPE;
 
 #endif /* INODE_HH */
