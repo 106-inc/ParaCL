@@ -8,8 +8,14 @@ int main(int argc, char **argv)
     return 0;
   }
 
+  auto root = AST::make_scope();
+
+  CUR_SCOPE = root;
   yy::Driver driver(argv[1]);
   driver.parse();
-  delete CUR_SCOPE;
+
+  root->calc();
+  delete root;
+
   return 0;
 }
