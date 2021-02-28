@@ -17,6 +17,8 @@
 %}
 
 WS        [ \t\n\v]+
+COMM      "//".*"\n"
+ /* MULCOMM   "'''"[.\n]*"'''" */
 
 DIGIT     [0-9]
 
@@ -29,6 +31,8 @@ NAME      {LETTER}{LETTER_D}*
 %%
 
 {WS}                 /* skip blanks and tabs */
+{COMM}               /* skip comments to the end of line */
+ /* {MULCOMM}            skip comments between symbols */
 
 "+"                  return yy::parser::token_type::ADD;
 "-"                  return yy::parser::token_type::SUB;
