@@ -103,6 +103,11 @@ AST::INode *AST::make_print(AST::INode *expr)
   return new PNode{expr};
 }
 
+AST::INode *AST::make_scan()
+{
+  return new RNode{};
+}
+
 /**
  * @brief Make assignment node function
  * @param var_name
