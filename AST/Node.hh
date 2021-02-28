@@ -55,8 +55,7 @@ public:
   ~Scope() override;
 
 private:
-
-  var_table::iterator insert_var( const std::string &var_name );
+  var_table::iterator insert_var(const std::string &var_name);
 };
 
 /**

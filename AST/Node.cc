@@ -90,13 +90,12 @@ AST::Scope::it_bool AST::Scope::loc_check(const std::string &var_name)
  * @param var_name
  * @return
  */
-AST::var_table::iterator AST::Scope::check_n_insert( const std::string &var_name )
+AST::var_table::iterator AST::Scope::check_n_insert(const std::string &var_name)
 {
   it_bool it_n_bool = check_var(var_name);
 
   if (!it_n_bool.second)
     it_n_bool.first = insert_var(var_name);
-
 
   return it_n_bool.first;
 } /* End of 'check_n_insert' function */
@@ -116,7 +115,7 @@ AST::Scope::~Scope()
  * @param var_name
  * @return iterator to inserted variable
  */
-AST::var_table::iterator AST::Scope::insert_var( const std::string &var_name )
+AST::var_table::iterator AST::Scope::insert_var(const std::string &var_name)
 {
   auto it_bl = var_tbl_.insert({var_name, {}});
 

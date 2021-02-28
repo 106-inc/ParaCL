@@ -78,7 +78,6 @@ AST::IScope *AST::make_scope(IScope *par /* = nullptr */)
 
 } /* End of 'create_scope' function */
 
-
 /**
  * @brief Make var node for expression
  * @param var_name name of a variable
@@ -93,13 +92,12 @@ AST::INode *AST::make_ref(const std::string &var_name)
   // TODO: delete termination
   if (!it_bl.second)
     std::terminate();
-    /* std::hdd::format(); */
+  /* std::hdd::format(); */
 
   return new VNode{it_bl.first};
 } /* End of 'make_ref' function */
 
-
-//TODO: docs
+// TODO: docs
 AST::INode *AST::make_print(AST::INode *expr)
 {
   return new PNode{expr};
@@ -126,7 +124,7 @@ AST::INode *AST::make_ass(const std::string &var_name, INode *expr)
  * @brief debug function
  * @param doin_wha
  */
-void AST::IMMA_DOIN(const char * doin_wha)
+void AST::IMMA_DOIN(const char *doin_wha)
 {
-  //std::cout << "I'MMA DOIN " << doin_wha << std::endl;
+  // std::cout << "I'MMA DOIN " << doin_wha << std::endl;
 }

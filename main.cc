@@ -8,8 +8,7 @@ int main(int argc, char **argv)
     return 0;
   }
 
-
-  //TODO: create class root handler
+  // TODO: create class root handler
   auto root = AST::make_scope();
 
   CUR_SCOPE = root;

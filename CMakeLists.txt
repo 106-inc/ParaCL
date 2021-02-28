@@ -5,13 +5,13 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(.)
 include_directories(AST)
-include_directories(Driver)
+include_directories(driver)
 
 add_executable(ParaCL
         AST/INode.cc
         AST/OPNode.cc
         AST/Node.cc
-        Driver/driver.cc
+        driver/driver.cc
         parser/parser.cc
         FB_BLD/lex.yy.cc
         FB_BLD/compiler.tab.cc
