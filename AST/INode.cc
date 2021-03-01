@@ -124,7 +124,7 @@ INode *make_ref(const std::string &var_name)
 INode *make_print(INode *expr)
 {
   return new PNode{expr};
-} 
+}
 
 /**
  * @brief make scan node function
