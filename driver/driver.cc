@@ -77,7 +77,7 @@ void yy::Driver::report_syntax_error(const parser::context &ctx)
 
     // Report the tokens expected at this point.
     parser::symbol_kind_type expectd_tokns[NUM_OF_TOKENS];
-    int num_of_expectd_tokns = ctx.expected_tokens(expectd_tokns, NUM_OF_TOKENS);
+    size_t num_of_expectd_tokns = ctx.expected_tokens(expectd_tokns, NUM_OF_TOKENS);
 
     std::cerr << "expected:";
 
@@ -96,7 +96,7 @@ void yy::Driver::report_syntax_error(const parser::context &ctx)
 
     std::cerr << "before: " << "<" << parser::symbol_name(lookahead) << ">" << std::endl;
     std::cerr << loc.begin.line << " |    " << lines_of_prog[loc.begin.line - 1] << std::endl;
-    std::cerr << "  |    ";
+    std::cerr << "  |   ";
 
     for (int i = 0; i < loc.end.column - 1; ++i)
     {
