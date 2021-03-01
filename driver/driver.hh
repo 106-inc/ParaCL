@@ -18,7 +18,7 @@
 
 enum
 {
-  TOKENMAX = 30
+  NUM_OF_TOKENS = 30
 };
 
 namespace yy
@@ -45,6 +45,7 @@ public:
 
   ~Driver();
 };
+
 
 } // namespace yy
 

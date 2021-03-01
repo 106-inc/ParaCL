@@ -2,12 +2,14 @@
 
 AST::IScope *CUR_SCOPE = nullptr;
 
+//! Constructor for class Driver
+//! \param name_of_file - the name of the file from which our program is read
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
   plex_ = new OurFlexLexer;
   std::string tmp_str;
 
-  in_file.open(name_of_file);
+    in_file.open(name_of_file);
   std::ifstream tmp(name_of_file);
 
   if (in_file.is_open())
@@ -22,6 +24,8 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
   plex_->switch_streams(in_file, std::cout);
 }
 
+//! Functuion for calling bison yy::parser:parse()
+//! \return bool in
 bool yy::Driver::parse()
 {
   yy::parser parser_(this);
@@ -62,35 +66,49 @@ yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, pars
 }
 
 //!  Function for processing syntax error during parsing
-//! \param ctx - contex, which ...
+//! \param ctx - the context that is created when an error is found
 void yy::Driver::report_syntax_error(const parser::context &ctx)
 {
-  std::cerr << "syntax error in ";
-  std::cerr << "line:" << ctx.location().begin.line;
-  std::cerr << ", column:" << ctx.location().begin.column << "-" << ctx.location().end.column << ":" << std::endl;
+    yy::location loc = ctx.location();
 
-  // Report the tokens expected at this point.
-  /*
-  parser::symbol_kind_type expectd_tokns[TOKENMAX];
-  int num_of_expectd_tokns = ctx.expected_tokens(expectd_tokns, TOKENMAX);
+    std::cerr << "syntax error in ";
+    std::cerr << "line: " << loc.begin.line ;
+    std::cerr << ", column: " << loc.begin.column << std::endl;
 
-  for (size_t i = 0; i < num_of_expectd_tokns; ++i)
-  {
-      if (i != 0)
-          std::cerr << " or ";
+    // Report the tokens expected at this point.
+    parser::symbol_kind_type expectd_tokns[NUM_OF_TOKENS];
+    int num_of_expectd_tokns = ctx.expected_tokens(expectd_tokns, NUM_OF_TOKENS);
 
-      std::cerr << " <" << parser::symbol_name(expectd_tokns[i]) << "> ";
-  }
-  */
+    std::cerr << "expected:";
 
-  // Report the unexpected token.
+    for (size_t i = 0; i < num_of_expectd_tokns; ++i)
+    {
+        if (i != 0)
+            std::cerr << " or ";
 
-  parser::symbol_kind_type lookahead = ctx.token();
-  std::cerr << "before "
-            << "<" << lookahead << ">" << std::endl;
-  std::cerr << lines_of_prog[ctx.location().begin.line - 1] << std::endl;
+        std::cerr << " <" << parser::symbol_name(expectd_tokns[i]) << "> ";
+    }
+
+    std::cerr << std::endl;
+
+    // Report the unexpected token.
+    parser::symbol_kind_type lookahead = ctx.token();
+
+    std::cerr << "before: " << "<" << parser::symbol_name(lookahead) << ">" << std::endl;
+    std::cerr << loc.begin.line << " |    " << lines_of_prog[loc.begin.line - 1] << std::endl;
+    std::cerr << "  |    ";
+
+    for (int i = 0; i < loc.end.column - 1; ++i)
+    {
+        if (i == (ctx.lookahead().location.begin.column - 1))
+            std::cerr << "^";
+
+        else std::cerr << "~";
+    }
 }
 
+
+//! Destructor for class Driver
 yy::Driver::~Driver()
 {
   delete plex_;
