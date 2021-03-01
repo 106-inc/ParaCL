@@ -1,13 +1,10 @@
-n = 10; // input
-n_old = n;
+n = ?; // input
 fact = 1;
 
-//print (n_old - n + 1);
-
-while (n)
+while (n > 0)
 {
-  fact = fact * (n_old - n + 1);
+  fact = fact * n;
   n = n - 1;
-  print fact;
 }
+
 print fact;
