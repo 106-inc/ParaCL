@@ -116,12 +116,20 @@ INode *make_ref(const std::string &var_name)
   return new VNode{it_bl.first};
 } /* End of 'make_ref' function */
 
-// TODO: docs
+/**
+ * @brief Make print node function
+ * @param expr [in] pointer to expression node
+ * @return pointer to created node
+ */
 INode *make_print(INode *expr)
 {
   return new PNode{expr};
-}
+} 
 
+/**
+ * @brief make scan node function
+ * @return pointer to created node
+ */
 INode *make_scan()
 {
   return new RNode{};
