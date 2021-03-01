@@ -95,8 +95,8 @@ void yy::Driver::report_syntax_error(const parser::context &ctx)
     parser::symbol_kind_type lookahead = ctx.token();
 
     std::cerr << "before: " << "<" << parser::symbol_name(lookahead) << ">" << std::endl;
-    std::cerr << loc.begin.line << " |    " << lines_of_prog[loc.begin.line - 1] << std::endl;
-    std::cerr << "  |   ";
+    std::cerr << loc.begin.line << "   |   " << lines_of_prog[loc.begin.line - 1] << std::endl;
+    std::cerr << "    |   ";
 
     for (int i = 0; i < loc.end.column - 1; ++i)
     {
