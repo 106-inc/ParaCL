@@ -15,6 +15,9 @@ struct INode
 {
   virtual int calc() const = 0;
 
+  INode(const INode &) = delete;
+  INode &operator =(const INode &) = delete;
+
   // MB for ruture
   // virtual void dump() = 0;
 
