@@ -178,18 +178,18 @@ public:
 /**
  * Scanf node class
  */
- class RNode final : public INode
- {
- public:
-   RNode() = default;
+class RNode final : public INode
+{
+public:
+  RNode() = default;
 
-   RNode(const RNode &) = delete;
-   RNode &operator=(const RNode &) = delete;
+  RNode(const RNode &) = delete;
+  RNode &operator=(const RNode &) = delete;
 
-   int calc() const override;
+  int calc() const override;
 
-   ~RNode() = default;
- };
+  ~RNode() = default;
+};
 } // namespace AST
 
 #endif /* NODE_HH */

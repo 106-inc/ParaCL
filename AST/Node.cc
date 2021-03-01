@@ -19,7 +19,6 @@ int Scope::calc() const
   return 0;
 } /* End of 'calc' function */
 
-
 /**
  * @brief Add node to scope function
  * @param node [in] node to add
@@ -296,4 +295,4 @@ int RNode::calc() const
   return value;
 } /* End of 'calc' function */
 ////////////////END OF RNode METHODS///////////////////////////////
-}
+} // namespace AST

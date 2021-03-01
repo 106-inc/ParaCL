@@ -185,7 +185,6 @@ LENode::LENode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
-
 /**
  * @brief Checking for lessness or equality
  * @return  1 if lhs is less or equal then rhs
@@ -228,20 +227,4 @@ int ORNode::calc() const
 }
 
 ///////////////END OF ORNode////////////////////////////
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+} // namespace AST

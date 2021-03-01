@@ -86,7 +86,6 @@ public:
   int calc() const override;
 };
 
-
 class NEQNode final : public OPNode
 {
 public:
@@ -97,7 +96,6 @@ public:
 
   int calc() const override;
 };
-
 
 class GNode final : public OPNode
 {
@@ -110,7 +108,6 @@ public:
   int calc() const override;
 };
 
-
 class GENode final : public OPNode
 {
 public:
@@ -121,7 +118,6 @@ public:
 
   int calc() const override;
 };
-
 
 class LNode final : public OPNode
 {
@@ -145,7 +141,6 @@ public:
   int calc() const override;
 };
 
-
 class ANDNode final : public OPNode
 {
 public:
@@ -167,7 +162,6 @@ public:
 
   int calc() const override;
 };
-
 
 } // namespace AST
 
