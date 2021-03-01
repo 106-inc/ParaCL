@@ -73,6 +73,7 @@ int AST::DVNode::calc() const
 //////////////////END OF PLNode METHODS //////////////////
 
 ////////////////////ASNode METHODS///////////////////////
+
 AST::ASNode::ASNode(VNode *dst, INode *expr) : dst_(dst), expr_(expr)
 {
 }
@@ -100,46 +101,131 @@ AST::ASNode::~ASNode()
 ////////////////END OF ASNode METHODS///////////////////
 //////////////////////EQNode////////////////////////////
 
+AST::EQNode::EQNode(INode *left, INode *right) : OPNode(left, right)
+{
+}
+
+/**
+ * @brief Calculate for equality
+ * @return 1 if lhs is equal to rhs else 0
+ */
 int AST::EQNode::calc() const
 {
-  return left->calc() == right->calc();
+  return left_->calc() == right_->calc();
 }
 ///////////////END OF EQNode////////////////////////////
+//////////////////////NEQNode////////////////////////////
 
+AST::NEQNode::NEQNode(INode *left, INode *right) : OPNode(left, right)
+{
+}
 
-
+/**
+ * @brief Calculate for not equality
+ * @return 1 if lhs is not equal to rhs else 0
+ */
 int AST::NEQNode::calc() const
 {
-  return left->calc() != right->calc();
+  return left_->calc() != right_->calc();
 }
 
+///////////////END OF EQNode////////////////////////////
+//////////////////////GNode////////////////////////////
+
+AST::GNode::GNode(INode *left, INode *right) : OPNode(left, right)
+{
+}
+
+/**
+ * @brief Checking for greatness
+ * @return 1 if lhs is greater then rhs
+ */
 int AST::GNode::calc() const
 {
-  return left->calc() > right->calc();
+  return left_->calc() > right_->calc();
 }
 
+///////////////END OF GNode////////////////////////////
+//////////////////////GENode////////////////////////////
+
+AST::GENode::GENode(INode *left, INode *right) : OPNode(left, right)
+{
+}
+
+/**
+ * @brief Checking for greatness or equality
+ * @return 1 if lhs is greater or equal then rhs
+ */
 int AST::GENode::calc() const
 {
-  return left->calc() >= right->calc();
+  return left_->calc() >= right_->calc();
 }
+
+///////////////END OF GENode////////////////////////////
+//////////////////////LNode////////////////////////////
+
+AST::LNode::LNode(INode *left, INode *right) : OPNode(left, right)
+{
+}
+
+/**
+ * @brief Checking for lessness
+ * @return  1 if lhs is less then rhs
+ */
 int AST::LNode::calc() const
 {
-  return left->calc() < right->calc();
+  return left_->calc() < right_->calc();
 }
+///////////////END OF LNode////////////////////////////
+//////////////////////LENode////////////////////////////
+
+AST::LENode::LENode(INode *left, INode *right) : OPNode(left, right)
+{
+}
+
+
+/**
+ * @brief Checking for lessness or equality
+ * @return  1 if lhs is less or equal then rhs
+ */
 int AST::LENode::calc() const
 {
-  return left->calc() <= right->calc();
+  return left_->calc() <= right_->calc();
 }
+
+///////////////END OF LENode////////////////////////////
+//////////////////////ANDNode////////////////////////////
+
+AST::ANDNode::ANDNode(INode *left, INode *right) : OPNode(left, right)
+{
+}
+
+/**
+ * @brief Logical AND
+ * @return 1 or 0
+ */
 int AST::ANDNode::calc() const
 {
-  return left->calc() && right->calc();
+  return left_->calc() && right_->calc();
 }
+
+///////////////END OF ANDNode////////////////////////////
+//////////////////////ORNode////////////////////////////
+
+AST::ORNode::ORNode(INode *left, INode *right) : OPNode(left, right)
+{
+}
+
+/**
+ * @brief Logical OR
+ * @return 1 or 0
+ */
 int AST::ORNode::calc() const
 {
-  return left->calc() || right->calc();
+  return left_->calc() || right_->calc();
 }
 
-
+///////////////END OF ORNode////////////////////////////
 
 
 
