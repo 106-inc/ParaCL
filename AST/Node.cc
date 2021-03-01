@@ -19,20 +19,6 @@ int Scope::calc() const
   return 0;
 } /* End of 'calc' function */
 
-/**
- * @brief Add new var to scope function
- * @note reloading for variable node
- * @param branch
- * @param name - name of a variable to add
- */
-void Scope::add_var(const std::string &name)
-{
-
-  /* It's completely new variable */
-
-  // add variable to current scope
-  var_tbl_.insert({name, {}});
-} /* End 'add_var' function */
 
 /**
  * @brief Add node to scope function

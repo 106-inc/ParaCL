@@ -44,8 +44,6 @@ public:
 
   void push(INode *node) override;
 
-  void add_var(const std::string &name) override;
-
   it_bool check_var(const std::string &var_name) override;
 
   it_bool loc_check(const std::string &var_name) override;

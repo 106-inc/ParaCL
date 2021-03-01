@@ -28,10 +28,6 @@ struct IScope : public INode
 
   virtual IScope *reset_scope() const = 0;
 
-  // virtual void add_branch(INode *branch) = 0;
-
-  virtual void add_var(const std::string &name) = 0;
-
   virtual std::pair<var_table::iterator, bool> check_var(const std::string &var_name) = 0;
 
   virtual std::pair<var_table::iterator, bool> loc_check(const std::string &var_name) = 0;
