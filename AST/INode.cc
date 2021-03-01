@@ -36,6 +36,22 @@ AST::INode *AST::make_op(INode *l, Ops op, INode *r)
   case Ops::DIV:
     IMMA_DOIN("/");
     return new DVNode{l, r};
+  case Ops::GREATER:
+    return new GNode{l, r};
+  case Ops::GR_EQ:
+    return new GENode{l, r};
+  case Ops::LESS:
+    return new LNode{l, r};
+  case Ops::LS_EQ:
+    return new LENode{l, r};
+  case Ops::IS_EQ:
+    return new EQNode{l, r};
+  case Ops::NOT_EQ:
+    return new NEQNode{l, r};
+  case Ops::AND:
+    return new ANDNode{l, r};
+  case Ops::OR:
+    return new ORNode{l, r};
   default:
     std::cout << "Operator is not implemented\n";
     return nullptr;
