@@ -12,6 +12,8 @@
 #include "../parser/parser.hh"
 //#include "../Driver/driver.hh"
 
+#define YY_USER_ACTION upd_cur_loc();
+
 // TODO: ТУТ ЯВНО НЕ ВСЕ - РАЗОБРАТЬСЯ
 
 %}

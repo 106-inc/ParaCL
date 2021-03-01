@@ -5,10 +5,10 @@
 %locations
 
 %define parse.trace
-%define parse.error verbose
 %define parse.lac full
 
 %define api.value.type variant
+%define parse.error custom
 
 %code requires
 {
@@ -188,14 +188,21 @@ print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
 
 namespace yy
 {
-  void parser::error( const location_type& loc, const std::string &msg )
+
+  void parser::error (const parser::location_type& location, const std::string& string)
   {
-    std::cerr << msg << " in (line.column): " << loc << std::endl;
+  	std::cerr << string << " in (line.column): "<< location << std::endl;
   }
 
   parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
   {
-    return driver->yylex(yylval, yylloc);
+   	return driver->yylex(yylval, yylloc);
   }
+
+  void parser::report_syntax_error(parser::context const& ctx) const
+  {
+  	driver->report_syntax_error(ctx);
+  }
+
 }
 
