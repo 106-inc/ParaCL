@@ -74,6 +74,101 @@ public:
 // TODO:
 // ADD Logical operators classes
 /////////////////////////
+//
+class EQNode final : public INode
+{
+public:
+  EQNode(INode *left, INode *right);
+
+  EQNode(const EQNode &) = delete;
+  EQNode &operator=(const EQNode &) = delete;
+
+  int calc() const override;
+};
+
+
+class NEQNode final : public INode
+{
+public:
+  EQNode(INode *left, INode *right);
+
+  EQNode(const EQNode &) = delete;
+  EQNode &operator=(const EQNode &) = delete;
+
+  int calc() const override;
+};
+
+
+class GNode final : public INode
+{
+public:
+  GNNode(INode *left, INode *right);
+
+  EQNode(const EQNode &) = delete;
+  EQNode &operator=(const EQNode &) = delete;
+
+  int calc() const override;
+};
+
+
+class GENode final : public INode
+{
+public:
+  EQNode(INode *left, INode *right);
+
+  EQNode(const EQNode &) = delete;
+  EQNode &operator=(const EQNode &) = delete;
+
+  int calc() const override;
+};
+
+
+class LNode final : public INode
+{
+public:
+  EQNode(INode *left, INode *right);
+
+  EQNode(const EQNode &) = delete;
+  EQNode &operator=(const EQNode &) = delete;
+
+  int calc() const override;
+};
+
+class LENode final : public INode
+{
+public:
+  EQNode(INode *left, INode *right);
+
+  EQNode(const EQNode &) = delete;
+  EQNode &operator=(const EQNode &) = delete;
+
+  int calc() const override;
+};
+
+
+class ANDNode final : public INode
+{
+public:
+  EQNode(INode *left, INode *right);
+
+  EQNode(const EQNode &) = delete;
+  EQNode &operator=(const EQNode &) = delete;
+
+  int calc() const override;
+};
+
+class ORNode final : public INode
+{
+public:
+  EQNode(INode *left, INode *right);
+
+  EQNode(const EQNode &) = delete;
+  EQNode &operator=(const EQNode &) = delete;
+
+  int calc() const override;
+};
+
+
 } // namespace AST
 
 #endif // PARACL_OPNODE_HH
