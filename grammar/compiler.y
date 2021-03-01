@@ -136,7 +136,7 @@ stm:         assign                               { $$ = $1; };
            | while                                { $$ = $1; };
            | print                                { $$ = $1; };
 
-assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_ass($1, $3); };
+assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_asgn($1, $3); };
 
 expr:        expr OR expr1                        { $$ = AST::make_op($1, AST::Ops::OR, $3); };
            | expr1                                { $$ = $1; };
