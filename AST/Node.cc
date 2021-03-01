@@ -285,12 +285,15 @@ PNode::~PNode()
 /**
  * @brief Interpret read node function
  * @return read value
+ * @warning STD::TERMINATE CALL!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 int RNode::calc() const
 {
   int value{};
 
   std::cin >> value;
+  if (!std::cin.good())
+    std::terminate();
 
   return value;
 } /* End of 'calc' function */
