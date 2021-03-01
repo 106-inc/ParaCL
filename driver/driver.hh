@@ -16,7 +16,7 @@
 //#include "../FB_BLD/lex.yy.cc"
 #endif /* yyFlexLexer */
 
-//! #include "numgrammar.tab.hh" - auto generated file from bison
+enum { TOKENMAX = 30 };
 
 namespace yy
 {
@@ -27,7 +27,7 @@ private:
   std::ifstream in_file;
 
   OurFlexLexer *plex_; // maybe this is good name
-  std::vector<std::string> line_of_prog;
+  std::vector<std::string> lines_of_prog;
 
 public:
   Driver(const char *name_of_file);
@@ -38,7 +38,7 @@ public:
   bool parse();
   parser::token_type yylex(parser::semantic_type *yylval, parser::location_type *yylloc);
 
-  /*void report_syntax_error(const parser::context &ctx);*/
+  void report_syntax_error(const parser::context &ctx);
 
   ~Driver();
 };
