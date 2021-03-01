@@ -97,4 +97,64 @@ AST::ASNode::~ASNode()
   delete dst_;
   delete expr_;
 }
-////////////////END OF ASNode METHODS////////////////////
+////////////////END OF ASNode METHODS///////////////////
+//////////////////////EQNode////////////////////////////
+
+int AST::EQNode::calc() const
+{
+  return left->calc() == right->calc();
+}
+///////////////END OF EQNode////////////////////////////
+
+
+
+int AST::NEQNode::calc() const
+{
+  return left->calc() != right->calc();
+}
+
+int AST::GNode::calc() const
+{
+  return left->calc() > right->calc();
+}
+
+int AST::GENode::calc() const
+{
+  return left->calc() >= right->calc();
+}
+int AST::LNode::calc() const
+{
+  return left->calc() < right->calc();
+}
+int AST::LENode::calc() const
+{
+  return left->calc() <= right->calc();
+}
+int AST::ANDNode::calc() const
+{
+  return left->calc() && right->calc();
+}
+int AST::ORNode::calc() const
+{
+  return left->calc() || right->calc();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

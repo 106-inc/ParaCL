@@ -90,10 +90,10 @@ public:
 class NEQNode final : public INode
 {
 public:
-  EQNode(INode *left, INode *right);
+  NEQNode(INode *left, INode *right);
 
-  EQNode(const EQNode &) = delete;
-  EQNode &operator=(const EQNode &) = delete;
+  NEQNode(const NEQNode &) = delete;
+  NEQNode &operator=(const NEQNode &) = delete;
 
   int calc() const override;
 };
@@ -102,10 +102,10 @@ public:
 class GNode final : public INode
 {
 public:
-  GNNode(INode *left, INode *right);
+  GNode(INode *left, INode *right);
 
-  EQNode(const EQNode &) = delete;
-  EQNode &operator=(const EQNode &) = delete;
+  GNode(const GNode &) = delete;
+  GNode &operator=(const GNode &) = delete;
 
   int calc() const override;
 };
@@ -114,10 +114,10 @@ public:
 class GENode final : public INode
 {
 public:
-  EQNode(INode *left, INode *right);
+  GENode(INode *left, INode *right);
 
-  EQNode(const EQNode &) = delete;
-  EQNode &operator=(const EQNode &) = delete;
+  GENode(const GENode &) = delete;
+  GENode &operator=(const GENode &) = delete;
 
   int calc() const override;
 };
@@ -126,10 +126,10 @@ public:
 class LNode final : public INode
 {
 public:
-  EQNode(INode *left, INode *right);
+  LNode(INode *left, INode *right);
 
-  EQNode(const EQNode &) = delete;
-  EQNode &operator=(const EQNode &) = delete;
+  LNode(const LNode &) = delete;
+  LNode &operator=(const LNode &) = delete;
 
   int calc() const override;
 };
@@ -137,10 +137,10 @@ public:
 class LENode final : public INode
 {
 public:
-  EQNode(INode *left, INode *right);
+  LENode(INode *left, INode *right);
 
-  EQNode(const EQNode &) = delete;
-  EQNode &operator=(const EQNode &) = delete;
+  LENode(const LENode &) = delete;
+  LENode &operator=(const LENode &) = delete;
 
   int calc() const override;
 };
@@ -149,10 +149,10 @@ public:
 class ANDNode final : public INode
 {
 public:
-  EQNode(INode *left, INode *right);
+  ANDNode(INode *left, INode *right);
 
-  EQNode(const EQNode &) = delete;
-  EQNode &operator=(const EQNode &) = delete;
+  ANDNode(const ANDNode &) = delete;
+  ANDNode &operator=(const ANDNode &) = delete;
 
   int calc() const override;
 };
@@ -160,10 +160,10 @@ public:
 class ORNode final : public INode
 {
 public:
-  EQNode(INode *left, INode *right);
+  ORNode(INode *left, INode *right);
 
-  EQNode(const EQNode &) = delete;
-  EQNode &operator=(const EQNode &) = delete;
+  ORNode(const ORNode &) = delete;
+  ORNode &operator=(const ORNode &) = delete;
 
   int calc() const override;
 };
