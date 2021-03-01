@@ -7,7 +7,7 @@ include_directories(.)
 include_directories(AST)
 include_directories(driver)
 
-add_executable(ParaCL
+add_executable(paracl
         AST/INode.cc
         AST/OPNode.cc
         AST/Node.cc
