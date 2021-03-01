@@ -88,7 +88,6 @@ extern AST::IScope * CUR_SCOPE;
 %nterm<AST::INode *> if
 %nterm<AST::INode *> while
 %nterm<AST::INode *> print
-%nterm<AST::INode *> scan
 %nterm<AST::INode *> assign
 
 %nterm<AST::INode *> expr
@@ -134,7 +133,6 @@ stm:         assign                               { $$ = $1; };
            | if                                   { $$ = $1; };
            | while                                { $$ = $1; };
            | print                                { $$ = $1; };
-           | scan                                 { $$ = $1; };
 
 assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_ass($1, $3); };
 
@@ -159,6 +157,7 @@ expr5:       expr5 mdm expr6                      { $$ = AST::make_op($1, $2, $3
 expr6:       LP expr[e] RP                        { $$ = $e; };
            | NAME                                 { $$ = AST::make_ref($1); };
            | INT                                  { $$ = AST::make_cst($1); };
+           | SCAN                                 { $$ = AST::make_scan(); };
 
 if:          IF LP expr[e] RP cur_stm[s]          { $$ = AST::make_if($e, $s); };
            | IF LP expr[e] RP cur_stm[s1]                                               /* dangling else */
@@ -182,8 +181,6 @@ eq_ty:       IS_EQ                                { $$ = AST::Ops::IS_EQ; };
            | NOT_EQ                               { $$ = AST::Ops::NOT_EQ; };
 
 print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
-
-scan:        NAME ASSIGN SCAN SCOLON              { $$ = AST::make_ass($1, AST::make_scan()); };
 
 %%
 
