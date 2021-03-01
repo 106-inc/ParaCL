@@ -91,15 +91,18 @@ extern AST::IScope * CUR_SCOPE;
 %nterm<AST::INode *> scan
 %nterm<AST::INode *> assign
 
-%nterm<AST::INode *> cond
 %nterm<AST::INode *> expr
 %nterm<AST::INode *> expr1
 %nterm<AST::INode *> expr2
+%nterm<AST::INode *> expr3
+%nterm<AST::INode *> expr4
+%nterm<AST::INode *> expr5
+%nterm<AST::INode *> expr6
 
 %nterm<AST::Ops> pm
 %nterm<AST::Ops> mdm
-%nterm<AST::Ops> lgc
 %nterm<AST::Ops> cmp
+%nterm<AST::Ops> eq_ty
 
 
 %%
@@ -135,25 +138,33 @@ stm:         assign                               { $$ = $1; };
 
 assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_ass($1, $3); };
 
-expr:        expr pm expr1                        { $$ = AST::make_op($1, $2, $3); }; 
+expr:        expr OR expr1                        { $$ = AST::make_op($1, AST::Ops::OR, $3); };
            | expr1                                { $$ = $1; };
 
-expr1:       expr1 mdm expr2                      { $$ = AST::make_op($1, $2, $3); }; 
+expr1:       expr1 AND expr2                      { $$ = AST::make_op($1, AST::Ops::AND, $3); };
            | expr2                                { $$ = $1; };
 
-expr2:       LP expr[e] RP                        { $$ = $e; };
+expr2:       expr2 eq_ty expr3                    { $$ = AST::make_op($1, $2, $3); };
+           | expr3                                { $$ = $1; };
+
+expr3:       expr3 cmp expr4                      { $$ = AST::make_op($1, $2, $3); };
+           | expr4                                { $$ = $1; };
+
+expr4:       expr4 pm expr5                       { $$ = AST::make_op($1, $2, $3); };
+           | expr5                                { $$ = $1; };
+
+expr5:       expr5 mdm expr6                      { $$ = AST::make_op($1, $2, $3); };
+           | expr6                                { $$ = $1; };
+
+expr6:       LP expr[e] RP                        { $$ = $e; };
            | NAME                                 { $$ = AST::make_ref($1); };
            | INT                                  { $$ = AST::make_cst($1); };
 
-if:          IF LP cond[c] RP cur_stm[s]          { $$ = AST::make_if($c, $s); };
-           | IF LP cond[c] RP cur_stm[s1]                                               /* dangling else */
-             ELSE cur_stm[s2]                     { $$ = AST::make_if($c, $s1, $s2); }; /* this rule creates shift-reduce conflict  */
+if:          IF LP expr[e] RP cur_stm[s]          { $$ = AST::make_if($e, $s); };
+           | IF LP expr[e] RP cur_stm[s1]                                               /* dangling else */
+             ELSE cur_stm[s2]                     { $$ = AST::make_if($e, $s1, $s2); }; /* this rule creates shift-reduce conflict  */
 
-while:       WHILE LP cond[c] RP cur_stm[s]       { $$ = AST::make_while($c, $s); };
-
-cond:        expr lgc expr                        { $$ = AST::make_op($1, $2, $3); };
-           | NOT cond                             { /* $$ = handle_name */ };
-           | expr                                 { $$ = $1; };
+while:       WHILE LP expr[e] RP cur_stm[s]       { $$ = AST::make_while($e, $s); };
 
 pm:          ADD                                  { $$ = AST::Ops::ADD; }; 
            | SUB                                  { $$ = AST::Ops::SUB; }; 
@@ -162,17 +173,13 @@ mdm:         MUL                                  { $$ = AST::Ops::MUL; };
            | DIV                                  { $$ = AST::Ops::DIV; };
            | MOD                                  { $$ = AST::Ops::MOD; };
 
-lgc:         AND                                  { $$ = AST::Ops::AND; };
-           | OR                                   { $$ = AST::Ops::OR; };
-           | cmp                                  { $$ = $1; };
-
-cmp:         IS_EQ                                { $$ = AST::Ops::IS_EQ; };
-           | NOT_EQ                               { $$ = AST::Ops::NOT_EQ; };
-           | GREATER                              { $$ = AST::Ops::GREATER; };
+cmp:         GREATER                              { $$ = AST::Ops::GREATER; };
            | LESS                                 { $$ = AST::Ops::LESS; };
            | GR_EQ                                { $$ = AST::Ops::GR_EQ; };
            | LS_EQ                                { $$ = AST::Ops::LS_EQ; };
 
+eq_ty:       IS_EQ                                { $$ = AST::Ops::IS_EQ; };
+           | NOT_EQ                               { $$ = AST::Ops::NOT_EQ; };
 
 print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
 
