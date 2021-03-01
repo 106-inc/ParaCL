@@ -23,14 +23,14 @@ namespace yy
 class Driver final
 {
 private:
-  const char *name_of_file_;
+  std::string name_of_file_;
   std::ifstream in_file;
 
   OurFlexLexer *plex_; // maybe this is good name
   std::vector<std::string> lines_of_prog;
 
 public:
-  Driver(const char *name_of_file);
+  Driver(const char* name_of_file);
 
   Driver(const Driver &drvr) = delete;
   Driver &operator=(const Driver &) = delete;
