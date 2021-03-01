@@ -75,7 +75,7 @@ public:
 // ADD Logical operators classes
 /////////////////////////
 //
-class EQNode final : public INode
+class EQNode final : public OPNode
 {
 public:
   EQNode(INode *left, INode *right);
@@ -87,7 +87,7 @@ public:
 };
 
 
-class NEQNode final : public INode
+class NEQNode final : public OPNode
 {
 public:
   NEQNode(INode *left, INode *right);
@@ -99,7 +99,7 @@ public:
 };
 
 
-class GNode final : public INode
+class GNode final : public OPNode
 {
 public:
   GNode(INode *left, INode *right);
@@ -111,7 +111,7 @@ public:
 };
 
 
-class GENode final : public INode
+class GENode final : public OPNode
 {
 public:
   GENode(INode *left, INode *right);
@@ -123,7 +123,7 @@ public:
 };
 
 
-class LNode final : public INode
+class LNode final : public OPNode
 {
 public:
   LNode(INode *left, INode *right);
@@ -134,7 +134,7 @@ public:
   int calc() const override;
 };
 
-class LENode final : public INode
+class LENode final : public OPNode
 {
 public:
   LENode(INode *left, INode *right);
@@ -146,7 +146,7 @@ public:
 };
 
 
-class ANDNode final : public INode
+class ANDNode final : public OPNode
 {
 public:
   ANDNode(INode *left, INode *right);
@@ -157,7 +157,7 @@ public:
   int calc() const override;
 };
 
-class ORNode final : public INode
+class ORNode final : public OPNode
 {
 public:
   ORNode(INode *left, INode *right);
