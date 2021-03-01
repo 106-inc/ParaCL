@@ -37,10 +37,9 @@ driver.o: $(DVR)/driver.cc
 parser.o: $(PSR)/parser.cc
 	$(CC) -c -o $(BLD)/parser.o $(PSR)/parser.cc
 
-ast.o: AST/INode.cc AST/Node.cc AST/OPNode.cc
+ast.o: AST/INode.cc AST/Node.cc
 	$(CC) -c -o $(BLD)/inode.o AST/INode.cc
 	$(CC) -c -o $(BLD)/node.o AST/Node.cc
-	$(CC) -c -o $(BLD)/opnode.o AST/OPNode.cc
 
 main.o: main.cc
 	$(CC) -c -o $(BLD)/main.o main.cc
