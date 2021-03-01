@@ -4,23 +4,30 @@
 
 #include "parser.hh"
 
-yy::location OurFlexLexer::get_cur_location()
+yy::location OurFlexLexer::get_cur_location() { return cur_location_; }
+
+
+bool OurFlexLexer::is_empty_line(const char* str)
 {
-  return cur_location_;
+    return ((str[0] == '\n') || str[0] == '\v');
 }
 
-std::string OurFlexLexer::get_cur_str_()
-{
-  return cur_str_;
-}
+int OurFlexLexer::get_last_line_() { return last_num_of_line; }
 
 void OurFlexLexer::upd_cur_loc()
 {
-  int cur_num_of_line = lineno();
+    int cur_num_of_line = lineno();
 
-  cur_location_.lines(cur_num_of_line - last_num_of_line);
-  cur_location_.columns((YYLeng()));
-  cur_location_.step();
+    int prev_end_column = cur_location_.end.column;
+    cur_location_.begin.line = cur_location_.end.line = cur_num_of_line;
 
-  last_num_of_line = cur_num_of_line;
+    if (is_empty_line (yytext))
+        cur_location_.begin.column = cur_location_.end.column = 1;
+
+    else
+    {
+        cur_location_.begin.column = prev_end_column;
+        cur_location_.end.column = cur_location_.begin.column + YYLeng();
+    }
+    last_num_of_line = cur_num_of_line;
 }

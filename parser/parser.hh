@@ -14,8 +14,8 @@ class OurFlexLexer : public yyFlexLexer
 {
 private:
   yy::location cur_location_{};
-  std::string cur_str_{};
-  int last_num_of_line = 0;
+
+  int last_num_of_line;
 
 public:
   OurFlexLexer() = default;
@@ -24,7 +24,9 @@ public:
   OurFlexLexer &operator=(const OurFlexLexer &) = delete;
 
   yy::location get_cur_location();
-  std::string get_cur_str_();
+  int get_last_line_();
+
+  bool is_empty_line(const char* str);
 
   void upd_cur_loc();
 
