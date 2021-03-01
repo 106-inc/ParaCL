@@ -16,7 +16,10 @@
 //#include "../FB_BLD/lex.yy.cc"
 #endif /* yyFlexLexer */
 
-enum { TOKENMAX = 30 };
+enum
+{
+  TOKENMAX = 30
+};
 
 namespace yy
 {

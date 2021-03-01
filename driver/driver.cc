@@ -7,7 +7,7 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
   plex_ = new OurFlexLexer;
   std::string tmp_str;
 
-    in_file.open(name_of_file);
+  in_file.open(name_of_file);
   std::ifstream tmp(name_of_file);
 
   if (in_file.is_open())
@@ -65,32 +65,31 @@ yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, pars
 //! \param ctx - contex, which ...
 void yy::Driver::report_syntax_error(const parser::context &ctx)
 {
-    std::cerr << "syntax error in ";
-    std::cerr << "line:" << ctx.location().begin.line ;
-    std::cerr << ", column:" << ctx.location().begin.column << "-" << ctx.location().end.column << ":" << std::endl;
+  std::cerr << "syntax error in ";
+  std::cerr << "line:" << ctx.location().begin.line;
+  std::cerr << ", column:" << ctx.location().begin.column << "-" << ctx.location().end.column << ":" << std::endl;
 
+  // Report the tokens expected at this point.
+  /*
+  parser::symbol_kind_type expectd_tokns[TOKENMAX];
+  int num_of_expectd_tokns = ctx.expected_tokens(expectd_tokns, TOKENMAX);
 
-    // Report the tokens expected at this point.
-    /*
-    parser::symbol_kind_type expectd_tokns[TOKENMAX];
-    int num_of_expectd_tokns = ctx.expected_tokens(expectd_tokns, TOKENMAX);
+  for (size_t i = 0; i < num_of_expectd_tokns; ++i)
+  {
+      if (i != 0)
+          std::cerr << " or ";
 
-    for (size_t i = 0; i < num_of_expectd_tokns; ++i)
-    {
-        if (i != 0)
-            std::cerr << " or ";
+      std::cerr << " <" << parser::symbol_name(expectd_tokns[i]) << "> ";
+  }
+  */
 
-        std::cerr << " <" << parser::symbol_name(expectd_tokns[i]) << "> ";
-    }
-    */
+  // Report the unexpected token.
 
-    // Report the unexpected token.
-
-    parser::symbol_kind_type lookahead = ctx.token();
-    std::cerr << "before " << "<" << lookahead << ">" << std::endl;
-    std::cerr << lines_of_prog[ctx.location().begin.line - 1] << std::endl;
+  parser::symbol_kind_type lookahead = ctx.token();
+  std::cerr << "before "
+            << "<" << lookahead << ">" << std::endl;
+  std::cerr << lines_of_prog[ctx.location().begin.line - 1] << std::endl;
 }
-
 
 yy::Driver::~Driver()
 {
