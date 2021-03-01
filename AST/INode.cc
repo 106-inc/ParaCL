@@ -1,10 +1,15 @@
 #include "INode.hh"
 #include "OPNode.hh"
 
+/**
+ * @file INode.cc
+ * @brief Realization of functions from 'INode.hh' file
+ */
 namespace AST
 {
 
 /**
+ * @fn make_cst
  * @brief Make constant calue node function
  * @param val [in] value to put to node
  * @return pointer to created node
@@ -16,6 +21,7 @@ INode *make_cst(int val)
 } /* End of 'make_cst' function */
 
 /**
+ * @fn make_op
  * @brief Create operator node function
  * @param l  [in] left node of operator
  * @param op [in] operator type
@@ -62,9 +68,10 @@ INode *make_op(INode *l, Ops op, INode *r)
 } /* End of 'make_op' function */
 
 /**
+ * @fn make_while
  * @brief Make while node fucntion
- * @param o [in]
- * @param s []
+ * @param cond pointer to condition node
+ * @param sc - pointer to scope
  * @return pointer to created Node
  */
 INode *make_while(INode *cond, IScope *sc)
@@ -74,9 +81,11 @@ INode *make_while(INode *cond, IScope *sc)
 } /* End of 'make_while' function */
 
 /**
- * Create if node fucntion
- * @param o
- * @param s
+ * @fn make_if
+ * @brief Create if node fucntion
+ * @param cond ptr to condition
+ * @param isc ptr to if scope
+ * @param esc ptr to else scope (nullptr default)
  * @return pointer to created Node
  */
 INode *make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
@@ -86,6 +95,7 @@ INode *make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
 } /* End of 'make_if' function */
 
 /**
+ * @fn make_scope
  * @brief Create scope function
  * @param par [in] - pointer to parent node
  * @return pointer to created Scope
@@ -98,6 +108,7 @@ IScope *make_scope(IScope *par /* = nullptr */)
 } /* End of 'create_scope' function */
 
 /**
+ * @fn make ref
  * @brief Make var node for expression
  * @param var_name name of a variable
  * @warning DEBUG version - std::terminate!!!!!!!!!
@@ -116,9 +127,10 @@ INode *make_ref(const std::string &var_name)
   return new VNode{it_bl.first};
 } /* End of 'make_ref' function */
 
-/**
+/*!
+ * @fn make_print
  * @brief Make print node function
- * @param expr [in] pointer to expression node
+ * @param[in] expr pointer to expression node
  * @return pointer to created node
  */
 INode *make_print(INode *expr)
@@ -132,16 +144,17 @@ INode *make_print(INode *expr)
  */
 INode *make_scan()
 {
-  return new RNode{};
+  return new RNode;
 }
 
 /**
+ * @fn make_asgn
  * @brief Make assignment node function
  * @param var_name
  * @param expr
  * @return pointer to created node
  */
-INode *make_ass(const std::string &var_name, INode *expr)
+INode *make_asgn(const std::string &var_name, INode *expr)
 {
   IMMA_DOIN("ASS");
   auto it = CUR_SCOPE->check_n_insert(var_name);
@@ -153,6 +166,7 @@ INode *make_ass(const std::string &var_name, INode *expr)
 } /* End of 'make_ass' function */
 
 /**
+ * @fn IMMA_DOIN
  * @brief debug function
  * @param doin_wha
  */

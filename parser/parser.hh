@@ -26,7 +26,7 @@ public:
   yy::location get_cur_location();
   int get_last_line_();
 
-  bool is_empty_line(const char* str);
+  bool is_empty_line(const char *str);
 
   void upd_cur_loc();
 

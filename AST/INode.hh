@@ -1,3 +1,8 @@
+/**
+ * @file INode.hh
+ * @brief Base declarations for AST
+ */
+
 #ifndef INODE_HH
 #define INODE_HH
 
@@ -5,15 +10,27 @@
 #include <string>
 #include <unordered_map>
 
+/**
+ * @namespace AST
+ * @brief namespace for AST tree interfaces
+ */
 namespace AST
 {
-/* Useful typedef */
+/**
+ * @typedef var_table
+ * @brief Useful typedef for variables table type
+ */
 using var_table = std::unordered_map<std::string, int>;
 
 // node interface
 struct INode
 {
+  INode() = default;
+
   virtual int calc() const = 0;
+
+  INode(const INode &) = delete;
+  INode &operator =(const INode &) = delete;
 
   // MB for ruture
   // virtual void dump() = 0;
@@ -35,6 +52,10 @@ struct IScope : public INode
   virtual var_table::iterator check_n_insert(const std::string &var_name) = 0;
 };
 
+/**
+ * @enum Ops
+ * @brief enum class with operators
+ */
 enum class Ops
 {
   ASSIGN,
@@ -68,7 +89,7 @@ INode *make_cst(int val);
 INode *make_op(INode *l, Ops op, INode *r);
 INode *make_while(INode *cond, IScope *sc);
 INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
-INode *make_ass(const std::string &var_name, INode *expr);
+INode *make_asgn(const std::string &var_name, INode *expr);
 INode *make_ref(const std::string &var_name);
 INode *make_print(INode *expr);
 INode *make_scan();
