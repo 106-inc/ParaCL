@@ -105,6 +105,8 @@ void yy::Driver::report_syntax_error(const parser::context &ctx)
 
         else std::cerr << "~";
     }
+
+    std::cerr << std::endl;
 }
 
 
