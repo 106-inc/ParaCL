@@ -1,12 +1,15 @@
 #include "INode.hh"
 #include "OPNode.hh"
 
+namespace AST
+{
+
 /**
  * @brief Make constant calue node function
  * @param val [in] value to put to node
  * @return pointer to created node
  */
-AST::INode *AST::make_cst(int val)
+INode *make_cst(int val)
 {
   IMMA_DOIN("CST");
   return new CNode{val};
@@ -19,7 +22,7 @@ AST::INode *AST::make_cst(int val)
  * @param r  [in] right node of operator
  * @return pointer to created Node
  */
-AST::INode *AST::make_op(INode *l, Ops op, INode *r)
+INode *make_op(INode *l, Ops op, INode *r)
 {
   IMMA_DOIN("OP");
   switch (op)
@@ -64,7 +67,7 @@ AST::INode *AST::make_op(INode *l, Ops op, INode *r)
  * @param s []
  * @return pointer to created Node
  */
-AST::INode *AST::make_while(INode *cond, IScope *sc)
+INode *make_while(INode *cond, IScope *sc)
 {
   IMMA_DOIN("WHILE");
   return new WHNode{cond, sc};
@@ -76,7 +79,7 @@ AST::INode *AST::make_while(INode *cond, IScope *sc)
  * @param s
  * @return pointer to created Node
  */
-AST::INode *AST::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
+INode *make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
 {
   IMMA_DOIN("IF");
   return new IFNode{cond, isc, esc};
@@ -87,7 +90,7 @@ AST::INode *AST::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
  * @param par [in] - pointer to parent node
  * @return pointer to created Scope
  */
-AST::IScope *AST::make_scope(IScope *par /* = nullptr */)
+IScope *make_scope(IScope *par /* = nullptr */)
 {
   IMMA_DOIN("SCOPE");
   return new Scope{par};
@@ -100,7 +103,7 @@ AST::IScope *AST::make_scope(IScope *par /* = nullptr */)
  * @warning DEBUG version - std::terminate!!!!!!!!!
  * @return pointer to created node
  */
-AST::INode *AST::make_ref(const std::string &var_name)
+INode *make_ref(const std::string &var_name)
 {
   IMMA_DOIN("VAR USAGE");
   auto it_bl = CUR_SCOPE->check_var(var_name);
@@ -114,12 +117,12 @@ AST::INode *AST::make_ref(const std::string &var_name)
 } /* End of 'make_ref' function */
 
 // TODO: docs
-AST::INode *AST::make_print(AST::INode *expr)
+INode *make_print(INode *expr)
 {
   return new PNode{expr};
 }
 
-AST::INode *AST::make_scan()
+INode *make_scan()
 {
   return new RNode{};
 }
@@ -130,7 +133,7 @@ AST::INode *AST::make_scan()
  * @param expr
  * @return pointer to created node
  */
-AST::INode *AST::make_ass(const std::string &var_name, INode *expr)
+INode *make_ass(const std::string &var_name, INode *expr)
 {
   IMMA_DOIN("ASS");
   auto it = CUR_SCOPE->check_n_insert(var_name);
@@ -145,7 +148,9 @@ AST::INode *AST::make_ass(const std::string &var_name, INode *expr)
  * @brief debug function
  * @param doin_wha
  */
-void AST::IMMA_DOIN(const char *doin_wha)
+void IMMA_DOIN(const char *doin_wha)
 {
   // std::cout << "I'MMA DOIN " << doin_wha << std::endl;
+}
+
 }

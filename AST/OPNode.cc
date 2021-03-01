@@ -4,9 +4,11 @@
 
 #include "OPNode.hh"
 
+namespace AST
+{
 /////////////////////////PLNode METHODS //////////////////
 
-AST::PLNode::PLNode(INode *left, INode *right) : OPNode(left, right)
+PLNode::PLNode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -14,7 +16,7 @@ AST::PLNode::PLNode(INode *left, INode *right) : OPNode(left, right)
  * Calculate value of node function
  * @return
  */
-int AST::PLNode::calc() const
+int PLNode::calc() const
 {
   return left_->calc() + right_->calc();
 }
@@ -23,7 +25,7 @@ int AST::PLNode::calc() const
 
 /////////////////////////SBNode METHODS //////////////////
 
-AST::SBNode::SBNode(INode *left, INode *right) : OPNode(left, right)
+SBNode::SBNode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -31,7 +33,7 @@ AST::SBNode::SBNode(INode *left, INode *right) : OPNode(left, right)
  * Calculate value of node function
  * @return
  */
-int AST::SBNode::calc() const
+int SBNode::calc() const
 {
   return left_->calc() - right_->calc();
 }
@@ -40,7 +42,7 @@ int AST::SBNode::calc() const
 
 /////////////////////////MLNode METHODS //////////////////
 
-AST::MLNode::MLNode(INode *left, INode *right) : OPNode(left, right)
+MLNode::MLNode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -48,7 +50,7 @@ AST::MLNode::MLNode(INode *left, INode *right) : OPNode(left, right)
  * Calculate value of node function
  * @return
  */
-int AST::MLNode::calc() const
+int MLNode::calc() const
 {
   return left_->calc() * right_->calc();
 }
@@ -57,7 +59,7 @@ int AST::MLNode::calc() const
 
 /////////////////////////DVNode METHODS //////////////////
 
-AST::DVNode::DVNode(INode *left, INode *right) : OPNode(left, right)
+DVNode::DVNode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -65,7 +67,7 @@ AST::DVNode::DVNode(INode *left, INode *right) : OPNode(left, right)
  * Calculate value of node function
  * @return calculation result
  */
-int AST::DVNode::calc() const
+int DVNode::calc() const
 {
   return left_->calc() / right_->calc();
 }
@@ -74,14 +76,14 @@ int AST::DVNode::calc() const
 
 ////////////////////ASNode METHODS///////////////////////
 
-AST::ASNode::ASNode(VNode *dst, INode *expr) : dst_(dst), expr_(expr)
+ASNode::ASNode(VNode *dst, INode *expr) : dst_(dst), expr_(expr)
 {
 }
 
 /**
  * @brief Interpret the node function
  */
-int AST::ASNode::calc() const
+int ASNode::calc() const
 {
   int expr_res = expr_->calc();
 
@@ -93,7 +95,7 @@ int AST::ASNode::calc() const
 /**
  * @brief Assignment class destructor
  */
-AST::ASNode::~ASNode()
+ASNode::~ASNode()
 {
   delete dst_;
   delete expr_;
@@ -101,7 +103,7 @@ AST::ASNode::~ASNode()
 ////////////////END OF ASNode METHODS///////////////////
 //////////////////////EQNode////////////////////////////
 
-AST::EQNode::EQNode(INode *left, INode *right) : OPNode(left, right)
+EQNode::EQNode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -109,14 +111,14 @@ AST::EQNode::EQNode(INode *left, INode *right) : OPNode(left, right)
  * @brief Calculate for equality
  * @return 1 if lhs is equal to rhs else 0
  */
-int AST::EQNode::calc() const
+int EQNode::calc() const
 {
   return left_->calc() == right_->calc();
 }
 ///////////////END OF EQNode////////////////////////////
 //////////////////////NEQNode////////////////////////////
 
-AST::NEQNode::NEQNode(INode *left, INode *right) : OPNode(left, right)
+NEQNode::NEQNode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -124,7 +126,7 @@ AST::NEQNode::NEQNode(INode *left, INode *right) : OPNode(left, right)
  * @brief Calculate for not equality
  * @return 1 if lhs is not equal to rhs else 0
  */
-int AST::NEQNode::calc() const
+int NEQNode::calc() const
 {
   return left_->calc() != right_->calc();
 }
@@ -132,7 +134,7 @@ int AST::NEQNode::calc() const
 ///////////////END OF EQNode////////////////////////////
 //////////////////////GNode////////////////////////////
 
-AST::GNode::GNode(INode *left, INode *right) : OPNode(left, right)
+GNode::GNode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -140,7 +142,7 @@ AST::GNode::GNode(INode *left, INode *right) : OPNode(left, right)
  * @brief Checking for greatness
  * @return 1 if lhs is greater then rhs
  */
-int AST::GNode::calc() const
+int GNode::calc() const
 {
   return left_->calc() > right_->calc();
 }
@@ -148,7 +150,7 @@ int AST::GNode::calc() const
 ///////////////END OF GNode////////////////////////////
 //////////////////////GENode////////////////////////////
 
-AST::GENode::GENode(INode *left, INode *right) : OPNode(left, right)
+GENode::GENode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -156,7 +158,7 @@ AST::GENode::GENode(INode *left, INode *right) : OPNode(left, right)
  * @brief Checking for greatness or equality
  * @return 1 if lhs is greater or equal then rhs
  */
-int AST::GENode::calc() const
+int GENode::calc() const
 {
   return left_->calc() >= right_->calc();
 }
@@ -164,7 +166,7 @@ int AST::GENode::calc() const
 ///////////////END OF GENode////////////////////////////
 //////////////////////LNode////////////////////////////
 
-AST::LNode::LNode(INode *left, INode *right) : OPNode(left, right)
+LNode::LNode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -172,14 +174,14 @@ AST::LNode::LNode(INode *left, INode *right) : OPNode(left, right)
  * @brief Checking for lessness
  * @return  1 if lhs is less then rhs
  */
-int AST::LNode::calc() const
+int LNode::calc() const
 {
   return left_->calc() < right_->calc();
 }
 ///////////////END OF LNode////////////////////////////
 //////////////////////LENode////////////////////////////
 
-AST::LENode::LENode(INode *left, INode *right) : OPNode(left, right)
+LENode::LENode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -188,7 +190,7 @@ AST::LENode::LENode(INode *left, INode *right) : OPNode(left, right)
  * @brief Checking for lessness or equality
  * @return  1 if lhs is less or equal then rhs
  */
-int AST::LENode::calc() const
+int LENode::calc() const
 {
   return left_->calc() <= right_->calc();
 }
@@ -196,7 +198,7 @@ int AST::LENode::calc() const
 ///////////////END OF LENode////////////////////////////
 //////////////////////ANDNode////////////////////////////
 
-AST::ANDNode::ANDNode(INode *left, INode *right) : OPNode(left, right)
+ANDNode::ANDNode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -204,7 +206,7 @@ AST::ANDNode::ANDNode(INode *left, INode *right) : OPNode(left, right)
  * @brief Logical AND
  * @return 1 or 0
  */
-int AST::ANDNode::calc() const
+int ANDNode::calc() const
 {
   return left_->calc() && right_->calc();
 }
@@ -212,7 +214,7 @@ int AST::ANDNode::calc() const
 ///////////////END OF ANDNode////////////////////////////
 //////////////////////ORNode////////////////////////////
 
-AST::ORNode::ORNode(INode *left, INode *right) : OPNode(left, right)
+ORNode::ORNode(INode *left, INode *right) : OPNode(left, right)
 {
 }
 
@@ -220,14 +222,13 @@ AST::ORNode::ORNode(INode *left, INode *right) : OPNode(left, right)
  * @brief Logical OR
  * @return 1 or 0
  */
-int AST::ORNode::calc() const
+int ORNode::calc() const
 {
   return left_->calc() || right_->calc();
 }
 
 ///////////////END OF ORNode////////////////////////////
-
-
+}
 
 
 
