@@ -9,10 +9,10 @@ CC = g++ --std=c++2a -Wall -Wextra
 all: start
 
 compile:
-	$(CC) $(BLD)/scanner.o $(BLD)/compiler.o $(BLD)/driver.o $(BLD)/parser.o $(BLD)/inode.o $(BLD)/opnode.o $(BLD)/node.o
+	$(CC) $(BLD)/scanner.o $(BLD)/compiler.o $(BLD)/driver.o $(BLD)/parser.o $(BLD)/inode.o $(BLD)/node.o
 
 start: bld_dir fb_bld bison.o flex.o parser.o ast.o driver.o
-	$(CC) -o $(BLD)/paracl main.cc $(BLD)/scanner.o $(BLD)/compiler.o $(BLD)/parser.o $(BLD)/inode.o $(BLD)/node.o $(BLD)/opnode.o $(BLD)/driver.o
+	$(CC) -o $(BLD)/paracl main.cc $(BLD)/scanner.o $(BLD)/compiler.o $(BLD)/parser.o $(BLD)/inode.o $(BLD)/node.o $(BLD)/driver.o
 
 clean:
 	rm -rf BLD FD_BLD
