@@ -9,7 +9,7 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
   plex_ = new OurFlexLexer;
   std::string tmp_str;
 
-    in_file.open(name_of_file);
+  in_file.open(name_of_file);
   std::ifstream tmp(name_of_file);
 
   if (in_file.is_open())
@@ -69,46 +69,47 @@ yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, pars
 //! \param ctx - the context that is created when an error is found
 void yy::Driver::report_syntax_error(const parser::context &ctx)
 {
-    yy::location loc = ctx.location();
+  yy::location loc = ctx.location();
 
-    std::cerr << "syntax error in ";
-    std::cerr << "line: " << loc.begin.line ;
-    std::cerr << ", column: " << loc.begin.column << std::endl;
+  std::cerr << "syntax error in ";
+  std::cerr << "line: " << loc.begin.line;
+  std::cerr << ", column: " << loc.begin.column << std::endl;
 
-    // Report the tokens expected at this point.
-    parser::symbol_kind_type expectd_tokns[NUM_OF_TOKENS];
-    size_t num_of_expectd_tokns = ctx.expected_tokens(expectd_tokns, NUM_OF_TOKENS);
+  // Report the tokens expected at this point.
+  parser::symbol_kind_type expectd_tokns[NUM_OF_TOKENS];
+  size_t num_of_expectd_tokns = ctx.expected_tokens(expectd_tokns, NUM_OF_TOKENS);
 
-    std::cerr << "expected:";
+  std::cerr << "expected:";
 
-    for (size_t i = 0; i < num_of_expectd_tokns; ++i)
-    {
-        if (i != 0)
-            std::cerr << " or ";
+  for (size_t i = 0; i < num_of_expectd_tokns; ++i)
+  {
+    if (i != 0)
+      std::cerr << " or ";
 
-        std::cerr << " <" << parser::symbol_name(expectd_tokns[i]) << "> ";
-    }
+    std::cerr << " <" << parser::symbol_name(expectd_tokns[i]) << "> ";
+  }
 
-    std::cerr << std::endl;
+  std::cerr << std::endl;
 
-    // Report the unexpected token.
-    parser::symbol_kind_type lookahead = ctx.token();
+  // Report the unexpected token.
+  parser::symbol_kind_type lookahead = ctx.token();
 
-    std::cerr << "before: " << "<" << parser::symbol_name(lookahead) << ">" << std::endl;
-    std::cerr << loc.begin.line << "   |   " << lines_of_prog[loc.begin.line - 1] << std::endl;
-    std::cerr << "    |   ";
+  std::cerr << "before: "
+            << "<" << parser::symbol_name(lookahead) << ">" << std::endl;
+  std::cerr << loc.begin.line << "   |   " << lines_of_prog[loc.begin.line - 1] << std::endl;
+  std::cerr << "    |   ";
 
-    for (int i = 0; i < loc.end.column - 1; ++i)
-    {
-        if (i == (ctx.lookahead().location.begin.column - 1))
-            std::cerr << "^";
+  for (int i = 0; i < loc.end.column - 1; ++i)
+  {
+    if (i == (ctx.lookahead().location.begin.column - 1))
+      std::cerr << "^";
 
-        else std::cerr << "~";
-    }
+    else
+      std::cerr << "~";
+  }
 
-    std::cerr << std::endl;
+  std::cerr << std::endl;
 }
-
 
 //! Destructor for class Driver
 yy::Driver::~Driver()
