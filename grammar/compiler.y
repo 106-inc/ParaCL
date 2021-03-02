@@ -40,7 +40,7 @@ extern AST::IScope * CUR_SCOPE;
 
 %left
 
-  ADD SUB
+  ADD MIN
   MUL DIV MOD
 
   GREATER LESS
@@ -156,7 +156,6 @@ stm:         assign                               { $$ = $1; };
 assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_asgn($1, $3); };
 
 expr:        expr_or                              { $$ = $1; };
-          /* | SUB expr                             { std::cout << "hui1" << std::endl; }; */
 
 expr_or:     expr_or OR expr_and                  { $$ = AST::make_op($1, AST::Ops::OR, $3); };
            | expr_and                             { $$ = $1; };
@@ -176,8 +175,8 @@ expr_pm:     expr_pm pm expr_mdm                  { $$ = AST::make_op($1, $2, $3
 expr_mdm:    expr_mdm mdm expr_term               { $$ = AST::make_op($1, $2, $3); };
            | expr_un                              { $$ = $1; };
 
-expr_un:     un expr_un                           { std::cout << "un expr_un" << std::endl; };
-           | expr_term                            { std::cout << "expr_term" << std::endl; };
+expr_un:     un expr_un                           { std::cout << "un expr_un" << std::endl; /* $$ = make_un($1, $2); */ };
+           | expr_term                            { std::cout << "expr_term" << std::endl; /* $$ = $1 */ };
 
 expr_term:   LP expr[e] RP                        { $$ = $e; };
            | NAME                                 { $$ = AST::make_ref($1); };
@@ -191,7 +190,7 @@ if:          IF LP expr[e] RP cur_stm[s]          { $$ = AST::make_if($e, $s); }
 while:       WHILE LP expr[e] RP cur_stm[s]       { $$ = AST::make_while($e, $s); };
 
 pm:          ADD                                  { $$ = AST::Ops::ADD; }; 
-           | SUB                                  { $$ = AST::Ops::SUB; }; 
+           | MIN                                  { $$ = AST::Ops::SUB; }; 
 
 mdm:         MUL                                  { $$ = AST::Ops::MUL; };  
            | DIV                                  { $$ = AST::Ops::DIV; };
@@ -205,8 +204,8 @@ cmp:         GREATER                              { $$ = AST::Ops::GREATER; };
 eq_ty:       IS_EQ                                { $$ = AST::Ops::IS_EQ; };
            | NOT_EQ                               { $$ = AST::Ops::NOT_EQ; };
 
-un:          SUB                                  { std::cout << "unmin" << std::endl; };
-           | NOT                                  { std::cout << "not" << std::endl; };
+un:          MIN                                  { $$ = AST::Ops::UNMIN; };
+           | NOT                                  { $$ = AST::Ops::NOT; };
 
 print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
 
