@@ -62,10 +62,22 @@ INode *make_op(INode *l, Ops op, INode *r)
   case Ops::OR:
     return new ORNode{l, r};
   default:
-    std::cout << "Operator is not implemented\n";
-    return nullptr;
+    throw std::runtime_error("Operator is not implemented\n");
   }
 } /* End of 'make_op' function */
+
+INode * make_un(Ops op, INode * operand)
+{
+  switch(op)
+  {
+  case Ops::NEG:
+    return new NEGNode{operand};
+  case Ops::NOT:
+    return new NOTNode{operand};
+  default:
+    throw std::runtime_error("Operator is not implemented\n");
+  }
+}
 
 /**
  * @fn make_while

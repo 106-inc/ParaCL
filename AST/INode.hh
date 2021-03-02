@@ -76,7 +76,7 @@ enum class Ops
   AND,
   OR,
 
-  UNMIN,
+  NEG,
   NOT
 };
 
@@ -87,6 +87,7 @@ void IMMA_DOIN(const char *doin_wha);
 
 INode *make_cst(int val);
 INode *make_op(INode *l, Ops op, INode *r);
+INode *make_un(Ops op, INode *operand);
 INode *make_while(INode *cond, IScope *sc);
 INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
 INode *make_asgn(const std::string &var_name, INode *expr);
