@@ -338,6 +338,48 @@ struct ORNode final : public OPNode
   } /* End of 'calc' function */
 };
 
+struct NEGNode final : public UNOPNode
+{
+  /**
+   * @brief Logical OR node struct ctor
+   * @param left left node ptr
+   * @param right right node ptr
+   */
+  NEGNode(INode *operand) : UNOPNode(operand)
+  {
+  }
+
+  /**
+   * @brief Calculate value of Logical OR node function
+   * @return calculated disjuncted value
+   */
+  int calc() const override
+  {
+    return -operand_->calc();
+  } /* End of 'calc' function */
+};
+
+struct NOTNode final : public UNOPNode
+{
+  /**
+   * @brief Logical OR node struct ctor
+   * @param left left node ptr
+   * @param right right node ptr
+   */
+  NOTNode(INode *operand) : UNOPNode(operand)
+  {
+  }
+
+  /**
+   * @brief Calculate value of Logical OR node function
+   * @return calculated disjuncted value
+   */
+  int calc() const override
+  {
+    return !operand_->calc();
+  } /* End of 'calc' function */
+};
+
 } // namespace AST
 
 #endif // PARACL_OPNODE_HH

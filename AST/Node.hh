@@ -114,6 +114,20 @@ public:
 };
 
 /**
+ * @brief Operator node class
+ */
+class UNOPNode : public INode
+{
+protected:
+  INode *operand_{};
+
+public:
+  UNOPNode(INode *operand);
+
+  ~UNOPNode();
+};
+
+/**
  * @brief While node class
  */
 class WHNode final : public INode

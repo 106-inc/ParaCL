@@ -201,7 +201,27 @@ OPNode::~OPNode()
 }
 
 ///////////END OF OPNODE METHODS/////////////////////////
+////////////////UNOPNode METHODS/////////////////////////
 
+/**
+ * Operator's node constructor
+ * @param left  [in] - left node of operator
+ * @param right [in] - right node of operator
+ */
+UNOPNode::UNOPNode(INode *operand) : operand_(operand)
+{
+}
+
+/**
+ * UNOPNode class destructor.
+ * Deletes left ans right nodes
+ */
+UNOPNode::~UNOPNode()
+{
+  delete operand_;
+}
+
+///////////END OF UNOPNode METHODS/////////////////////////
 /////////////WHNode METHODS//////////////////////////////
 
 WHNode::WHNode(INode *cond, IScope *scope) : cond_(cond), scope_(scope)
