@@ -45,6 +45,8 @@ INode *make_op(INode *l, Ops op, INode *r)
   case Ops::DIV:
     IMMA_DOIN("/");
     return new DVNode{l, r};
+  case Ops::MOD:
+    return new MDNode{l, r};
   case Ops::GREATER:
     return new GNode{l, r};
   case Ops::GR_EQ:
@@ -66,6 +68,13 @@ INode *make_op(INode *l, Ops op, INode *r)
   }
 } /* End of 'make_op' function */
 
+/**
+ * @brief Make unary operator node function
+ *
+ * @param[in] op  enum type of operator
+ * @param[in] operand pointer to operand node
+ * @return INode*
+ */
 INode *make_un(Ops op, INode *operand)
 {
   switch (op)
