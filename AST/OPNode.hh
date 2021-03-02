@@ -350,7 +350,8 @@ struct MDNode final : public OPNode
    * @param[in] right pointer to right node
    */
   MDNode(INode *left, INode *right) : OPNode(left, right)
-  {}
+  {
+  }
 
   /**
    * @brief calculate value of mod node function
