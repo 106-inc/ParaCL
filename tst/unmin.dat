@@ -1,0 +1,11 @@
+x = 1;
+
+neg_x = -x;
+not_x = !x;
+not_not_x = !!x;
+andrey = -!-x;
+
+print neg_x;
+print not_x;
+print not_not_x;
+print andrey;
