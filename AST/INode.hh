@@ -108,8 +108,8 @@ IScope *make_scope(IScope *par = nullptr);
 //////////////////////////////////////////////////////////
 
 /////////////////////THOUGHTS ABOUT ERROR PROCESSING/////////////////////////
-/* 
- * 1) just delete input ptrs in case of exception thrown (try / catch) 
+/*
+ * 1) just delete input ptrs in case of exception thrown (try / catch)
  * 2) use ptr handlers for auto releaseaing the resource
  *  (has a problem with releasing after end of scope)
  */
