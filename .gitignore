@@ -19,6 +19,11 @@ _deps
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+FB_BLD/
+PCL_BLD/
+docs/latex/
+docs/html/
+build/
 
 # Generated files
 .idea/**/contentModel.xml
