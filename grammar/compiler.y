@@ -78,31 +78,48 @@ extern AST::IScope * CUR_SCOPE;
 
 /* nonterminals */
 
-%nterm<AST::IScope *> scope
-%nterm<AST::IScope *> cl_sc
+%nterm<AST::IScope *>
 
-%nterm<AST::INode *> stm
-%nterm<AST::INode *> stms
+  scope
+  cl_sc
+  ;
+
 %nterm<AST::IScope *> cur_stm
 
-%nterm<AST::INode *> if
-%nterm<AST::INode *> while
-%nterm<AST::INode *> print
-%nterm<AST::INode *> assign
+%nterm<AST::INode *> 
+  stm
+  stms
+  ;
 
-%nterm<AST::INode *> expr
-%nterm<AST::INode *> expr1
-%nterm<AST::INode *> expr2
-%nterm<AST::INode *> expr3
-%nterm<AST::INode *> expr4
-%nterm<AST::INode *> expr5
-%nterm<AST::INode *> expr6
+%nterm<AST::INode *>
 
-%nterm<AST::Ops> pm
-%nterm<AST::Ops> mdm
-%nterm<AST::Ops> cmp
-%nterm<AST::Ops> eq_ty
+  if
+  while
+  print
+  assign
+  ;
 
+%nterm<AST::INode *>
+
+  expr
+  expr_or
+  expr_and
+  expr_eqty
+  expr_cmp
+  expr_pm
+  expr_mdm
+  expr_un
+  expr_term
+  ;
+
+%nterm<AST::Ops>
+
+  pm
+  mdm
+  cmp
+  eq_ty
+  un
+  ;
 
 %%
 
@@ -138,25 +155,31 @@ stm:         assign                               { $$ = $1; };
 
 assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_asgn($1, $3); };
 
-expr:        expr OR expr1                        { $$ = AST::make_op($1, AST::Ops::OR, $3); };
-           | expr1                                { $$ = $1; };
+expr:        expr_or                              { $$ = $1; };
+          /* | SUB expr                             { std::cout << "hui1" << std::endl; }; */
 
-expr1:       expr1 AND expr2                      { $$ = AST::make_op($1, AST::Ops::AND, $3); };
-           | expr2                                { $$ = $1; };
+expr_or:     expr_or OR expr_and                  { $$ = AST::make_op($1, AST::Ops::OR, $3); };
+           | expr_and                             { $$ = $1; };
 
-expr2:       expr2 eq_ty expr3                    { $$ = AST::make_op($1, $2, $3); };
-           | expr3                                { $$ = $1; };
+expr_and:    expr_and AND expr_eqty               { $$ = AST::make_op($1, AST::Ops::AND, $3); };
+           | expr_eqty                            { $$ = $1; };
 
-expr3:       expr3 cmp expr4                      { $$ = AST::make_op($1, $2, $3); };
-           | expr4                                { $$ = $1; };
+expr_eqty:   expr_eqty eq_ty expr_cmp             { $$ = AST::make_op($1, $2, $3); };
+           | expr_cmp                             { $$ = $1; };
 
-expr4:       expr4 pm expr5                       { $$ = AST::make_op($1, $2, $3); };
-           | expr5                                { $$ = $1; };
+expr_cmp:    expr_cmp cmp expr_pm                 { $$ = AST::make_op($1, $2, $3); };
+           | expr_pm                              { $$ = $1; };
 
-expr5:       expr5 mdm expr6                      { $$ = AST::make_op($1, $2, $3); };
-           | expr6                                { $$ = $1; };
+expr_pm:     expr_pm pm expr_mdm                  { $$ = AST::make_op($1, $2, $3); };
+           | expr_mdm                             { $$ = $1; };
 
-expr6:       LP expr[e] RP                        { $$ = $e; };
+expr_mdm:    expr_mdm mdm expr_term               { $$ = AST::make_op($1, $2, $3); };
+           | expr_un                              { $$ = $1; };
+
+expr_un:     un expr_un                           { std::cout << "un expr_un" << std::endl; };
+           | expr_term                            { std::cout << "expr_term" << std::endl; };
+
+expr_term:   LP expr[e] RP                        { $$ = $e; };
            | NAME                                 { $$ = AST::make_ref($1); };
            | INT                                  { $$ = AST::make_cst($1); };
            | SCAN                                 { $$ = AST::make_scan(); };
@@ -181,6 +204,9 @@ cmp:         GREATER                              { $$ = AST::Ops::GREATER; };
 
 eq_ty:       IS_EQ                                { $$ = AST::Ops::IS_EQ; };
            | NOT_EQ                               { $$ = AST::Ops::NOT_EQ; };
+
+un:          SUB                                  { std::cout << "unmin" << std::endl; };
+           | NOT                                  { std::cout << "not" << std::endl; };
 
 print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
 
