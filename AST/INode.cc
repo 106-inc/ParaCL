@@ -10,7 +10,7 @@ namespace AST
 
 /**
  * @fn make_cst
- * @brief Make constant calue node function
+ * @brief Make constant value node function
  * @param val [in] value to put to node
  * @return pointer to created node
  */
@@ -45,6 +45,8 @@ INode *make_op(INode *l, Ops op, INode *r)
   case Ops::DIV:
     IMMA_DOIN("/");
     return new DVNode{l, r};
+  case Ops::MOD:
+    return new MDNode{l, r};
   case Ops::GREATER:
     return new GNode{l, r};
   case Ops::GR_EQ:
@@ -62,10 +64,29 @@ INode *make_op(INode *l, Ops op, INode *r)
   case Ops::OR:
     return new ORNode{l, r};
   default:
-    std::cout << "Operator is not implemented\n";
-    return nullptr;
+    throw std::runtime_error("Operator is not implemented\n");
   }
 } /* End of 'make_op' function */
+
+/**
+ * @brief Make unary operator node function
+ *
+ * @param[in] op  enum type of operator
+ * @param[in] operand pointer to operand node
+ * @return INode*
+ */
+INode *make_un(Ops op, INode *operand)
+{
+  switch (op)
+  {
+  case Ops::NEG:
+    return new NEGNode{operand};
+  case Ops::NOT:
+    return new NOTNode{operand};
+  default:
+    throw std::runtime_error("Operator is not implemented\n");
+  }
+}
 
 /**
  * @fn make_while
@@ -117,7 +138,7 @@ IScope *make_scope(IScope *par /* = nullptr */)
 INode *make_ref(const std::string &var_name)
 {
   IMMA_DOIN("VAR USAGE");
-  auto it_bl = CUR_SCOPE->check_var(var_name);
+  auto it_bl = CUR_SCOPE->get_var(var_name);
 
   // TODO: delete termination
   if (!it_bl.second)

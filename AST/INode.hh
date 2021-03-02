@@ -30,7 +30,7 @@ struct INode
   virtual int calc() const = 0;
 
   INode(const INode &) = delete;
-  INode &operator =(const INode &) = delete;
+  INode &operator=(const INode &) = delete;
 
   // MB for ruture
   // virtual void dump() = 0;
@@ -45,7 +45,7 @@ struct IScope : public INode
 
   virtual IScope *reset_scope() const = 0;
 
-  virtual std::pair<var_table::iterator, bool> check_var(const std::string &var_name) = 0;
+  virtual std::pair<var_table::iterator, bool> get_var(const std::string &var_name) = 0;
 
   virtual std::pair<var_table::iterator, bool> loc_check(const std::string &var_name) = 0;
 
@@ -76,7 +76,7 @@ enum class Ops
   AND,
   OR,
 
-  UNMIN,
+  NEG,
   NOT
 };
 
@@ -87,6 +87,7 @@ void IMMA_DOIN(const char *doin_wha);
 
 INode *make_cst(int val);
 INode *make_op(INode *l, Ops op, INode *r);
+INode *make_un(Ops op, INode *operand);
 INode *make_while(INode *cond, IScope *sc);
 INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
 INode *make_asgn(const std::string &var_name, INode *expr);

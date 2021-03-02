@@ -321,8 +321,8 @@ struct ORNode final : public OPNode
 {
   /**
    * @brief Logical OR node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   ORNode(INode *left, INode *right) : OPNode(left, right)
   {
@@ -335,6 +335,79 @@ struct ORNode final : public OPNode
   int calc() const override
   {
     return left_->calc() || right_->calc();
+  } /* End of 'calc' function */
+};
+
+/**
+ * @brief Mod node struct
+ * @struct MDNode
+ */
+struct MDNode final : public OPNode
+{
+  /**
+   * @brief Construct a new MDNode object
+   * @param[in] left  pointer to left node
+   * @param[in] right pointer to right node
+   */
+  MDNode(INode *left, INode *right) : OPNode(left, right)
+  {
+  }
+
+  /**
+   * @brief calculate value of mod node function
+   * @return calculated value
+   */
+  int calc() const override
+  {
+    return left_->calc() % right_->calc();
+  }
+};
+
+/**
+ * @struct NEGNode
+ * @brief Negative node struct
+ */
+struct NEGNode final : public UNOPNode
+{
+  /**
+   * @brief Negative node struct ctor
+   * @param[in] operand operand node ptr
+   */
+  NEGNode(INode *operand) : UNOPNode(operand)
+  {
+  }
+
+  /**
+   * @brief Calculate value of negative node function
+   * @return calculated negatiated value
+   */
+  int calc() const override
+  {
+    return -operand_->calc();
+  } /* End of 'calc' function */
+};
+
+/**
+ * @struct NOTNode
+ * @brief Logical NOT node struct
+ */
+struct NOTNode final : public UNOPNode
+{
+  /**
+   * @brief Logical NOT node struct ctor
+   * @param[in] operand operand node ptr
+   */
+  NOTNode(INode *operand) : UNOPNode(operand)
+  {
+  }
+
+  /**
+   * @brief Calculate value of Logical NOT node function
+   * @return calculated inversed value
+   */
+  int calc() const override
+  {
+    return !operand_->calc();
   } /* End of 'calc' function */
 };
 

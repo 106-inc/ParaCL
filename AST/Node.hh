@@ -29,31 +29,65 @@ private:
 
 public:
   // constructor by parent scope ptr
-  explicit Scope(IScope *parent = nullptr);
-
-  Scope(const Scope &sc) = delete;
-
-  Scope &operator=(const Scope &sc) = delete;
+  Scope(IScope *parent = nullptr) : parent_(parent)
+  {
+  }
 
   IScope *reset_scope() const override
   {
     return parent_;
   }
 
-  int calc() const override;
+  /**
+   * @brief Interpret the scope function (claculate)
+   * @return int
+   */
+  int calc() const override
+  {
+    for (auto *node : nodes_)
+      node->calc();
 
-  void push(INode *node) override;
+    return 0;
+  } /* End of 'calc' function */
 
-  it_bool check_var(const std::string &var_name) override;
+  /**
+   * @brief Add node to scope function
+   * @param node [in] node to add
+   * @return none
+   */
+  void push(INode *node) override
+  {
+    nodes_.push_back(node);
+  } /* End of 'push' function */
+
+  it_bool get_var(const std::string &var_name) override;
 
   it_bool loc_check(const std::string &var_name) override;
 
   var_table::iterator check_n_insert(const std::string &var_name) override;
 
-  ~Scope() override;
+  /**
+   * Scope class destructor
+   */
+  ~Scope()
+  {
+    for (auto *node : nodes_)
+      delete node;
+  }
 
 private:
-  var_table::iterator insert_var(const std::string &var_name);
+  /**
+   * @brief Insert variable to table of current scope
+   * @warning NO VALIDATION OF UNIQUE!!!
+   * @param var_name
+   * @return iterator to inserted variable
+   */
+  var_table::iterator insert_var(const std::string &var_name)
+  {
+    auto it_bl = var_tbl_.insert({var_name, {}});
+
+    return it_bl.first;
+  } /* End of 'insert_var' function */
 };
 
 /**
@@ -67,18 +101,49 @@ private:
   var_table::iterator location_{};
 
 public:
-  explicit VNode(var_table::iterator loc);
+  /**
+   * @brief Varibale node ctor
+   * @param[in] loc iterator to location in variables table
+   */
+  VNode(var_table::iterator loc) : location_(loc)
+  {
+  }
 
-  VNode(const VNode &) = delete;
-  VNode &operator=(const VNode &) = delete;
+  /**
+   * Get variable name function
+   * @return name of a variable
+   */
+  const std::string &get_name() const
+  {
+    return location_->first;
+  }
 
-  const std::string &get_name() const;
+  /**
+   * Get variable location in table function
+   * @return iterator to variable's location in var table
+   */
+  var_table::iterator get_loc() const
+  {
+    return location_;
+  }
 
-  var_table::iterator get_loc() const;
+  /**
+   * Calculate value of a variable function
+   * @return
+   */
+  int calc() const override
+  {
+    return location_->second;
+  }
 
-  int calc() const override;
-
-  void set_val(int val);
+  /**
+   * Set value of variable function
+   * @param[in] val
+   */
+  void set_val(int val)
+  {
+    location_->second = val;
+  }
 };
 
 /**
@@ -90,12 +155,22 @@ private:
   const int val_;
 
 public:
-  CNode(int val);
+  /**
+   * Constant node ctor
+   * @param[in] val  value of a node
+   */
+  CNode(int val) : val_(val)
+  {
+  }
 
-  CNode(const CNode &) = delete;
-  CNode &operator=(const CNode &) = delete;
-
-  int calc() const override;
+  /**
+   * Calculate the value of node
+   * @return value of a node
+   */
+  int calc() const override
+  {
+    return val_;
+  }
 };
 
 /**
@@ -108,9 +183,52 @@ protected:
   INode *right_{};
 
 public:
-  OPNode(INode *left, INode *right);
+  /**
+   * Operator's node constructor
+   * @param[in] left    left node of operator
+   * @param[in] right   right node of operator
+   */
+  OPNode(INode *left, INode *right) : left_(left), right_(right)
+  {
+  }
 
-  ~OPNode();
+  /**
+   * OPNode class destructor.
+   * Deletes left ans right nodes
+   */
+  ~OPNode()
+  {
+    delete left_;
+    delete right_;
+  }
+};
+
+/**
+ * @class UNOPNode
+ * @brief Operator node class
+ */
+class UNOPNode : public INode
+{
+protected:
+  INode *operand_{};
+
+public:
+  /**
+   * Operator's node constructor
+   * @param[in] operand  pointer to operand's node
+   */
+  UNOPNode(INode *operand) : operand_(operand)
+  {
+  }
+
+  /**
+   * @brief UNOPNode class destructor.
+   * Deletes left ans right nodes
+   */
+  ~UNOPNode()
+  {
+    delete operand_;
+  }
 };
 
 /**
@@ -123,14 +241,30 @@ private:
   IScope *scope_{};
 
 public:
-  WHNode(INode *cond, IScope *scope);
+  WHNode(INode *cond, IScope *scope) : cond_(cond), scope_(scope)
+  {
+  }
 
-  WHNode(const WHNode &) = delete;
-  WHNode &operator=(const WHNode &) = delete;
+  /**
+   * @brief Calculate while node function
+   * @return int
+   */
+  int calc() const override
+  {
+    while (cond_->calc())
+      scope_->calc();
 
-  int calc() const override;
+    return 0;
+  }
 
-  ~WHNode();
+  /**
+   * While node class destructor
+   */
+  ~WHNode()
+  {
+    delete scope_;
+    delete cond_;
+  }
 };
 
 /**
@@ -146,14 +280,33 @@ private:
   IScope *else_scope_{};
 
 public:
-  IFNode(INode *cond, IScope *if_sc, IScope *el_sc = nullptr);
+  IFNode(INode *cond, IScope *if_sc, IScope *el_sc = nullptr) : cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
+  {
+  }
 
-  IFNode(const IFNode &) = delete;
-  IFNode &operator=(const IFNode &) = delete;
+  /**
+   * Interpret If node function
+   * @return calculated result
+   */
+  int calc() const override
+  {
+    if (cond_->calc())
+      if_scope_->calc();
+    else if (else_scope_ != nullptr)
+      else_scope_->calc();
 
-  int calc() const override;
+    return 0;
+  }
 
-  ~IFNode();
+  /**
+   * If node dtor function
+   */
+  IFNode()
+  {
+    delete cond_;
+    delete if_scope_;
+    delete else_scope_;
+  }
 };
 
 /**
@@ -165,14 +318,23 @@ private:
   INode *expr_;
 
 public:
-  PNode(INode *expr);
+  PNode(INode *expr) : expr_(expr)
+  {
+  }
 
-  PNode(const PNode &) = delete;
-  PNode &operator=(const PNode &) = delete;
+  /**
+   * Interpret print node function
+   */
+  int calc() const override
+  {
+    std::cout << expr_->calc() << std::endl;
+    return 0;
+  }
 
-  int calc() const override;
-
-  ~PNode();
+  ~PNode()
+  {
+    delete expr_;
+  }
 };
 
 /**
@@ -183,10 +345,21 @@ class RNode final : public INode
 public:
   RNode() = default;
 
-  RNode(const RNode &) = delete;
-  RNode &operator=(const RNode &) = delete;
+  /**
+   * @brief Interpret read node function
+   * @return read value
+   * @warning STD::TERMINATE CALL!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   */
+  int calc() const override
+  {
+    int value{};
 
-  int calc() const override;
+    std::cin >> value;
+    if (!std::cin.good())
+      std::terminate();
+
+    return value;
+  } /* End of 'calc' function */
 
   ~RNode() = default;
 };

@@ -14,8 +14,6 @@
 
 #define YY_USER_ACTION upd_cur_loc();
 
-// TODO: ТУТ ЯВНО НЕ ВСЕ - РАЗОБРАТЬСЯ
-
 %}
 
 WS        [ \t\n\v]+
@@ -37,7 +35,7 @@ NAME      {LETTER}{LETTER_D}*
  /* {MULCOMM}            skip comments between symbols */
 
 "+"                  return yy::parser::token_type::ADD;
-"-"                  return yy::parser::token_type::SUB;
+"-"                  return yy::parser::token_type::MIN;
 "*"                  return yy::parser::token_type::MUL;
 "/"                  return yy::parser::token_type::DIV;
 "%"                  return yy::parser::token_type::MOD;
