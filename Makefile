@@ -44,3 +44,4 @@ ast.o: AST/INode.cc AST/Node.cc
 main.o: main.cc
 	$(CC) -c -o $(BLD)/main.o main.cc
 
+.PHONY: clean
