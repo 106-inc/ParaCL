@@ -10,7 +10,7 @@ namespace AST
 
 /**
  * @fn make_cst
- * @brief Make constant calue node function
+ * @brief Make constant value node function
  * @param val [in] value to put to node
  * @return pointer to created node
  */
@@ -66,9 +66,9 @@ INode *make_op(INode *l, Ops op, INode *r)
   }
 } /* End of 'make_op' function */
 
-INode * make_un(Ops op, INode * operand)
+INode *make_un(Ops op, INode *operand)
 {
-  switch(op)
+  switch (op)
   {
   case Ops::NEG:
     return new NEGNode{operand};
@@ -129,7 +129,7 @@ IScope *make_scope(IScope *par /* = nullptr */)
 INode *make_ref(const std::string &var_name)
 {
   IMMA_DOIN("VAR USAGE");
-  auto it_bl = CUR_SCOPE->check_var(var_name);
+  auto it_bl = CUR_SCOPE->get_var(var_name);
 
   // TODO: delete termination
   if (!it_bl.second)
