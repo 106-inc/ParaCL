@@ -123,8 +123,6 @@ extern AST::IScope * CUR_SCOPE;
 
 %%
 
- /* TODO: add unary minus */
- /* TODO: add logical not */
 
 program:     stms                                 { /* program starting */ };
 
