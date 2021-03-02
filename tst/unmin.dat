@@ -1,8 +1,8 @@
-x = 1;
+x = ?;
 
 neg_x = -x;
 not_x = !x;
-not_not_x = !!x;
+not_not_x = !!x > 0;
 andrey = -!-x;
 min_min_x = --x;
 
