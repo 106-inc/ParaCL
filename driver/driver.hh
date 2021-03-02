@@ -23,34 +23,33 @@ enum
 
 namespace yy
 {
-    class Driver final
-    {
-    private:
-        std::string name_of_file_;
-        std::ifstream in_file;
+class Driver final
+{
+private:
+  std::string name_of_file_;
+  std::ifstream in_file;
 
-        OurFlexLexer *plex_; // maybe this is good name
-        std::vector<std::string> lines_of_prog;
+  OurFlexLexer *plex_; // maybe this is good name
+  std::vector<std::string> lines_of_prog;
 
-    public:
-        Driver(const char *name_of_file);
+public:
+  Driver(const char *name_of_file);
 
-        Driver(const Driver &drvr) = delete;
+  Driver(const Driver &drvr) = delete;
 
-        Driver &operator=(const Driver &) = delete;
+  Driver &operator=(const Driver &) = delete;
 
-        bool parse();
+  bool parse();
 
-        parser::token_type yylex(parser::semantic_type *yylval, parser::location_type *yylloc);
+  parser::token_type yylex(parser::semantic_type *yylval, parser::location_type *yylloc);
 
-        void report_syntax_error(const parser::context &ctx);
+  void report_syntax_error(const parser::context &ctx);
 
-        ~Driver();
-    };
+  ~Driver();
+};
 
-}
+} // namespace yy
 
-
- // namespace yy
+// namespace yy
 
 #endif // PARACL_DRIVER_HH
