@@ -128,7 +128,7 @@ program:     stms                                 { /* program starting */ };
 
 scope:       op_sc stms cl_sc                     { $$ = $3; };
 
-op_sc:       LB                                   { CUR_SCOPE = AST::make_scope(CUR_SCOPE); };
+op_sc:       LB                                   { CUR_SCOPE = AST::MemMan::manager().make_scope(CUR_SCOPE); };
 
 cl_sc:       RB                                   {
                                                     $$ = CUR_SCOPE;
@@ -141,7 +141,7 @@ stms:        stm                                  { CUR_SCOPE->push($1); };
            | stms scope                           { CUR_SCOPE->push($2); };
 
 cur_stm:     stm                                  {
-                                                     $$ = AST::make_scope(CUR_SCOPE);
+                                                     $$ = AST::MemMan::manager().make_scope(CUR_SCOPE);
                                                      $$->push($1);
                                                   };
            | scope                                { $$ = $1; };
@@ -151,41 +151,41 @@ stm:         assign                               { $$ = $1; };
            | while                                { $$ = $1; };
            | print                                { $$ = $1; };
 
-assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_asgn($1, $3); };
+assign:      NAME ASSIGN expr SCOLON              { $$ = AST::MemMan::manager().make_asgn($1, $3); };
 
 expr:        expr_or                              { $$ = $1; };
 
-expr_or:     expr_or OR expr_and                  { $$ = AST::make_op($1, AST::Ops::OR, $3); };
+expr_or:     expr_or OR expr_and                  { $$ = AST::MemMan::manager().make_op($1, AST::Ops::OR, $3); };
            | expr_and                             { $$ = $1; };
 
-expr_and:    expr_and AND expr_eqty               { $$ = AST::make_op($1, AST::Ops::AND, $3); };
+expr_and:    expr_and AND expr_eqty               { $$ = AST::MemMan::manager().make_op($1, AST::Ops::AND, $3); };
            | expr_eqty                            { $$ = $1; };
 
-expr_eqty:   expr_eqty eq_ty expr_cmp             { $$ = AST::make_op($1, $2, $3); };
+expr_eqty:   expr_eqty eq_ty expr_cmp             { $$ = AST::MemMan::manager().make_op($1, $2, $3); };
            | expr_cmp                             { $$ = $1; };
 
-expr_cmp:    expr_cmp cmp expr_pm                 { $$ = AST::make_op($1, $2, $3); };
+expr_cmp:    expr_cmp cmp expr_pm                 { $$ = AST::MemMan::manager().make_op($1, $2, $3); };
            | expr_pm                              { $$ = $1; };
 
-expr_pm:     expr_pm pm expr_mdm                  { $$ = AST::make_op($1, $2, $3); };
+expr_pm:     expr_pm pm expr_mdm                  { $$ = AST::MemMan::manager().make_op($1, $2, $3); };
            | expr_mdm                             { $$ = $1; };
 
-expr_mdm:    expr_mdm mdm expr_term               { $$ = AST::make_op($1, $2, $3); };
+expr_mdm:    expr_mdm mdm expr_term               { $$ = AST::MemMan::manager().make_op($1, $2, $3); };
            | expr_un                              { $$ = $1; };
 
 expr_un:     un expr_un                           { $$ = make_un($1, $2); };
            | expr_term                            { $$ = $1; };
 
 expr_term:   LP expr[e] RP                        { $$ = $e; };
-           | NAME                                 { $$ = AST::make_ref($1); };
-           | INT                                  { $$ = AST::make_cst($1); };
-           | SCAN                                 { $$ = AST::make_scan(); };
+           | NAME                                 { $$ = AST::MemMan::manager().make_ref($1); };
+           | INT                                  { $$ = AST::MemMan::manager().make_cst($1); };
+           | SCAN                                 { $$ = AST::MemMan::manager().make_scan(); };
 
-if:          IF LP expr[e] RP cur_stm[s]          { $$ = AST::make_if($e, $s); };
+if:          IF LP expr[e] RP cur_stm[s]          { $$ = AST::MemMan::manager().make_if($e, $s); };
            | IF LP expr[e] RP cur_stm[s1]                                               /* dangling else */
-             ELSE cur_stm[s2]                     { $$ = AST::make_if($e, $s1, $s2); }; /* this rule creates shift-reduce conflict  */
+             ELSE cur_stm[s2]                     { $$ = AST::MemMan::manager().make_if($e, $s1, $s2); }; /* this rule creates shift-reduce conflict  */
 
-while:       WHILE LP expr[e] RP cur_stm[s]       { $$ = AST::make_while($e, $s); };
+while:       WHILE LP expr[e] RP cur_stm[s]       { $$ = AST::MemMan::manager().make_while($e, $s); };
 
 pm:          ADD                                  { $$ = AST::Ops::ADD; }; 
            | MIN                                  { $$ = AST::Ops::SUB; }; 
@@ -205,7 +205,7 @@ eq_ty:       IS_EQ                                { $$ = AST::Ops::IS_EQ; };
 un:          MIN                                  { $$ = AST::Ops::NEG; };
            | NOT                                  { $$ = AST::Ops::NOT; };
 
-print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
+print:       PRINT expr SCOLON                    { $$ = AST::MemMan::manager().make_print($2); };
 
 %%
 

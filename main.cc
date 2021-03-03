@@ -9,7 +9,7 @@ int main(int argc, char **argv)
   }
 
   // TODO: create class root handler
-  auto root = AST::make_scope();
+  auto root = AST::MemMan::manager().make_scope();
 
   CUR_SCOPE = root;
   yy::Driver driver(argv[1]);
