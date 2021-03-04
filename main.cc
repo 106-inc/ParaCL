@@ -9,18 +9,22 @@ int main(int argc, char **argv)
   }
 
   // TODO: create class root handler
-  auto root = AST::make_scope();
+  auto root = AST::MemMan::manager().make_scope();
 
   CUR_SCOPE = root;
-  yy::Driver driver(argv[1]);
-  if (!driver.parse())
-  {
-    delete root;
-    return 1;
-  }
 
-  root->calc();
-  delete root;
+  try
+  {
+    yy::Driver driver(argv[1]);
+    if (!driver.parse())
+      return 1;
+  
+    root->calc();
+  }
+  catch (std::runtime_error &err)
+  {
+    std::cerr << err.what() << std::endl;
+  }
 
   return 0;
 }

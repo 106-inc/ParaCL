@@ -6,13 +6,12 @@ AST::IScope *CUR_SCOPE = nullptr;
 //! \param name_of_file - the name of the file from which our program is read
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
-  plex_ = new OurFlexLexer;
   std::string tmp_str;
 
   in_file.open(name_of_file);
   std::ifstream tmp(name_of_file);
 
-  if (in_file.is_open())
+  if (tmp.is_open())
   {
     while (tmp)
     {
@@ -20,7 +19,13 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
       lines_of_prog.push_back(tmp_str);
     }
   }
+  else
+  {
+    std::string what = "File '" + name_of_file_ + "' does not exist";
+    throw std::runtime_error{what};
+  }
 
+  plex_ = new OurFlexLexer;
   plex_->switch_streams(in_file, std::cout);
 }
 
