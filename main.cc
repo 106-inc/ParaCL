@@ -8,7 +8,6 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  // TODO: create class root handler
   auto root = AST::MemMan::manager().make_scope();
 
   CUR_SCOPE = root;
@@ -18,7 +17,7 @@ int main(int argc, char **argv)
     yy::Driver driver(argv[1]);
     if (!driver.parse())
       return 1;
-  
+
     root->calc();
   }
   catch (std::runtime_error &err)

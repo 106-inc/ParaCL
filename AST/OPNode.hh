@@ -102,7 +102,7 @@ struct DVNode final : public OPNode
   int calc() const override
   {
     int rcalc = right_->calc();
-    
+
     if (rcalc == 0)
       throw std::runtime_error{"Dividing by ZERO!"};
 
