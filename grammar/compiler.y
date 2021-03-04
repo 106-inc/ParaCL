@@ -173,7 +173,7 @@ expr_pm:     expr_pm pm expr_mdm                  { $$ = AST::MemMan::manager().
 expr_mdm:    expr_mdm mdm expr_term               { $$ = AST::MemMan::manager().make_op($1, $2, $3); };
            | expr_un                              { $$ = $1; };
 
-expr_un:     un expr_un                           { $$ = make_un($1, $2); };
+expr_un:     un expr_un                           { $$ = AST::MemMan::manager().make_un($1, $2); };
            | expr_term                            { $$ = $1; };
 
 expr_term:   LP expr[e] RP                        { $$ = $e; };
