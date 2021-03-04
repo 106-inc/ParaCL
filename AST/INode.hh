@@ -122,8 +122,6 @@ private:
   MemMan() = default;
 };
 
-void IMMA_DOIN(const char *doin_wha);
-
 ////////////////// TYPES OF NODES ////////////////////////
 /*
  * 1. Variable -> just iterator to var table OK

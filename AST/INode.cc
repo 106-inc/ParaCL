@@ -16,8 +16,6 @@ namespace AST
  */
 INode *MemMan::make_cst(int val)
 {
-  IMMA_DOIN("CST");
-
   pnodes_.push_front(new CNode{val});
   return pnodes_.front();
 } /* End of 'make_cst' function */
@@ -32,7 +30,6 @@ INode *MemMan::make_cst(int val)
  */
 INode *MemMan::make_op(INode *l, Ops op, INode *r)
 {
-  IMMA_DOIN("OP");
   switch (op)
   {
   case Ops::ADD:
@@ -149,7 +146,6 @@ IScope *MemMan::make_scope(IScope *par /* = nullptr */)
  */
 INode *MemMan::make_ref(const std::string &var_name)
 {
-  IMMA_DOIN("VAR USAGE");
   auto it_bl = CUR_SCOPE->get_var(var_name);
 
   if (!it_bl.second)
@@ -194,25 +190,13 @@ INode *MemMan::make_scan()
  */
 INode *MemMan::make_asgn(const std::string &var_name, INode *expr)
 {
-  IMMA_DOIN("ASS");
   auto it = CUR_SCOPE->check_n_insert(var_name);
 
-  IMMA_DOIN("VAR CREATE");
   auto pvar = new VNode{it};
   pnodes_.push_front(pvar);
 
   pnodes_.push_front(new ASNode{pvar, expr});
   return pnodes_.front();
 } /* End of 'make_ass' function */
-
-/**
- * @fn IMMA_DOIN
- * @brief debug function
- * @param doin_wha
- */
-void IMMA_DOIN(const char *doin_wha)
-{
-  // std::cout << "I'MMA DOIN " << doin_wha << std::endl;
-}
 
 } // namespace AST
