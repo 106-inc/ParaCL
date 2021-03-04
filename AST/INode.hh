@@ -87,7 +87,11 @@ enum class Ops
 class MemMan final
 {
 private:
-  /*  */
+  /**
+   * It is not a vector because we need only to push object here
+   * So we choose the most economic data structure in our opinion
+   * without reallocations
+   */
   std::forward_list<INode *> pnodes_;
 
 public:
