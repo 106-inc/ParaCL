@@ -14,10 +14,12 @@ namespace AST
  * @param val [in] value to put to node
  * @return pointer to created node
  */
-INode *make_cst(int val)
+INode *MemMan::make_cst(int val)
 {
   IMMA_DOIN("CST");
-  return new CNode{val};
+
+  pnodes_.push_front(new CNode{val});
+  return pnodes_.front();
 } /* End of 'make_cst' function */
 
 /**
@@ -28,41 +30,50 @@ INode *make_cst(int val)
  * @param r  [in] right node of operator
  * @return pointer to created Node
  */
-INode *make_op(INode *l, Ops op, INode *r)
+INode *MemMan::make_op(INode *l, Ops op, INode *r)
 {
   IMMA_DOIN("OP");
   switch (op)
   {
   case Ops::ADD:
-    IMMA_DOIN("+");
-    return new PLNode{l, r};
+    pnodes_.push_front(new PLNode{l, r});
+    return pnodes_.front();
   case Ops::SUB:
-    IMMA_DOIN("-");
-    return new SBNode{l, r};
+    pnodes_.push_front(new SBNode{l, r});
+    return pnodes_.front();
   case Ops::MUL:
-    IMMA_DOIN("*");
-    return new MLNode{l, r};
+    pnodes_.push_front(new MLNode{l, r});
+    return pnodes_.front();
   case Ops::DIV:
-    IMMA_DOIN("/");
-    return new DVNode{l, r};
+    pnodes_.push_front(new DVNode{l, r});
+    return pnodes_.front();
   case Ops::MOD:
-    return new MDNode{l, r};
+    pnodes_.push_front(new MDNode{l, r});
+    return pnodes_.front();
   case Ops::GREATER:
-    return new GNode{l, r};
+    pnodes_.push_front(new GNode{l, r});
+    return pnodes_.front();
   case Ops::GR_EQ:
-    return new GENode{l, r};
+    pnodes_.push_front(new GENode{l, r});
+    return pnodes_.front();
   case Ops::LESS:
-    return new LNode{l, r};
+    pnodes_.push_front(new LNode{l, r});
+    return pnodes_.front();
   case Ops::LS_EQ:
-    return new LENode{l, r};
+    pnodes_.push_front(new LENode{l, r});
+    return pnodes_.front();
   case Ops::IS_EQ:
-    return new EQNode{l, r};
+    pnodes_.push_front(new EQNode{l, r});
+    return pnodes_.front();
   case Ops::NOT_EQ:
-    return new NEQNode{l, r};
+    pnodes_.push_front(new NEQNode{l, r});
+    return pnodes_.front();
   case Ops::AND:
-    return new ANDNode{l, r};
+    pnodes_.push_front(new ANDNode{l, r});
+    return pnodes_.front();
   case Ops::OR:
-    return new ORNode{l, r};
+    pnodes_.push_front(new ORNode{l, r});
+    return pnodes_.front();
   default:
     throw std::runtime_error("Operator is not implemented\n");
   }
@@ -75,14 +86,16 @@ INode *make_op(INode *l, Ops op, INode *r)
  * @param[in] operand pointer to operand node
  * @return INode*
  */
-INode *make_un(Ops op, INode *operand)
+INode *MemMan::make_un(Ops op, INode *operand)
 {
   switch (op)
   {
   case Ops::NEG:
-    return new NEGNode{operand};
+    pnodes_.push_front(new NEGNode{operand});
+    return pnodes_.front();
   case Ops::NOT:
-    return new NOTNode{operand};
+    pnodes_.push_front(new NOTNode{operand});
+    return pnodes_.front();
   default:
     throw std::runtime_error("Operator is not implemented\n");
   }
@@ -95,10 +108,10 @@ INode *make_un(Ops op, INode *operand)
  * @param sc - pointer to scope
  * @return pointer to created Node
  */
-INode *make_while(INode *cond, IScope *sc)
+INode *MemMan::make_while(INode *cond, IScope *sc)
 {
-  IMMA_DOIN("WHILE");
-  return new WHNode{cond, sc};
+  pnodes_.push_front(new WHNode{cond, sc});
+  return pnodes_.front();
 } /* End of 'make_while' function */
 
 /**
@@ -109,10 +122,10 @@ INode *make_while(INode *cond, IScope *sc)
  * @param esc ptr to else scope (nullptr default)
  * @return pointer to created Node
  */
-INode *make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
+INode *MemMan::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
 {
-  IMMA_DOIN("IF");
-  return new IFNode{cond, isc, esc};
+  pnodes_.push_front(new IFNode{cond, isc, esc});
+  return pnodes_.front();
 } /* End of 'make_if' function */
 
 /**
@@ -121,31 +134,33 @@ INode *make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
  * @param par [in] - pointer to parent node
  * @return pointer to created Scope
  */
-IScope *make_scope(IScope *par /* = nullptr */)
+IScope *MemMan::make_scope(IScope *par /* = nullptr */)
 {
-  IMMA_DOIN("SCOPE");
-  return new Scope{par};
-
+  IScope *ptmp = new Scope{par};
+  pnodes_.push_front(ptmp);
+  return ptmp;
 } /* End of 'create_scope' function */
 
 /**
  * @fn make ref
  * @brief Make var node for expression
  * @param var_name name of a variable
- * @warning DEBUG version - std::terminate!!!!!!!!!
  * @return pointer to created node
  */
-INode *make_ref(const std::string &var_name)
+INode *MemMan::make_ref(const std::string &var_name)
 {
   IMMA_DOIN("VAR USAGE");
   auto it_bl = CUR_SCOPE->get_var(var_name);
 
-  // TODO: delete termination
   if (!it_bl.second)
-    std::terminate();
+  {
+    std::string what = "Unknown variable '" + var_name + "'";
+    throw std::runtime_error{what};
+  }
   /* std::hdd::format(); */
 
-  return new VNode{it_bl.first};
+  pnodes_.push_front(new VNode{it_bl.first});
+  return pnodes_.front();
 } /* End of 'make_ref' function */
 
 /*!
@@ -154,18 +169,20 @@ INode *make_ref(const std::string &var_name)
  * @param[in] expr pointer to expression node
  * @return pointer to created node
  */
-INode *make_print(INode *expr)
+INode *MemMan::make_print(INode *expr)
 {
-  return new PNode{expr};
+  pnodes_.push_front(new PNode{expr});
+  return pnodes_.front();
 }
 
 /**
  * @brief make scan node function
  * @return pointer to created node
  */
-INode *make_scan()
+INode *MemMan::make_scan()
 {
-  return new RNode;
+  pnodes_.push_front(new RNode);
+  return pnodes_.front();
 }
 
 /**
@@ -175,15 +192,17 @@ INode *make_scan()
  * @param expr
  * @return pointer to created node
  */
-INode *make_asgn(const std::string &var_name, INode *expr)
+INode *MemMan::make_asgn(const std::string &var_name, INode *expr)
 {
   IMMA_DOIN("ASS");
   auto it = CUR_SCOPE->check_n_insert(var_name);
 
   IMMA_DOIN("VAR CREATE");
   auto pvar = new VNode{it};
+  pnodes_.push_front(pvar);
 
-  return new ASNode{pvar, expr};
+  pnodes_.push_front(new ASNode{pvar, expr});
+  return pnodes_.front();
 } /* End of 'make_ass' function */
 
 /**

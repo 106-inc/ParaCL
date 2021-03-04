@@ -6,10 +6,10 @@
 #ifndef INODE_HH
 #define INODE_HH
 
+#include <forward_list>
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include <forward_list>
 
 /**
  * @namespace AST
@@ -56,44 +56,6 @@ struct IScope : public INode
 // class predeclaration
 class Scope;
 
-class MemMan final
-{
-private:
-  /*  */
-  std::forward_list<INode *> pnodes_;
-public:
-  MemMan(MemMan const &) = delete;
-  MemMan &operator =(MemMan const &) = delete;
-
-  static MemMan &manager()
-  {
-    static MemMan SingleTone;
-
-    return SingleTone;
-  }
-
-  INode *make_cst(int val);
-  INode *make_op(INode *l, Ops op, INode *r);
-  INode *make_un(Ops op, INode *operand);
-  INode *make_while(INode *cond, IScope *sc);
-  INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
-  INode *make_asgn(const std::string &var_name, INode *expr);
-  INode *make_ref(const std::string &var_name);
-  INode *make_print(INode *expr);
-  INode *make_scan();
-  IScope *make_scope(IScope *par = nullptr);
-
-  ~MemMan()
-  {
-    for (auto *pnode : pnodes_)
-      delete pnode;
-  }
-
-private:
-  
-  MemMan() = default;
-}
-
 /**
  * @enum Ops
  * @brief enum class with operators
@@ -120,6 +82,44 @@ enum class Ops
 
   NEG,
   NOT
+};
+
+class MemMan final
+{
+private:
+  /*  */
+  std::forward_list<INode *> pnodes_;
+
+public:
+  MemMan(MemMan const &) = delete;
+  MemMan &operator=(MemMan const &) = delete;
+
+  static MemMan &manager()
+  {
+    static MemMan SingleTone;
+
+    return SingleTone;
+  }
+
+  INode *make_cst(int val);
+  INode *make_op(INode *l, Ops op, INode *r);
+  INode *make_un(Ops op, INode *operand);
+  INode *make_while(INode *cond, IScope *sc);
+  INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
+  INode *make_asgn(const std::string &var_name, INode *expr);
+  INode *make_ref(const std::string &var_name);
+  INode *make_print(INode *expr);
+  INode *make_scan();
+  IScope *make_scope(IScope *par = nullptr);
+
+  ~MemMan()
+  {
+    for (auto *pnode : pnodes_)
+      delete pnode;
+  }
+
+private:
+  MemMan() = default;
 };
 
 void IMMA_DOIN(const char *doin_wha);
