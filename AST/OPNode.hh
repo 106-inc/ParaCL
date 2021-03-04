@@ -101,7 +101,12 @@ struct DVNode final : public OPNode
    */
   int calc() const override
   {
-    return left_->calc() / right_->calc();
+    int rcalc = right_->calc();
+    
+    if (rcalc == 0)
+      throw std::runtime_error{"Dividing by ZERO!"};
+
+    return left_->calc() / rcalc;
   } /* End of 'calc' function */
 };
 
@@ -135,15 +140,6 @@ public:
 
     return expr_res;
   } /* End of 'calc' function */
-
-  /**
-   * @brief Assignment class dtor
-   */
-  ~ASNode()
-  {
-    delete dst_;
-    delete expr_;
-  } /* End of '~ASNode' function */
 };
 
 /**
@@ -359,7 +355,12 @@ struct MDNode final : public OPNode
    */
   int calc() const override
   {
-    return left_->calc() % right_->calc();
+    int rcalc = right_->calc();
+
+    if (!rcalc)
+      throw std::runtime_error{"Dividing by ZERO!"};
+
+    return left_->calc() % rcalc;
   }
 };
 

@@ -66,15 +66,6 @@ public:
 
   var_table::iterator check_n_insert(const std::string &var_name) override;
 
-  /**
-   * Scope class destructor
-   */
-  ~Scope()
-  {
-    for (auto *node : nodes_)
-      delete node;
-  }
-
 private:
   /**
    * @brief Insert variable to table of current scope
@@ -191,16 +182,6 @@ public:
   OPNode(INode *left, INode *right) : left_(left), right_(right)
   {
   }
-
-  /**
-   * OPNode class destructor.
-   * Deletes left ans right nodes
-   */
-  ~OPNode()
-  {
-    delete left_;
-    delete right_;
-  }
 };
 
 /**
@@ -219,15 +200,6 @@ public:
    */
   UNOPNode(INode *operand) : operand_(operand)
   {
-  }
-
-  /**
-   * @brief UNOPNode class destructor.
-   * Deletes left ans right nodes
-   */
-  ~UNOPNode()
-  {
-    delete operand_;
   }
 };
 
@@ -255,15 +227,6 @@ public:
       scope_->calc();
 
     return 0;
-  }
-
-  /**
-   * While node class destructor
-   */
-  ~WHNode()
-  {
-    delete scope_;
-    delete cond_;
   }
 };
 
@@ -297,16 +260,6 @@ public:
 
     return 0;
   }
-
-  /**
-   * If node dtor function
-   */
-  IFNode()
-  {
-    delete cond_;
-    delete if_scope_;
-    delete else_scope_;
-  }
 };
 
 /**
@@ -330,11 +283,6 @@ public:
     std::cout << expr_->calc() << std::endl;
     return 0;
   }
-
-  ~PNode()
-  {
-    delete expr_;
-  }
 };
 
 /**
@@ -348,7 +296,6 @@ public:
   /**
    * @brief Interpret read node function
    * @return read value
-   * @warning STD::TERMINATE CALL!!!!!!!!!!!!!!!!!!!!!!!!!!!
    */
   int calc() const override
   {
@@ -356,7 +303,7 @@ public:
 
     std::cin >> value;
     if (!std::cin.good())
-      std::terminate();
+      throw std::runtime_error{"Invalid symbol at stdin"};
 
     return value;
   } /* End of 'calc' function */
