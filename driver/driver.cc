@@ -60,7 +60,7 @@ yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, pars
   }
 
   case yy::parser::token_type::ERR: {
-    std::cerr << "I DON'T FUCKIN KNOW WHAT IS THIS" << std::endl;
+    std::cerr << "UNKNOWN TOKEN" << std::endl;
   }
 
   default:
