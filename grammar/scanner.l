@@ -66,6 +66,7 @@ NAME      {LETTER}{LETTER_D}*
 "if"                 return yy::parser::token_type::IF;
 "else"               return yy::parser::token_type::ELSE;
 "while"              return yy::parser::token_type::WHILE;
+"func"               return yy::parser::token_type::FUNC;
 
 "?"                  return yy::parser::token_type::SCAN;
 "print"              return yy::parser::token_type::PRINT;

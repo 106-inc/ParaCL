@@ -66,6 +66,7 @@ extern AST::IScope * CUR_SCOPE;
 
   IF ELSE
   WHILE
+  /* FUNC */
 
   SCAN
   PRINT
@@ -121,6 +122,14 @@ extern AST::IScope * CUR_SCOPE;
   un
   ;
 
+ /* 
+ %nterm<AST::INode *>
+
+  func_call
+  func_def
+  ;
+*/
+
 %%
 
 
@@ -150,6 +159,7 @@ stm:         assign                               { $$ = $1; };
            | if                                   { $$ = $1; };
            | while                                { $$ = $1; };
            | print                                { $$ = $1; };
+        /* | expr                                 { $$ = $1; }; */ 
 
 assign:      NAME ASSIGN expr SCOLON              { $$ = AST::MemMan::manager().make_asgn($1, $3); };
 
@@ -180,6 +190,18 @@ expr_term:   LP expr[e] RP                        { $$ = $e; };
            | NAME                                 { $$ = AST::MemMan::manager().make_ref($1); };
            | INT                                  { $$ = AST::MemMan::manager().make_cst($1); };
            | SCAN                                 { $$ = AST::MemMan::manager().make_scan(); };
+        /* | func_call                            { $$ = AST::MemMan::manager().make_fcall(); }; */
+        /* | func_def                             { $$ = AST::MemMan::manager().make_fdef(); };  */
+
+/* 
+func_call:   NAME LP arglist RP                   { SOMETHING }
+
+func_def:    FUNC LP arglist RP fscope            { SOMETHING }
+           | FUNC LP arglist RP 
+             COLON NAME fscope                    { SOMETHING }
+
+fscope:      SOMETHING                            { SOMETHING }
+*/
 
 if:          IF LP expr[e] RP cur_stm[s]          { $$ = AST::MemMan::manager().make_if($e, $s); };
            | IF LP expr[e] RP cur_stm[s1]                                               /* dangling else */
