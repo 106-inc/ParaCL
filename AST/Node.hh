@@ -47,7 +47,7 @@ public:
     for (auto *node : nodes_)
       node->calc();
 
-    return 0;
+    return 0; // TODO: scope should return value of the last statement or return value
   } /* End of 'calc' function */
 
   /**
