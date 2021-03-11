@@ -42,6 +42,7 @@ struct INode
 // scope interface
 struct IScope : public INode
 {
+  // TODO: docs
   virtual void push(INode *node) = 0;
 
   virtual IScope *reset_scope() const = 0;
@@ -100,7 +101,7 @@ public:
 
   static MemMan &manager()
   {
-    static MemMan SingleTone;
+    static MemMan SingleTone{};
 
     return SingleTone;
   }

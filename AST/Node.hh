@@ -44,10 +44,12 @@ public:
    */
   int calc() const override
   {
-    for (auto *node : nodes_)
-      node->calc();
+    int ret_val{};
 
-    return 0; // TODO: scope should return value of the last statement or return value
+    for (auto *node : nodes_)
+      ret_val = node->calc();
+
+    return ret_val;
   } /* End of 'calc' function */
 
   /**
