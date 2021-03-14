@@ -119,5 +119,6 @@ void yy::Driver::report_syntax_error(const parser::context &ctx)
 //! Destructor for class Driver
 yy::Driver::~Driver()
 {
+  in_file.close();
   delete plex_;
 }
