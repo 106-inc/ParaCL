@@ -14,6 +14,8 @@
 
 #define YY_USER_ACTION upd_cur_loc();
 
+
+
 %}
 
 WS        [ \t\n\v]+
