@@ -33,10 +33,19 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 //! \return bool in
 bool yy::Driver::parse()
 {
-  yy::parser parser_(this);
+    yy::parser parser_(this);
+    bool res;
 
-  bool res = !parser_.parse();
-  return res;
+    try
+    {
+        res = !parser_.parse();
+    }
+    catch (std::runtime_error &err)
+    {
+        Runtime_err_prcsng(err, parser_);
+    }
+
+    return res;
 }
 
 //! The lexical analyzer function, yylex, recognizes tokens from the input stream and returns them to the parser.
@@ -74,50 +83,84 @@ yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, pars
 //! \param ctx - the context that is created when an error is found
 void yy::Driver::report_syntax_error(const parser::context &ctx)
 {
+
   yy::location loc = ctx.location();
+  parser::symbol_kind_type lookahead = ctx.token();
 
   std::cerr << "syntax error in ";
   std::cerr << "line: " << loc.begin.line;
   std::cerr << ", column: " << loc.begin.column << std::endl;
 
-  // Report the tokens expected at this point.
-  parser::symbol_kind_type expectd_tokns[NUM_OF_TOKENS];
-  size_t num_of_expectd_tokns = ctx.expected_tokens(expectd_tokns, NUM_OF_TOKENS);
-
-  std::cerr << "expected:";
-
-  for (size_t i = 0; i < num_of_expectd_tokns; ++i)
+  if (lookahead == s_type::S_UNKNOWN_VAR)
   {
-    if (i != 0)
-      std::cerr << " or ";
-
-    std::cerr << " <" << parser::symbol_name(expectd_tokns[i]) << "> ";
+      report_unexpctd_tok(ctx);
+      return;
   }
 
-  std::cerr << std::endl;
+  report_expctd_tok(ctx);
+  report_unexpctd_tok(ctx);
 
-  // Report the unexpected token.
-  parser::symbol_kind_type lookahead = ctx.token();
-
-  std::cerr << "before: "
-            << "<" << parser::symbol_name(lookahead) << ">" << std::endl;
-  std::cerr << loc.begin.line << "   |   " << lines_of_prog[loc.begin.line - 1] << std::endl;
-  std::cerr << "    |   ";
-
-  for (int i = 0; i < loc.end.column - 1; ++i)
-  {
-    if (i == (ctx.lookahead().location.begin.column - 1))
-      std::cerr << "^";
-
-    else
-      std::cerr << "~";
-  }
-
-  std::cerr << std::endl;
 }
+
+void yy::Driver::report_expctd_tok(const yy::parser::context &ctx)
+{
+    // Report the tokens expected at this point.
+    parser::symbol_kind_type expectd_tokns[NUM_OF_TOKENS];
+    size_t num_of_expectd_tokns = ctx.expected_tokens(expectd_tokns, NUM_OF_TOKENS);
+
+    std::cerr << "expected:";
+
+    for (size_t i = 0; i < num_of_expectd_tokns; ++i)
+    {
+        if (i != 0)
+            std::cerr << " or ";
+
+        std::cerr << " <" << parser::symbol_name(expectd_tokns[i]) << "> ";
+    }
+
+    std::cerr << std::endl;
+}
+
+void yy::Driver::report_unexpctd_tok(const yy::parser::context &ctx)
+{
+    // Report the unexpected token.
+    yy::location loc = ctx.location();
+    parser::symbol_kind_type lookahead = ctx.token();
+
+    std::cerr << "before: "
+              << "<" << parser::symbol_name(lookahead) << ">" << std::endl;
+    std::cerr << loc.begin.line << "   |   " << lines_of_prog[loc.begin.line - 1] << std::endl;
+    std::cerr << "    |   ";
+
+    for (int i = 0; i < loc.end.column - 1; ++i)
+    {
+        if (i == (ctx.lookahead().location.begin.column - 1))
+            std::cerr << "^";
+
+        else
+            std::cerr << "~";
+    }
+
+    std::cerr << std::endl;
+
+}
+
+
 
 //! Destructor for class Driver
 yy::Driver::~Driver()
 {
   delete plex_;
+}
+
+
+void yy::Driver::Runtime_err_prcsng(std::runtime_error &err, const yy::parser& parser_)
+{
+    //! TODO: create more cases for processing: unknown var, unknown op etc ...
+    //! But now there is so dumb realization
+    parser::symbol_type s_type{parser::token::token_kind_type::UNKNOWN_VAR,plex_->get_cur_location()};
+    parser::context ctx {parser_, s_type};
+
+    std::cerr << err.what() << std::endl;
+    report_syntax_error(ctx);
 }
