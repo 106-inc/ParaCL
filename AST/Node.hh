@@ -20,20 +20,20 @@ private:
   using it_bool = std::pair<var_table::iterator, bool>;
 
   // vector with nodes of this scope
-  std::vector<INode *> nodes_{};
+  std::vector<pINode> nodes_{};
 
   // Pointer to parent scope
-  IScope *parent_{};
+  std::weak_ptr<IScope> parent_{};
 
   var_table var_tbl_;
 
 public:
   // constructor by parent scope ptr
-  Scope(IScope *parent = nullptr) : parent_(parent)
+  Scope(const pIScope &parent = nullptr) : parent_(parent)
   {
   }
 
-  IScope *reset_scope() const override
+  std::weak_ptr<IScope> reset_scope() const override
   {
     return parent_;
   }
@@ -44,7 +44,7 @@ public:
    */
   int calc() const override
   {
-    for (auto *node : nodes_)
+    for (auto &&node : nodes_)
       node->calc();
 
     return 0;
@@ -52,10 +52,10 @@ public:
 
   /**
    * @brief Add node to scope function
-   * @param node [in] node to add
+   * @param[in] node node to add
    * @return none
    */
-  void push(INode *node) override
+  void push(const pINode &node) override
   {
     nodes_.push_back(node);
   } /* End of 'push' function */
@@ -69,8 +69,8 @@ public:
 private:
   /**
    * @brief Insert variable to table of current scope
-   * @warning NO VALIDATION OF UNIQUE!!!
-   * @param var_name
+   * @warning ONLY FOR PRIVATE USE - NO VALIDATION OF UNIQUE!!!
+   * @param[in] var_name
    * @return iterator to inserted variable
    */
   var_table::iterator insert_var(const std::string &var_name)
@@ -120,7 +120,7 @@ public:
 
   /**
    * Calculate value of a variable function
-   * @return
+   * @return current value of a variable
    */
   int calc() const override
   {
@@ -129,7 +129,7 @@ public:
 
   /**
    * Set value of variable function
-   * @param[in] val
+   * @param[in] val value to set in variable
    */
   void set_val(int val)
   {
@@ -170,8 +170,8 @@ public:
 class OPNode : public INode
 {
 protected:
-  INode *left_{};
-  INode *right_{};
+  pINode left_{};
+  pINode right_{};
 
 public:
   /**
@@ -179,7 +179,7 @@ public:
    * @param[in] left    left node of operator
    * @param[in] right   right node of operator
    */
-  OPNode(INode *left, INode *right) : left_(left), right_(right)
+  OPNode(const pINode &left, const pINode &right) : left_(left), right_(right)
   {
   }
 };
@@ -191,14 +191,14 @@ public:
 class UNOPNode : public INode
 {
 protected:
-  INode *operand_{};
+  pINode operand_{};
 
 public:
   /**
    * Operator's node constructor
    * @param[in] operand  pointer to operand's node
    */
-  UNOPNode(INode *operand) : operand_(operand)
+  UNOPNode(const pINode &operand) : operand_(operand)
   {
   }
 };
@@ -209,11 +209,11 @@ public:
 class WHNode final : public INode
 {
 private:
-  INode *cond_{};
-  IScope *scope_{};
+  pINode cond_{};
+  pIScope scope_{};
 
 public:
-  WHNode(INode *cond, IScope *scope) : cond_(cond), scope_(scope)
+  WHNode(const pINode &cond, const pIScope &scope) : cond_(cond), scope_(scope)
   {
   }
 
@@ -236,14 +236,14 @@ public:
 class IFNode final : public INode
 {
 private:
-  INode *cond_{};
-  IScope *if_scope_{}; // scope if condition is correct
+  pINode cond_{};
+  pIScope if_scope_{}; // scope if condition is correct
 
   /* scope if condition is incorrect (optionally) */
-  IScope *else_scope_{};
+  pIScope else_scope_{};
 
 public:
-  IFNode(INode *cond, IScope *if_sc, IScope *el_sc = nullptr) : cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
+  IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr) : cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
   {
   }
 
@@ -268,10 +268,10 @@ public:
 class PNode final : public INode
 {
 private:
-  INode *expr_;
+  pINode expr_;
 
 public:
-  PNode(INode *expr) : expr_(expr)
+  PNode(const pINode &expr) : expr_(expr)
   {
   }
 

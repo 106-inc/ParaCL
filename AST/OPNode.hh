@@ -16,10 +16,10 @@ struct PLNode final : public OPNode
 {
   /**
    * @brief PLus node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  PLNode(INode *left, INode *right) : OPNode(left, right)
+  PLNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -40,10 +40,10 @@ struct SBNode final : public OPNode
 {
   /**
    * @brief Sub node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  SBNode(INode *left, INode *right) : OPNode(left, right)
+  SBNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -64,10 +64,10 @@ struct MLNode final : public OPNode
 {
   /**
    * @brief Mul node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  MLNode(INode *left, INode *right) : OPNode(left, right)
+  MLNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -88,10 +88,10 @@ struct DVNode final : public OPNode
 {
   /**
    * @brief Division node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  DVNode(INode *left, INode *right) : OPNode(left, right)
+  DVNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -116,15 +116,15 @@ struct DVNode final : public OPNode
 class ASNode final : public INode
 {
 private:
-  VNode *dst_;  // variable to assign
-  INode *expr_; // expression
+  std::shared_ptr<VNode> dst_; // variable to assign
+  pINode expr_;                // expression
 public:
   /**
    * @brief Assignment node class ctor
-   * @param dst pointer to destination variable node
-   * @param expr pointer to expression node(-s)
+   * @param[in] dst pointer to destination variable node
+   * @param[in] expr pointer to expression node(-s)
    */
-  ASNode(VNode *dst, INode *expr) : dst_(dst), expr_(expr)
+  ASNode(const std::shared_ptr<VNode> &dst, const pINode &expr) : dst_(dst), expr_(expr)
   {
   }
 
@@ -149,10 +149,10 @@ struct EQNode final : public OPNode
 {
   /**
    * @brief Equality node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  EQNode(INode *left, INode *right) : OPNode(left, right)
+  EQNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -173,10 +173,10 @@ struct NEQNode final : public OPNode
 {
   /**
    * @brief Not equality node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  NEQNode(INode *left, INode *right) : OPNode(left, right)
+  NEQNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -197,10 +197,10 @@ struct GNode final : public OPNode
 {
   /**
    * @brief Greater node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  GNode(INode *left, INode *right) : OPNode(left, right)
+  GNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -221,10 +221,10 @@ struct GENode final : public OPNode
 {
   /**
    * @brief Greater-or-equal node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  GENode(INode *left, INode *right) : OPNode(left, right)
+  GENode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -245,10 +245,10 @@ struct LNode final : public OPNode
 {
   /**
    * @brief Less node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  LNode(INode *left, INode *right) : OPNode(left, right)
+  LNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -269,10 +269,10 @@ struct LENode final : public OPNode
 {
   /**
    * @brief Less-or-equal node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  LENode(INode *left, INode *right) : OPNode(left, right)
+  LENode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -293,10 +293,10 @@ struct ANDNode final : public OPNode
 {
   /**
    * @brief Logical AND node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
-  ANDNode(INode *left, INode *right) : OPNode(left, right)
+  ANDNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -320,7 +320,7 @@ struct ORNode final : public OPNode
    * @param[in] left left node ptr
    * @param[in] right right node ptr
    */
-  ORNode(INode *left, INode *right) : OPNode(left, right)
+  ORNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -345,7 +345,7 @@ struct MDNode final : public OPNode
    * @param[in] left  pointer to left node
    * @param[in] right pointer to right node
    */
-  MDNode(INode *left, INode *right) : OPNode(left, right)
+  MDNode(const pINode &left, const pINode &right) : OPNode(left, right)
   {
   }
 
@@ -374,7 +374,7 @@ struct NEGNode final : public UNOPNode
    * @brief Negative node struct ctor
    * @param[in] operand operand node ptr
    */
-  NEGNode(INode *operand) : UNOPNode(operand)
+  NEGNode(const pINode &operand) : UNOPNode(operand)
   {
   }
 
@@ -398,7 +398,7 @@ struct NOTNode final : public UNOPNode
    * @brief Logical NOT node struct ctor
    * @param[in] operand operand node ptr
    */
-  NOTNode(INode *operand) : UNOPNode(operand)
+  NOTNode(const pINode &operand) : UNOPNode(operand)
   {
   }
 

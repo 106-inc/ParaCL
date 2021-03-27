@@ -1,6 +1,6 @@
 #include "driver.hh"
 
-AST::IScope *CUR_SCOPE = nullptr;
+AST::pIScope CUR_SCOPE;
 
 //! Constructor for class Driver
 //! \param name_of_file - the name of the file from which our program is read

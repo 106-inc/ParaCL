@@ -8,7 +8,7 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  auto root = AST::MemMan::manager().make_scope();
+  auto root = AST::make_scope();
 
   CUR_SCOPE = root;
 
