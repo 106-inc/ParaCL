@@ -33,7 +33,7 @@ public:
   {
   }
 
-  std::weak_ptr<IScope> reset_scope() const override
+  pIScope reset_scope() const override
   {
     return parent_;
   }

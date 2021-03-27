@@ -1,6 +1,6 @@
 #include "driver.hh"
 
-std::weak_ptr<AST::IScope> CUR_SCOPE;
+AST::pIScope CUR_SCOPE;
 
 //! Constructor for class Driver
 //! \param name_of_file - the name of the file from which our program is read
