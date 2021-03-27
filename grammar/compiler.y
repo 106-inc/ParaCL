@@ -66,6 +66,8 @@ extern AST::pIScope CUR_SCOPE;
 
   IF ELSE
   WHILE
+  RETURN
+  FUNC
 
   SCAN
   PRINT
@@ -121,89 +123,122 @@ extern AST::pIScope CUR_SCOPE;
   un
   ;
 
+ /* 
+ %nterm<AST::INode *>
+
+  func_call
+  func_def
+  ;
+ */
+
 %%
 
 
-program:     stms                                 { /* program starting */ };
+program:     stms                           { /* program starting */ };
 
-scope:       op_sc stms cl_sc                     { $$ = $3; };
+scope:       op_sc stms cl_sc               { $$ = $3; };
 
-op_sc:       LB                                   { CUR_SCOPE = AST::make_scope(CUR_SCOPE); };
+op_sc:       LB                             { CUR_SCOPE = AST::make_scope(CUR_SCOPE); };
 
-cl_sc:       RB                                   {
-                                                    $$ = CUR_SCOPE;
-                                                    CUR_SCOPE = CUR_SCOPE->reset_scope().lock();
-                                                  };
+cl_sc:       RB                             {
+                                              $$ = CUR_SCOPE;
+                                              CUR_SCOPE = CUR_SCOPE->reset_scope();
+                                            };
 
-stms:        stm                                  { CUR_SCOPE->push($1); };
-           | stms stm                             { CUR_SCOPE->push($2); };
-           | scope                                { CUR_SCOPE->push($1); };
-           | stms scope                           { CUR_SCOPE->push($2); };
+stms:        stm                            { CUR_SCOPE->push($1); };
+           | stms stm                       { CUR_SCOPE->push($2); };
+           | scope                          { CUR_SCOPE->push($1); };
+           | stms scope                     { CUR_SCOPE->push($2); };
 
-cur_stm:     stm                                  {
-                                                     $$ = AST::make_scope(CUR_SCOPE);
-                                                     $$->push($1);
-                                                  };
-           | scope                                { $$ = $1; };
+cur_stm:     stm                            {
+                                              $$ = AST::make_scope(CUR_SCOPE);
+                                              $$->push($1);
+                                            };
+           | scope                          { $$ = $1; };
 
-stm:         assign                               { $$ = $1; };
-           | if                                   { $$ = $1; };
-           | while                                { $$ = $1; };
-           | print                                { $$ = $1; };
+stm:         assign                         { $$ = $1; };
+           | if                             { $$ = $1; };
+           | while                          { $$ = $1; };
+           | print                          { $$ = $1; };
+        /* | expr                           { $$ = $1; }; */
+        /* | RETURN expr                    { SOMETHING }; */
 
-assign:      NAME ASSIGN expr SCOLON              { $$ = AST::make_asgn($1, $3); };
+assign:      NAME ASSIGN expr SCOLON        { $$ = AST::make_asgn($1, $3); };
 
-expr:        expr_or                              { $$ = $1; };
 
-expr_or:     expr_or OR expr_and                  { $$ = AST::make_op($1, AST::Ops::OR, $3); };
-           | expr_and                             { $$ = $1; };
+expr:        expr_or                        { $$ = $1; };
 
-expr_and:    expr_and AND expr_eqty               { $$ = AST::make_op($1, AST::Ops::AND, $3); };
-           | expr_eqty                            { $$ = $1; };
+expr_or:     expr_or OR expr_and            { $$ = AST::make_op($1, AST::Ops::OR, $3); };
+           | expr_and                       { $$ = $1; };
 
-expr_eqty:   expr_eqty eq_ty expr_cmp             { $$ = AST::make_op($1, $2, $3); };
-           | expr_cmp                             { $$ = $1; };
+expr_and:    expr_and AND expr_eqty         { $$ = AST::make_op($1, AST::Ops::AND, $3); };
+           | expr_eqty                      { $$ = $1; };
 
-expr_cmp:    expr_cmp cmp expr_pm                 { $$ = AST::make_op($1, $2, $3); };
-           | expr_pm                              { $$ = $1; };
+expr_eqty:   expr_eqty eq_ty expr_cmp       { $$ = AST::make_op($1, $2, $3); };
+           | expr_cmp                       { $$ = $1; };
 
-expr_pm:     expr_pm pm expr_mdm                  { $$ = AST::make_op($1, $2, $3); };
-           | expr_mdm                             { $$ = $1; };
+expr_cmp:    expr_cmp cmp expr_pm           { $$ = AST::make_op($1, $2, $3); };
+           | expr_pm                        { $$ = $1; };
 
-expr_mdm:    expr_mdm mdm expr_term               { $$ = AST::make_op($1, $2, $3); };
-           | expr_un                              { $$ = $1; };
+expr_pm:     expr_pm pm expr_mdm            { $$ = AST::make_op($1, $2, $3); };
+           | expr_mdm                       { $$ = $1; };
 
-expr_un:     un expr_un                           { $$ = AST::make_un($1, $2); };
-           | expr_term                            { $$ = $1; };
+expr_mdm:    expr_mdm mdm expr_term         { $$ = AST::make_op($1, $2, $3); };
+           | expr_un                        { $$ = $1; };
 
-expr_term:   LP expr[e] RP                        { $$ = $e; };
-           | NAME                                 { $$ = AST::make_ref($1); };
-           | INT                                  { $$ = AST::make_cst($1); };
-           | SCAN                                 { $$ = AST::make_scan(); };
+expr_un:     un expr_un                     { $$ = AST::make_un($1, $2); };
+           | expr_term                      { $$ = $1; };
 
-if:          IF LP expr[e] RP cur_stm[s]          { $$ = AST::make_if($e, $s); };
-           | IF LP expr[e] RP cur_stm[s1]                                               /* dangling else */
-             ELSE cur_stm[s2]                     { $$ = AST::make_if($e, $s1, $s2); }; /* this rule creates shift-reduce conflict  */
+expr_term:   LP expr[e] RP                  { $$ = $e; };
+           | NAME                           { $$ = AST::make_ref($1); };
+           | INT                            { $$ = AST::make_cst($1); };
+           | SCAN                           { $$ = AST::make_scan(); };
+        /* | scope                          { $$ = AST::make_scope(); }; */
+        /* | func_call                      { $$ = AST::make_fcall(); }; */
+        /* | func_def                       { $$ = AST::make_fdef(); }; */
 
-while:       WHILE LP expr[e] RP cur_stm[s]       { $$ = AST::make_while($e, $s); };
+/* 
+func_call:   NAME LP call_argv RP           { SOMETHING };
 
-pm:          ADD                                  { $$ = AST::Ops::ADD; }; 
-           | MIN                                  { $$ = AST::Ops::SUB; }; 
+func_def:    FUNC LP def_argv RP scope      { SOMETHING };
+           | FUNC LP def_argv RP COLON NAME 
+             scope                          { SOMETHING };
 
-mdm:         MUL                                  { $$ = AST::Ops::MUL; };  
-           | DIV                                  { $$ = AST::Ops::DIV; };
-           | MOD                                  { $$ = AST::Ops::MOD; };
+def_argv:    NAME                           { SOMETHING };
+           | def_argv COMMA NAME            { SOMETHING };
 
-cmp:         GREATER                              { $$ = AST::Ops::GREATER; };
-           | LESS                                 { $$ = AST::Ops::LESS; };
-           | GR_EQ                                { $$ = AST::Ops::GR_EQ; };
-           | LS_EQ                                { $$ = AST::Ops::LS_EQ; };
+call_argv:   INT                            { SOMETHING };
+           | call_argv COMMA INT            { SOMETHING };
+*/
 
-eq_ty:       IS_EQ                                { $$ = AST::Ops::IS_EQ; };
-           | NOT_EQ                               { $$ = AST::Ops::NOT_EQ; };
+if:          IF LP expr[e] RP 
+               cur_stm[s]                   { $$ = AST::make_if($e, $s); };
+           | IF LP expr[e] RP 
+               cur_stm[s1]
+             ELSE 
+               cur_stm[s2]                  { $$ = AST::make_if($e, $s1, $s2); };
+            /* dangling else */ /* this rule creates shift-reduce conflict  */
 
-un:          MIN                                  { $$ = AST::Ops::NEG; };
-           | NOT                                  { $$ = AST::Ops::NOT; };
+while:       WHILE LP expr[e] RP
+               cur_stm[s]                   { $$ = AST::make_while($e, $s); };
+
+pm:          ADD                            { $$ = AST::Ops::ADD; }; 
+           | MIN                            { $$ = AST::Ops::SUB; }; 
+
+mdm:         MUL                            { $$ = AST::Ops::MUL; };  
+           | DIV                            { $$ = AST::Ops::DIV; };
+           | MOD                            { $$ = AST::Ops::MOD; };
+
+cmp:         GREATER                        { $$ = AST::Ops::GREATER; };
+           | LESS                           { $$ = AST::Ops::LESS; };
+           | GR_EQ                          { $$ = AST::Ops::GR_EQ; };
+           | LS_EQ                          { $$ = AST::Ops::LS_EQ; };
+
+eq_ty:       IS_EQ                          { $$ = AST::Ops::IS_EQ; };
+           | NOT_EQ                         { $$ = AST::Ops::NOT_EQ; };
+
+un:          MIN                            { $$ = AST::Ops::NEG; };
+           | NOT                            { $$ = AST::Ops::NOT; };
 
 print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
 

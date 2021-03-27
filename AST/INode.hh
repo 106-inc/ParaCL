@@ -48,9 +48,10 @@ struct INode
 // scope interface
 struct IScope : public INode
 {
+  // TODO: docs
   virtual void push(const pINode &node) = 0;
 
-  virtual std::weak_ptr<IScope> reset_scope() const = 0;
+  virtual pIScope reset_scope() const = 0;
 
   virtual std::pair<var_table::iterator, bool> get_var(const std::string &var_name) = 0;
 
@@ -100,6 +101,7 @@ pINode make_ref(const std::string &var_name);
 pINode make_print(const pINode &expr);
 pINode make_scan();
 pIScope make_scope(const pIScope &par = nullptr);
+
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*

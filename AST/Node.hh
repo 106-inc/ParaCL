@@ -33,9 +33,9 @@ public:
   {
   }
 
-  std::weak_ptr<IScope> reset_scope() const override
+  pIScope reset_scope() const override
   {
-    return parent_;
+    return parent_.lock();
   }
 
   /**
@@ -44,10 +44,12 @@ public:
    */
   int calc() const override
   {
-    for (auto &&node : nodes_)
-      node->calc();
+    int ret_val{};
 
-    return 0;
+    for (auto &&node : nodes_)
+      ret_val = node->calc();
+
+    return ret_val;
   } /* End of 'calc' function */
 
   /**
