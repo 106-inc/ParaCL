@@ -20,7 +20,7 @@ namespace yy
 class Driver;
 };
 
-extern AST::IScope * CUR_SCOPE;
+extern AST::pIScope CUR_SCOPE;
 
 }
 
@@ -31,7 +31,7 @@ extern AST::IScope * CUR_SCOPE;
 namespace yy
 { parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver); }
 
-extern AST::IScope * CUR_SCOPE;
+extern AST::pIScope CUR_SCOPE;
 }
 
 /* some tokens */
@@ -80,20 +80,20 @@ extern AST::IScope * CUR_SCOPE;
 
 /* nonterminals */
 
-%nterm<AST::IScope *>
+%nterm<AST::pIScope>
 
   scope
   cl_sc
   ;
 
-%nterm<AST::IScope *> cur_stm
+%nterm<AST::pIScope> cur_stm
 
-%nterm<AST::INode *> 
+%nterm<AST::pINode> 
   stm
   stms
   ;
 
-%nterm<AST::INode *>
+%nterm<AST::pINode>
 
   if
   while
@@ -101,7 +101,7 @@ extern AST::IScope * CUR_SCOPE;
   assign
   ;
 
-%nterm<AST::INode *>
+%nterm<AST::pINode>
 
   expr
   expr_or
@@ -164,6 +164,7 @@ stm:         assign                         { $$ = $1; };
         /* | RETURN expr                    { SOMETHING }; */
 
 assign:      NAME ASSIGN expr SCOLON        { $$ = AST::MemMan::manager().make_asgn($1, $3); };
+
 
 expr:        expr_or                        { $$ = $1; };
 
@@ -239,7 +240,7 @@ eq_ty:       IS_EQ                          { $$ = AST::Ops::IS_EQ; };
 un:          MIN                            { $$ = AST::Ops::NEG; };
            | NOT                            { $$ = AST::Ops::NOT; };
 
-print:       PRINT expr SCOLON              { $$ = AST::MemMan::manager().make_print($2); };
+print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
 
 %%
 

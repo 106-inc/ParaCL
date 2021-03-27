@@ -8,69 +8,57 @@
 namespace AST
 {
 
+// TODO: rewrite comments
+
 /**
  * @fn make_cst
  * @brief Make constant value node function
- * @param val [in] value to put to node
- * @return pointer to created node
+ * @param[in] val value to put to node
+ * @return shared pointer to created node
  */
-INode *MemMan::make_cst(int val)
+pINode make_cst(int val)
 {
-  pnodes_.push_front(new CNode{val});
-  return pnodes_.front();
+  return std::make_shared<CNode>(val);
 } /* End of 'make_cst' function */
 
 /**
  * @fn make_op
  * @brief Create operator node function
- * @param l  [in] left node of operator
- * @param op [in] operator type
- * @param r  [in] right node of operator
- * @return pointer to created Node
+ * @param[in] l  left node of operator
+ * @param[in] op operator type
+ * @param[in] r  right node of operator
+ * @return shared pointer to created Node
  */
-INode *MemMan::make_op(INode *l, Ops op, INode *r)
+pINode make_op(const pINode &l, Ops op, const pINode &r)
 {
   switch (op)
   {
   case Ops::ADD:
-    pnodes_.push_front(new PLNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<PLNode>(l, r);
   case Ops::SUB:
-    pnodes_.push_front(new SBNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<SBNode>(l, r);
   case Ops::MUL:
-    pnodes_.push_front(new MLNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<MLNode>(l, r);
   case Ops::DIV:
-    pnodes_.push_front(new DVNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<DVNode>(l, r);
   case Ops::MOD:
-    pnodes_.push_front(new MDNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<MDNode>(l, r);
   case Ops::GREATER:
-    pnodes_.push_front(new GNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<GNode>(l, r);
   case Ops::GR_EQ:
-    pnodes_.push_front(new GENode{l, r});
-    return pnodes_.front();
+    return std::make_shared<GENode>(l, r);
   case Ops::LESS:
-    pnodes_.push_front(new LNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<LNode>(l, r);
   case Ops::LS_EQ:
-    pnodes_.push_front(new LENode{l, r});
-    return pnodes_.front();
+    return std::make_shared<LENode>(l, r);
   case Ops::IS_EQ:
-    pnodes_.push_front(new EQNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<EQNode>(l, r);
   case Ops::NOT_EQ:
-    pnodes_.push_front(new NEQNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<NEQNode>(l, r);
   case Ops::AND:
-    pnodes_.push_front(new ANDNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<ANDNode>(l, r);
   case Ops::OR:
-    pnodes_.push_front(new ORNode{l, r});
-    return pnodes_.front();
+    return std::make_shared<ORNode>(l, r);
   default:
     throw std::runtime_error("Operator is not implemented\n");
   }
@@ -80,19 +68,17 @@ INode *MemMan::make_op(INode *l, Ops op, INode *r)
  * @brief Make unary operator node function
  *
  * @param[in] op  enum type of operator
- * @param[in] operand pointer to operand node
- * @return INode*
+ * @param[in] operand shared pointer to operand node
+ * @return shared pointer to created node
  */
-INode *MemMan::make_un(Ops op, INode *operand)
+pINode make_un(Ops op, const pINode &operand)
 {
   switch (op)
   {
   case Ops::NEG:
-    pnodes_.push_front(new NEGNode{operand});
-    return pnodes_.front();
+    return std::make_shared<NEGNode>(operand);
   case Ops::NOT:
-    pnodes_.push_front(new NOTNode{operand});
-    return pnodes_.front();
+    return std::make_shared<NOTNode>(operand);
   default:
     throw std::runtime_error("Operator is not implemented\n");
   }
@@ -101,50 +87,46 @@ INode *MemMan::make_un(Ops op, INode *operand)
 /**
  * @fn make_while
  * @brief Make while node fucntion
- * @param cond pointer to condition node
- * @param sc - pointer to scope
- * @return pointer to created Node
+ * @param[in] cond shared pointer to condition node
+ * @param[in] sc shared pointer to scope
+ * @return shared pointer to created Node
  */
-INode *MemMan::make_while(INode *cond, IScope *sc)
+pINode make_while(const pINode &cond, const pIScope &sc)
 {
-  pnodes_.push_front(new WHNode{cond, sc});
-  return pnodes_.front();
+  return std::make_shared<WHNode>(cond, sc);
 } /* End of 'make_while' function */
 
 /**
  * @fn make_if
  * @brief Create if node fucntion
- * @param cond ptr to condition
- * @param isc ptr to if scope
- * @param esc ptr to else scope (nullptr default)
- * @return pointer to created Node
+ * @param[in] cond shared ptr to condition
+ * @param[in] isc shared ptr to if scope
+ * @param[in] esc shared  ptr to else scope (nullptr default)
+ * @return shared  pointer to created Node
  */
-INode *MemMan::make_if(INode *cond, IScope *isc, IScope *esc /* = nullptr */)
+pINode make_if(const pINode &cond, const pIScope &isc, const pIScope &esc /* = nullptr */)
 {
-  pnodes_.push_front(new IFNode{cond, isc, esc});
-  return pnodes_.front();
+  return std::make_shared<IFNode>(cond, isc, esc);
 } /* End of 'make_if' function */
 
 /**
  * @fn make_scope
  * @brief Create scope function
- * @param par [in] - pointer to parent node
- * @return pointer to created Scope
+ * @param[in] par shared pointer to parent node
+ * @return shared pointer to created Scope
  */
-IScope *MemMan::make_scope(IScope *par /* = nullptr */)
+pIScope make_scope(const pIScope &par /* = nullptr */)
 {
-  IScope *ptmp = new Scope{par};
-  pnodes_.push_front(ptmp);
-  return ptmp;
+  return std::make_shared<Scope>(par);
 } /* End of 'create_scope' function */
 
 /**
  * @fn make ref
  * @brief Make var node for expression
- * @param var_name name of a variable
- * @return pointer to created node
+ * @param[in] var_name name of a variable
+ * @return shared pointer to created node
  */
-INode *MemMan::make_ref(const std::string &var_name)
+pINode make_ref(const std::string &var_name)
 {
   auto it_bl = CUR_SCOPE->get_var(var_name);
 
@@ -155,48 +137,42 @@ INode *MemMan::make_ref(const std::string &var_name)
   }
   /* std::hdd::format(); */
 
-  pnodes_.push_front(new VNode{it_bl.first});
-  return pnodes_.front();
+  return std::make_shared<VNode>(it_bl.first);
 } /* End of 'make_ref' function */
 
 /*!
  * @fn make_print
  * @brief Make print node function
- * @param[in] expr pointer to expression node
- * @return pointer to created node
+ * @param[in] expr shared pointer to expression node
+ * @return shared pointer to created node
  */
-INode *MemMan::make_print(INode *expr)
+pINode make_print(const pINode &expr)
 {
-  pnodes_.push_front(new PNode{expr});
-  return pnodes_.front();
+  return std::make_shared<PNode>(expr);
 }
 
 /**
  * @brief make scan node function
- * @return pointer to created node
+ * @return shared pointer to created node
  */
-INode *MemMan::make_scan()
+pINode make_scan()
 {
-  pnodes_.push_front(new RNode);
-  return pnodes_.front();
+  return std::make_shared<RNode>();
 }
 
 /**
  * @fn make_asgn
  * @brief Make assignment node function
- * @param var_name
- * @param expr
- * @return pointer to created node
+ * @param[in] var_name name of a variable to assign to
+ * @param[in] expr expression to assign
+ * @return shared pointer to created node
  */
-INode *MemMan::make_asgn(const std::string &var_name, INode *expr)
+pINode make_asgn(const std::string &var_name, const pINode &expr)
 {
   auto it = CUR_SCOPE->check_n_insert(var_name);
 
-  auto pvar = new VNode{it};
-  pnodes_.push_front(pvar);
-
-  pnodes_.push_front(new ASNode{pvar, expr});
-  return pnodes_.front();
+  auto pvar = std::make_shared<VNode>(it);
+  return std::make_shared<ASNode>(pvar, expr);
 } /* End of 'make_ass' function */
 
 } // namespace AST
