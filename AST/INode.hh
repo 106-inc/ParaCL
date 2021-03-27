@@ -50,7 +50,7 @@ struct IScope : public INode
 {
   virtual void push(pINode node) = 0;
 
-  virtual pIScope reset_scope() const = 0;
+  virtual std::weak_ptr<IScope> reset_scope() const = 0;
 
   virtual std::pair<var_table::iterator, bool> get_var(const std::string &var_name) = 0;
 

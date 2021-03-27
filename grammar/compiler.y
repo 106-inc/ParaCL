@@ -132,7 +132,7 @@ op_sc:       LB                                   { CUR_SCOPE = AST::make_scope(
 
 cl_sc:       RB                                   {
                                                     $$ = CUR_SCOPE;
-                                                    CUR_SCOPE = CUR_SCOPE->reset_scope();
+                                                    CUR_SCOPE = CUR_SCOPE->reset_scope().lock();
                                                   };
 
 stms:        stm                                  { CUR_SCOPE->push($1); };

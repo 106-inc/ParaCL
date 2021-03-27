@@ -1,20 +1,20 @@
 #include "driver/driver.hh"
 
 int main(int argc, char **argv)
-{/*
+{
   if (argc < 2)
   {
     std::cout << "USAGE: " << argv[0] << " FILENAME" << std::endl;
     return 0;
   }
-*/
+
   auto root = AST::make_scope();
 
   CUR_SCOPE = root;
 
   try
   {
-    yy::Driver driver("../tst/8_fact.cl"/*argv[1]*/);
+    yy::Driver driver(argv[1]);
     if (!driver.parse())
       return 1;
 
