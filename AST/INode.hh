@@ -48,7 +48,7 @@ struct INode
 // scope interface
 struct IScope : public INode
 {
-  virtual void push(pINode node) = 0;
+  virtual void push(const pINode &node) = 0;
 
   virtual std::weak_ptr<IScope> reset_scope() const = 0;
 
@@ -91,15 +91,15 @@ enum class Ops
 };
 
 pINode make_cst(int val);
-pINode make_op(pINode l, Ops op, pINode r);
-pINode make_un(Ops op, pINode operand);
-pINode make_while(pINode cond, pIScope sc);
-pINode make_if(pINode cond, pIScope isc, pIScope esc = nullptr);
-pINode make_asgn(const std::string &var_name, pINode expr);
+pINode make_op(const pINode &l, Ops op, const pINode &r);
+pINode make_un(Ops op, const pINode &operand);
+pINode make_while(const pINode &cond, const pIScope &sc);
+pINode make_if(const pINode &cond, const pIScope &isc, const pIScope &esc = nullptr);
+pINode make_asgn(const std::string &var_name, const pINode &expr);
 pINode make_ref(const std::string &var_name);
-pINode make_print(pINode expr);
+pINode make_print(const pINode &expr);
 pINode make_scan();
-pIScope make_scope(pIScope par = nullptr);
+pIScope make_scope(const pIScope &par = nullptr);
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*

@@ -29,7 +29,7 @@ private:
 
 public:
   // constructor by parent scope ptr
-  Scope(pIScope parent = nullptr) : parent_(parent)
+  Scope(const pIScope &parent = nullptr) : parent_(parent)
   {
   }
 
@@ -55,7 +55,7 @@ public:
    * @param[in] node node to add
    * @return none
    */
-  void push(pINode node) override
+  void push(const pINode &node) override
   {
     nodes_.push_back(node);
   } /* End of 'push' function */
@@ -179,7 +179,7 @@ public:
    * @param[in] left    left node of operator
    * @param[in] right   right node of operator
    */
-  OPNode(pINode left, pINode right) : left_(left), right_(right)
+  OPNode(const pINode &left, const pINode &right) : left_(left), right_(right)
   {
   }
 };
@@ -198,7 +198,7 @@ public:
    * Operator's node constructor
    * @param[in] operand  pointer to operand's node
    */
-  UNOPNode(pINode operand) : operand_(operand)
+  UNOPNode(const pINode &operand) : operand_(operand)
   {
   }
 };
@@ -213,7 +213,7 @@ private:
   pIScope scope_{};
 
 public:
-  WHNode(pINode cond, pIScope scope) : cond_(cond), scope_(scope)
+  WHNode(const pINode &cond, const pIScope &scope) : cond_(cond), scope_(scope)
   {
   }
 
@@ -243,7 +243,7 @@ private:
   pIScope else_scope_{};
 
 public:
-  IFNode(pINode cond, pIScope if_sc, pIScope el_sc = nullptr) : cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
+  IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr) : cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
   {
   }
 
@@ -271,7 +271,7 @@ private:
   pINode expr_;
 
 public:
-  PNode(pINode expr) : expr_(expr)
+  PNode(const pINode &expr) : expr_(expr)
   {
   }
 

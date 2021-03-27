@@ -29,7 +29,7 @@ pINode make_cst(int val)
  * @param[in] r  right node of operator
  * @return shared pointer to created Node
  */
-pINode make_op(pINode l, Ops op, pINode r)
+pINode make_op(const pINode &l, Ops op, const pINode &r)
 {
   switch (op)
   {
@@ -71,7 +71,7 @@ pINode make_op(pINode l, Ops op, pINode r)
  * @param[in] operand shared pointer to operand node
  * @return shared pointer to created node
  */
-pINode make_un(Ops op, pINode operand)
+pINode make_un(Ops op, const pINode &operand)
 {
   switch (op)
   {
@@ -91,7 +91,7 @@ pINode make_un(Ops op, pINode operand)
  * @param[in] sc shared pointer to scope
  * @return shared pointer to created Node
  */
-pINode make_while(pINode cond, pIScope sc)
+pINode make_while(const pINode &cond, const pIScope &sc)
 {
   return std::make_shared<WHNode>(cond, sc);
 } /* End of 'make_while' function */
@@ -104,7 +104,7 @@ pINode make_while(pINode cond, pIScope sc)
  * @param[in] esc shared  ptr to else scope (nullptr default)
  * @return shared  pointer to created Node
  */
-pINode make_if(pINode cond, pIScope isc, pIScope esc /* = nullptr */)
+pINode make_if(const pINode &cond, const pIScope &isc, const pIScope &esc /* = nullptr */)
 {
   return std::make_shared<IFNode>(cond, isc, esc);
 } /* End of 'make_if' function */
@@ -115,7 +115,7 @@ pINode make_if(pINode cond, pIScope isc, pIScope esc /* = nullptr */)
  * @param[in] par shared pointer to parent node
  * @return shared pointer to created Scope
  */
-pIScope make_scope(pIScope par /* = nullptr */)
+pIScope make_scope(const pIScope &par /* = nullptr */)
 {
   return std::make_shared<Scope>(par);
 } /* End of 'create_scope' function */
@@ -146,7 +146,7 @@ pINode make_ref(const std::string &var_name)
  * @param[in] expr shared pointer to expression node
  * @return shared pointer to created node
  */
-pINode make_print(pINode expr)
+pINode make_print(const pINode &expr)
 {
   return std::make_shared<PNode>(expr);
 }
@@ -167,7 +167,7 @@ pINode make_scan()
  * @param[in] expr expression to assign
  * @return shared pointer to created node
  */
-pINode make_asgn(const std::string &var_name, pINode expr)
+pINode make_asgn(const std::string &var_name, const pINode &expr)
 {
   auto it = CUR_SCOPE->check_n_insert(var_name);
 
