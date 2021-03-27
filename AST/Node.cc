@@ -19,7 +19,7 @@ std::pair<var_table::iterator, bool> Scope::get_var(const std::string &var_name)
   if (it_n_bool.second)
     return it_n_bool;
 
-  auto pscope = reset_scope().lock();
+  auto pscope = reset_scope();
 
   while (pscope != nullptr)
   {
@@ -28,7 +28,7 @@ std::pair<var_table::iterator, bool> Scope::get_var(const std::string &var_name)
     if (it_n_bool.second)
       break;
     else /* variable wasn't found */
-      pscope = pscope->reset_scope().lock();
+      pscope = pscope->reset_scope();
   }
 
   return it_n_bool;
