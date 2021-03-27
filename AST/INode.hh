@@ -6,9 +6,9 @@
 #ifndef INODE_HH
 #define INODE_HH
 #include <iostream>
+#include <memory>
 #include <string>
 #include <unordered_map>
-#include <memory>
 
 /**
  * @namespace AST
@@ -21,7 +21,7 @@ namespace AST
 class IScope;
 class INode;
 
-using pINode  = std::shared_ptr<INode>;
+using pINode = std::shared_ptr<INode>;
 using pIScope = std::shared_ptr<IScope>;
 /**
  * @typedef var_table

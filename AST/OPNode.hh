@@ -116,8 +116,8 @@ struct DVNode final : public OPNode
 class ASNode final : public INode
 {
 private:
-  std::shared_ptr<VNode> dst_;  // variable to assign
-  pINode expr_; // expression
+  std::shared_ptr<VNode> dst_; // variable to assign
+  pINode expr_;                // expression
 public:
   /**
    * @brief Assignment node class ctor

@@ -18,7 +18,7 @@ std::pair<var_table::iterator, bool> Scope::get_var(const std::string &var_name)
 
   if (it_n_bool.second)
     return it_n_bool;
-  
+
   auto pscope = reset_scope().lock();
 
   while (pscope != nullptr)
