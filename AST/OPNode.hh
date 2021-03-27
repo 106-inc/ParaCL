@@ -19,7 +19,7 @@ struct PLNode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  PLNode(INode *left, INode *right) : OPNode(left, right)
+  PLNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -43,7 +43,7 @@ struct SBNode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  SBNode(INode *left, INode *right) : OPNode(left, right)
+  SBNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -67,7 +67,7 @@ struct MLNode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  MLNode(INode *left, INode *right) : OPNode(left, right)
+  MLNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -91,7 +91,7 @@ struct DVNode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  DVNode(INode *left, INode *right) : OPNode(left, right)
+  DVNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -116,15 +116,15 @@ struct DVNode final : public OPNode
 class ASNode final : public INode
 {
 private:
-  VNode *dst_;  // variable to assign
-  INode *expr_; // expression
+  std::shared_ptr<VNode> dst_;  // variable to assign
+  pINode expr_; // expression
 public:
   /**
    * @brief Assignment node class ctor
    * @param dst pointer to destination variable node
    * @param expr pointer to expression node(-s)
    */
-  ASNode(VNode *dst, INode *expr) : dst_(dst), expr_(expr)
+  ASNode(std::shared_ptr<VNode> dst, pINode expr) : dst_(dst), expr_(expr)
   {
   }
 
@@ -152,7 +152,7 @@ struct EQNode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  EQNode(INode *left, INode *right) : OPNode(left, right)
+  EQNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -176,7 +176,7 @@ struct NEQNode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  NEQNode(INode *left, INode *right) : OPNode(left, right)
+  NEQNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -200,7 +200,7 @@ struct GNode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  GNode(INode *left, INode *right) : OPNode(left, right)
+  GNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -224,7 +224,7 @@ struct GENode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  GENode(INode *left, INode *right) : OPNode(left, right)
+  GENode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -248,7 +248,7 @@ struct LNode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  LNode(INode *left, INode *right) : OPNode(left, right)
+  LNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -272,7 +272,7 @@ struct LENode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  LENode(INode *left, INode *right) : OPNode(left, right)
+  LENode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -296,7 +296,7 @@ struct ANDNode final : public OPNode
    * @param left left node ptr
    * @param right right node ptr
    */
-  ANDNode(INode *left, INode *right) : OPNode(left, right)
+  ANDNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -320,7 +320,7 @@ struct ORNode final : public OPNode
    * @param[in] left left node ptr
    * @param[in] right right node ptr
    */
-  ORNode(INode *left, INode *right) : OPNode(left, right)
+  ORNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -345,7 +345,7 @@ struct MDNode final : public OPNode
    * @param[in] left  pointer to left node
    * @param[in] right pointer to right node
    */
-  MDNode(INode *left, INode *right) : OPNode(left, right)
+  MDNode(pINode left, pINode right) : OPNode(left, right)
   {
   }
 
@@ -374,7 +374,7 @@ struct NEGNode final : public UNOPNode
    * @brief Negative node struct ctor
    * @param[in] operand operand node ptr
    */
-  NEGNode(INode *operand) : UNOPNode(operand)
+  NEGNode(pINode operand) : UNOPNode(operand)
   {
   }
 
@@ -398,7 +398,7 @@ struct NOTNode final : public UNOPNode
    * @brief Logical NOT node struct ctor
    * @param[in] operand operand node ptr
    */
-  NOTNode(INode *operand) : UNOPNode(operand)
+  NOTNode(pINode operand) : UNOPNode(operand)
   {
   }
 

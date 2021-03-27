@@ -14,8 +14,12 @@ namespace AST
 std::pair<var_table::iterator, bool> Scope::get_var(const std::string &var_name)
 {
   // find var in parent's scopes
-  IScope *pscope = this;
-  std::pair<var_table::iterator, bool> it_n_bool{};
+  std::pair<var_table::iterator, bool> it_n_bool{loc_check(var_name)};
+
+  if (it_n_bool.second)
+    return it_n_bool;
+  
+  auto pscope = reset_scope();
 
   while (pscope != nullptr)
   {

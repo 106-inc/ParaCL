@@ -6,10 +6,10 @@
 #ifndef INODE_HH
 #define INODE_HH
 
-#include <forward_list>
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <memory>
 
 /**
  * @namespace AST
@@ -17,6 +17,13 @@
  */
 namespace AST
 {
+
+/** @brief forward declarations */
+class IScope;
+class INode;
+
+using pINode  = std::shared_ptr<INode>;
+using pIScope = std::shared_ptr<IScope>;
 /**
  * @typedef var_table
  * @brief Useful typedef for variables table type
@@ -42,9 +49,9 @@ struct INode
 // scope interface
 struct IScope : public INode
 {
-  virtual void push(INode *node) = 0;
+  virtual void push(pINode node) = 0;
 
-  virtual IScope *reset_scope() const = 0;
+  virtual std::weak_ptr<IScope> reset_scope() const = 0;
 
   virtual std::pair<var_table::iterator, bool> get_var(const std::string &var_name) = 0;
 
@@ -84,47 +91,16 @@ enum class Ops
   NOT
 };
 
-class MemMan final
-{
-private:
-  /**
-   * It is not a vector because we need only to push object here
-   * So we choose the most economic data structure in our opinion
-   * without reallocations
-   */
-  std::forward_list<INode *> pnodes_;
-
-public:
-  MemMan(MemMan const &) = delete;
-  MemMan &operator=(MemMan const &) = delete;
-
-  static MemMan &manager()
-  {
-    static MemMan SingleTone;
-
-    return SingleTone;
-  }
-
-  INode *make_cst(int val);
-  INode *make_op(INode *l, Ops op, INode *r);
-  INode *make_un(Ops op, INode *operand);
-  INode *make_while(INode *cond, IScope *sc);
-  INode *make_if(INode *cond, IScope *isc, IScope *esc = nullptr);
-  INode *make_asgn(const std::string &var_name, INode *expr);
-  INode *make_ref(const std::string &var_name);
-  INode *make_print(INode *expr);
-  INode *make_scan();
-  IScope *make_scope(IScope *par = nullptr);
-
-  ~MemMan()
-  {
-    for (auto *pnode : pnodes_)
-      delete pnode;
-  }
-
-private:
-  MemMan() = default;
-};
+pINode make_cst(int val);
+pINode make_op(pINode l, Ops op, pINode r);
+pINode make_un(Ops op, pINode operand);
+pINode make_while(pINode cond, pIScope sc);
+pINode make_if(pINode cond, pIScope isc, pIScope esc = nullptr);
+pINode make_asgn(const std::string &var_name, pINode expr);
+pINode make_ref(const std::string &var_name);
+pINode make_print(pINode expr);
+pINode make_scan();
+pIScope make_scope(pIScope par = nullptr);
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*
@@ -147,6 +123,6 @@ private:
 
 } // namespace AST
 
-extern AST::IScope *CUR_SCOPE;
+extern std::weak_ptr<AST::IScope> CUR_SCOPE;
 
 #endif /* INODE_HH */
