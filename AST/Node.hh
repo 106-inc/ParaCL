@@ -52,7 +52,7 @@ public:
 
   /**
    * @brief Add node to scope function
-   * @param node [in] node to add
+   * @param[in] node node to add
    * @return none
    */
   void push(pINode node) override
@@ -69,8 +69,8 @@ public:
 private:
   /**
    * @brief Insert variable to table of current scope
-   * @warning NO VALIDATION OF UNIQUE!!!
-   * @param var_name
+   * @warning ONLY FOR PRIVATE USE - NO VALIDATION OF UNIQUE!!!
+   * @param[in] var_name
    * @return iterator to inserted variable
    */
   var_table::iterator insert_var(const std::string &var_name)
@@ -120,7 +120,7 @@ public:
 
   /**
    * Calculate value of a variable function
-   * @return
+   * @return current value of a variable
    */
   int calc() const override
   {
@@ -129,7 +129,7 @@ public:
 
   /**
    * Set value of variable function
-   * @param[in] val
+   * @param[in] val value to set in variable
    */
   void set_val(int val)
   {

@@ -16,8 +16,8 @@ struct PLNode final : public OPNode
 {
   /**
    * @brief PLus node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   PLNode(pINode left, pINode right) : OPNode(left, right)
   {
@@ -40,8 +40,8 @@ struct SBNode final : public OPNode
 {
   /**
    * @brief Sub node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   SBNode(pINode left, pINode right) : OPNode(left, right)
   {
@@ -64,8 +64,8 @@ struct MLNode final : public OPNode
 {
   /**
    * @brief Mul node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   MLNode(pINode left, pINode right) : OPNode(left, right)
   {
@@ -88,8 +88,8 @@ struct DVNode final : public OPNode
 {
   /**
    * @brief Division node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   DVNode(pINode left, pINode right) : OPNode(left, right)
   {
@@ -121,8 +121,8 @@ private:
 public:
   /**
    * @brief Assignment node class ctor
-   * @param dst pointer to destination variable node
-   * @param expr pointer to expression node(-s)
+   * @param[in] dst pointer to destination variable node
+   * @param[in] expr pointer to expression node(-s)
    */
   ASNode(std::shared_ptr<VNode> dst, pINode expr) : dst_(dst), expr_(expr)
   {
@@ -149,8 +149,8 @@ struct EQNode final : public OPNode
 {
   /**
    * @brief Equality node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   EQNode(pINode left, pINode right) : OPNode(left, right)
   {
@@ -173,8 +173,8 @@ struct NEQNode final : public OPNode
 {
   /**
    * @brief Not equality node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   NEQNode(pINode left, pINode right) : OPNode(left, right)
   {
@@ -197,8 +197,8 @@ struct GNode final : public OPNode
 {
   /**
    * @brief Greater node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   GNode(pINode left, pINode right) : OPNode(left, right)
   {
@@ -221,8 +221,8 @@ struct GENode final : public OPNode
 {
   /**
    * @brief Greater-or-equal node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   GENode(pINode left, pINode right) : OPNode(left, right)
   {
@@ -245,8 +245,8 @@ struct LNode final : public OPNode
 {
   /**
    * @brief Less node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   LNode(pINode left, pINode right) : OPNode(left, right)
   {
@@ -269,8 +269,8 @@ struct LENode final : public OPNode
 {
   /**
    * @brief Less-or-equal node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   LENode(pINode left, pINode right) : OPNode(left, right)
   {
@@ -293,8 +293,8 @@ struct ANDNode final : public OPNode
 {
   /**
    * @brief Logical AND node struct ctor
-   * @param left left node ptr
-   * @param right right node ptr
+   * @param[in] left left node ptr
+   * @param[in] right right node ptr
    */
   ANDNode(pINode left, pINode right) : OPNode(left, right)
   {
