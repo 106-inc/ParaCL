@@ -4,7 +4,7 @@ FNB = grammar
 DVR = driver
 PSR = parser
 
-CC = g++ --std=c++2a -Wall -Wextra
+CC = g++ --std=c++2a -Wall -Wextra -Wpedantic -Wunused -Wno-old-style-cast -Waggressive-loop-optimizations -Wnon-virtual-dtor
 
 all: start
 

@@ -18,7 +18,7 @@
 namespace yy
 {
 class Driver;
-};
+}
 
 extern AST::pIScope CUR_SCOPE;
 
