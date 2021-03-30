@@ -6,6 +6,8 @@
 %option warn nodefault debug noinput 
 %option yyclass="OurFlexLexer"
 
+%s IN_COMMENT
+
 %{
 
 #include "compiler.tab.hh"
@@ -18,7 +20,7 @@
 
 WS        [ \t\n\v]+
 COMM      "//".*"\n"
- /* MULCOMM   "'''"[.\n]*"'''" */
+MULCOMM   "/*" (.|WS)*? "*/"
 
 DIGIT     [0-9]
 
@@ -32,7 +34,14 @@ NAME      {LETTER}{LETTER_D}*
 
 {WS}                 /* skip blanks and tabs */
 {COMM}               /* skip comments to the end of line */
- /* {MULCOMM}            skip comments between symbols */
+
+<INITIAL>"/*"        {BEGIN(IN_COMMENT);}
+
+<IN_COMMENT>"*/"     {BEGIN(INITIAL);}
+  
+<IN_COMMENT>[^*\n]+  /* skip comments */
+<IN_COMMENT>"*"      /* skip lone star */
+
 
 "+"                  return yy::parser::token_type::ADD;
 "-"                  return yy::parser::token_type::MIN;
