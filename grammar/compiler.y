@@ -13,7 +13,7 @@
 %code requires
 {
 #include <string>
-#include "../AST/INode.hh"
+#include "INode.hh"
 
 namespace yy
 {
@@ -26,7 +26,7 @@ extern AST::IScope * CUR_SCOPE;
 
 %code
 {
-#include "../driver/driver.hh"
+#include "driver.hh"
 
 namespace yy
 { parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver); }
