@@ -20,10 +20,6 @@ bison_target(bison_o
 
 add_flex_bison_dependency(flex_o bison_o)
 
-include_directories(parser)
-include_directories(AST)
-include_directories(driver)
-
 add_executable(${INTERP_NAME} 
   driver/driver.cc
   parser/parser.cc
@@ -34,14 +30,10 @@ add_executable(${INTERP_NAME}
   ${FLEX_flex_o_OUTPUTS}
 )
 
-set(TARGETS
-  ${INTERP_NAME}
-)
-
-# common for all targets
-foreach(TNAME ${TARGETS})
-  target_compile_features(${TNAME} PRIVATE cxx_std_17)
-  target_include_directories(${TNAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-  target_include_directories(${TNAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-endforeach()
+target_compile_features(${INTERP_NAME} PRIVATE cxx_std_17)
+target_include_directories(${INTERP_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(${INTERP_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${INTERP_NAME} PRIVATE parser)
+target_include_directories(${INTERP_NAME} PRIVATE AST)
+target_include_directories(${INTERP_NAME} PRIVATE driver)
 
