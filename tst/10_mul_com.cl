@@ -1,3 +1,3 @@
-r = 5
+r = 5;
 /* trying */
 print r;
