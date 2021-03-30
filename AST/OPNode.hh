@@ -412,6 +412,37 @@ struct NOTNode final : public UNOPNode
   } /* End of 'calc' function */
 };
 
+/**
+ * @brief return operand node class
+ * 
+ */
+class RETNode final : public INode
+{
+private:
+  pINode expr_;
+
+public:
+
+  /**
+   * @brief Construct a new RETNode object - return node operand
+   * 
+   * @param[in] expr shared pointer to expression node
+   */
+  RETNode(const pINode &expr) : expr_(expr)
+  {
+  }
+
+  /**
+   * @brief calculate ret value function
+   * 
+   * @return int return value
+   */
+  int calc() const override
+  {
+    return expr_->calc();
+  }
+}
+
 } // namespace AST
 
 #endif // PARACL_OPNODE_HH
