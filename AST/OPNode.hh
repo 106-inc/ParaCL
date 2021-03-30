@@ -441,7 +441,7 @@ public:
   {
     return expr_->calc();
   }
-}
+};
 
 } // namespace AST
 
