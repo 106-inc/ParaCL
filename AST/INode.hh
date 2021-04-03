@@ -30,15 +30,30 @@ using pIScope = std::shared_ptr<IScope>;
 using var_table = std::unordered_map<std::string, int>;
 
 // node interface
-struct INode
+class INode
 {
-  INode() = default;
+protected:
+  size_t childs_am_;
 
+  INode(size_t childs_am = 0) : childs_am_(childs_am)
+  {
+  }
+
+public:
   virtual int calc() const = 0;
+
+  virtual pINode get_i_child(size_t i) const
+  {
+    return nullptr;
+  }
 
   INode(const INode &) = delete;
   INode &operator=(const INode &) = delete;
 
+  size_t get_ch_size() const
+  {
+    return childs_am_;
+  }
   // MB for ruture
   // virtual void dump() = 0;
 
@@ -48,6 +63,12 @@ struct INode
 // scope interface
 struct IScope : public INode
 {
+protected:
+  IScope(size_t c_am = 0) : INode(c_am)
+  {
+  }
+
+public:
   // TODO: docs
   virtual void push(const pINode &node) = 0;
 

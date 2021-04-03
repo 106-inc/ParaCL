@@ -1,4 +1,5 @@
-#include "driver/driver.hh"
+#include "AST/Node.hh"
+#include "driver.hh"
 
 int main(int argc, char **argv)
 {

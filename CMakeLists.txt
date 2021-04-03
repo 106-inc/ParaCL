@@ -25,12 +25,13 @@ add_executable(${INTERP_NAME}
   parser/parser.cc
   AST/INode.cc
   AST/Node.cc
+  AST/Interp.cc
   main.cc
   ${BISON_bison_o_OUTPUTS}
   ${FLEX_flex_o_OUTPUTS}
 )
 
-target_compile_features(${INTERP_NAME} PRIVATE cxx_std_17)
+target_compile_features(${INTERP_NAME} PRIVATE cxx_std_20)
 target_include_directories(${INTERP_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(${INTERP_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(${INTERP_NAME} PRIVATE parser)

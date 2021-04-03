@@ -3,11 +3,13 @@
 
 /////////////////////////////////////
 ///// STL containers ///////////////
+#include <stack>
 #include <vector>
 /////////////////////////////////////
 
 ////// OUR HEADERS //////////////////
 #include "INode.hh"
+#include "Interp.hh"
 /////////////////////////////////////
 
 namespace AST
@@ -52,6 +54,14 @@ public:
     return ret_val;
   } /* End of 'calc' function */
 
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= nodes_.size())
+      return nullptr;
+
+    return nodes_[i];
+  }
+
   /**
    * @brief Add node to scope function
    * @param[in] node node to add
@@ -60,6 +70,7 @@ public:
   void push(const pINode &node) override
   {
     nodes_.push_back(node);
+    childs_am_ = nodes_.size();
   } /* End of 'push' function */
 
   it_bool get_var(const std::string &var_name) override;
@@ -184,8 +195,16 @@ public:
    * @param[in] left    left node of operator
    * @param[in] right   right node of operator
    */
-  OPNode(const pINode &left, Ops op_type, const pINode &right) : left_(left), right_(right), op_type_(op_type)
+  OPNode(const pINode &left, Ops op_type, const pINode &right) : INode(2), left_(left), right_(right), op_type_(op_type)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= childs_am_)
+      return nullptr;
+
+    return i == 1 ? right_ : left_;
   }
 
   int calc() const override;
@@ -208,8 +227,13 @@ public:
    * Operator's node constructor
    * @param[in] operand  pointer to operand's node
    */
-  UNOPNode(Ops op_type, const pINode &operand) : operand_(operand), op_type_(op_type)
+  UNOPNode(Ops op_type, const pINode &operand) : INode(1), operand_(operand), op_type_(op_type)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    return i >= childs_am_ ? nullptr : operand_;
   }
 
   int calc() const override;
@@ -229,8 +253,16 @@ public:
    * @param[in] dst pointer to destination variable node
    * @param[in] expr pointer to expression node(-s)
    */
-  ASNode(const std::shared_ptr<VNode> &dst, const pINode &expr) : dst_(dst), expr_(expr)
+  ASNode(const std::shared_ptr<VNode> &dst, const pINode &expr) : INode(2), dst_(dst), expr_(expr)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= childs_am_)
+      return nullptr;
+
+    return i == 1 ? expr_ : dst_;
   }
 
   /**
@@ -262,8 +294,13 @@ public:
    *
    * @param[in] expr shared pointer to expression node
    */
-  RETNode(const pINode &expr) : expr_(expr)
+  RETNode(const pINode &expr) : INode(1), expr_(expr)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    return i >= childs_am_ ? nullptr : expr_;
   }
 
   /**
@@ -287,8 +324,16 @@ private:
   pIScope scope_{};
 
 public:
-  WHNode(const pINode &cond, const pIScope &scope) : cond_(cond), scope_(scope)
+  WHNode(const pINode &cond, const pIScope &scope) : INode(2), cond_(cond), scope_(scope)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= childs_am_)
+      return nullptr;
+
+    return i == 1 ? scope_ : cond_;
   }
 
   /**
@@ -318,8 +363,24 @@ private:
 
 public:
   IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr)
-      : cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
+      : INode(el_sc == nullptr ? 2 : 3), cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= childs_am_)
+      return nullptr;
+
+    switch (i)
+    {
+    case 0:
+      return cond_;
+    case 1:
+      return if_scope_;
+    default:
+      return else_scope_;
+    }
   }
 
   /**
@@ -346,8 +407,13 @@ private:
   pINode expr_;
 
 public:
-  PNode(const pINode &expr) : expr_(expr)
+  PNode(const pINode &expr) : INode(1), expr_(expr)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    return i >= childs_am_ ? nullptr : expr_;
   }
 
   /**

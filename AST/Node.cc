@@ -68,58 +68,89 @@ var_table::iterator Scope::check_n_insert(const std::string &var_name)
 
 int OPNode::calc() const
 {
-  int left_val = left_->calc(), right_val = right_->calc();
+  int left_val = ValStack.top();
+  ValStack.pop();
+  int right_val = ValStack.top();
+  ValStack.pop();
+
+  int res = 0;
 
   switch (op_type_)
   {
   case Ops::ADD:
-    return left_val + right_val;
+    res = left_val + right_val;
+    break;
   case Ops::SUB:
-    return left_val - right_val;
+    res = left_val - right_val;
+    break;
   case Ops::MUL:
-    return left_val * right_val;
+    res = left_val * right_val;
+    break;
   case Ops::DIV:
     if (right_val == 0)
       throw std::runtime_error{"Dividing by ZERO!"};
-    return left_val / right_val;
+    res = left_val / right_val;
+    break;
   case Ops::MOD:
     if (right_val == 0)
       throw std::runtime_error{"Dividing by ZERO!"};
-    return left_val % right_val;
+    res = left_val % right_val;
+    break;
   case Ops::GREATER:
-    return left_val > right_val;
+    res = left_val > right_val;
+    break;
   case Ops::GR_EQ:
-    return left_val >= right_val;
+    res = left_val >= right_val;
+    break;
   case Ops::LESS:
-    return left_val < right_val;
+    res = left_val < right_val;
+    break;
   case Ops::LS_EQ:
-    return left_val <= right_val;
+    res = left_val <= right_val;
+    break;
   case Ops::IS_EQ:
-    return left_val == right_val;
+    res = left_val == right_val;
+    break;
   case Ops::NOT_EQ:
-    return left_val != right_val;
+    res = left_val != right_val;
+    break;
   case Ops::AND:
-    return left_val && right_val;
+    res = left_val && right_val;
+    break;
   case Ops::OR:
-    return left_val || right_val;
+    res = left_val || right_val;
+    break;
   default:
     throw std::runtime_error("Unrecognized binary operator number\n");
   }
+
+  ValStack.push(res);
+
+  return res;
 }
 
 int UNOPNode::calc() const
 {
-  int val = operand_->calc();
+  int val = ValStack.top();
+  ValStack.pop();
+
+  int res = 0;
 
   switch (op_type_)
   {
   case Ops::NEG:
-    return -val;
+    res = -val;
+    break;
   case Ops::NOT:
-    return !val;
+    res = !val;
+    break;
   default:
     throw std::runtime_error("Unrecognized unary operator number\n");
   }
+
+  ValStack.push(res);
+
+  return res;
 }
 
 //////////////END OF SCOPE METHODS ////////////////////////////////
