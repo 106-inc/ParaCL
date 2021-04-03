@@ -171,7 +171,7 @@ public:
  */
 class OPNode final : public INode
 {
-protected:
+private:
   pINode left_{};
   pINode right_{};
 
@@ -197,7 +197,7 @@ public:
  */
 class UNOPNode final : public INode
 {
-protected:
+private:
   pINode operand_{};
 
   /* To determine operator's type */
