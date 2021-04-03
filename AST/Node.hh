@@ -249,7 +249,7 @@ public:
 
 /**
  * @brief return operand node class
- * 
+ *
  */
 class RETNode final : public INode
 {
@@ -257,10 +257,9 @@ private:
   pINode expr_;
 
 public:
-
   /**
    * @brief Construct a new RETNode object - return node operand
-   * 
+   *
    * @param[in] expr shared pointer to expression node
    */
   RETNode(const pINode &expr) : expr_(expr)
@@ -269,7 +268,7 @@ public:
 
   /**
    * @brief calculate ret value function
-   * 
+   *
    * @return int return value
    */
   int calc() const override
@@ -318,7 +317,8 @@ private:
   pIScope else_scope_{};
 
 public:
-  IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr) : cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
+  IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr)
+      : cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
   {
   }
 

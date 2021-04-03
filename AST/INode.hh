@@ -102,7 +102,6 @@ pINode make_print(const pINode &expr);
 pINode make_scan();
 pIScope make_scope(const pIScope &par = nullptr);
 
-
 ////////////////// TYPES OF NODES ////////////////////////
 /*
  * 1. Variable -> just iterator to var table OK

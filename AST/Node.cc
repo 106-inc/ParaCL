@@ -68,8 +68,7 @@ var_table::iterator Scope::check_n_insert(const std::string &var_name)
 
 int OPNode::calc() const
 {
-  int left_val = left_->calc(), 
-      right_val = right_->calc();
+  int left_val = left_->calc(), right_val = right_->calc();
 
   switch (op_type_)
   {
