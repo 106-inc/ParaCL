@@ -66,5 +66,62 @@ var_table::iterator Scope::check_n_insert(const std::string &var_name)
   return it_n_bool.first;
 } /* End of 'check_n_insert' function */
 
+int OPNode::calc() const
+{
+  int left_val = left_->calc(), 
+      right_val = right_->calc();
+
+  switch (op_type_)
+  {
+  case Ops::ADD:
+    return left_val + right_val;
+  case Ops::SUB:
+    return left_val - right_val;
+  case Ops::MUL:
+    return left_val * right_val;
+  case Ops::DIV:
+    if (right_val == 0)
+      throw std::runtime_error{"Dividing by ZERO!"};
+    return left_val / right_val;
+  case Ops::MOD:
+    if (right_val == 0)
+      throw std::runtime_error{"Dividing by ZERO!"};
+    return left_val % right_val;
+  case Ops::GREATER:
+    return left_val > right_val;
+  case Ops::GR_EQ:
+    return left_val >= right_val;
+  case Ops::LESS:
+    return left_val < right_val;
+  case Ops::LS_EQ:
+    return left_val <= right_val;
+  case Ops::IS_EQ:
+    return left_val == right_val;
+  case Ops::NOT_EQ:
+    return left_val != right_val;
+  case Ops::AND:
+    return left_val && right_val;
+  case Ops::OR:
+    return left_val || right_val;
+  default:
+    throw std::runtime_error("Unrecognized binary operator number\n");
+  }
+}
+
+int UNOPNode::calc() const
+{
+  int val = operand_->calc();
+
+  switch (op_type_)
+  {
+  case Ops::NEG:
+    return -val;
+  case Ops::NOT:
+    return !val;
+  default:
+    throw std::runtime_error("Unrecognized unary operator number\n");
+  }
+}
+
 //////////////END OF SCOPE METHODS ////////////////////////////////
 } // namespace AST

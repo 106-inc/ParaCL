@@ -1,5 +1,5 @@
 #include "INode.hh"
-#include "OPNode.hh"
+#include "Node.hh"
 
 /**
  * @file INode.cc
@@ -31,37 +31,7 @@ pINode make_cst(int val)
  */
 pINode make_op(const pINode &l, Ops op, const pINode &r)
 {
-  switch (op)
-  {
-  case Ops::ADD:
-    return std::make_shared<PLNode>(l, r);
-  case Ops::SUB:
-    return std::make_shared<SBNode>(l, r);
-  case Ops::MUL:
-    return std::make_shared<MLNode>(l, r);
-  case Ops::DIV:
-    return std::make_shared<DVNode>(l, r);
-  case Ops::MOD:
-    return std::make_shared<MDNode>(l, r);
-  case Ops::GREATER:
-    return std::make_shared<GNode>(l, r);
-  case Ops::GR_EQ:
-    return std::make_shared<GENode>(l, r);
-  case Ops::LESS:
-    return std::make_shared<LNode>(l, r);
-  case Ops::LS_EQ:
-    return std::make_shared<LENode>(l, r);
-  case Ops::IS_EQ:
-    return std::make_shared<EQNode>(l, r);
-  case Ops::NOT_EQ:
-    return std::make_shared<NEQNode>(l, r);
-  case Ops::AND:
-    return std::make_shared<ANDNode>(l, r);
-  case Ops::OR:
-    return std::make_shared<ORNode>(l, r);
-  default:
-    throw std::runtime_error("Operator is not implemented\n");
-  }
+  return std::make_shared<OPNode>(l, op, r);
 } /* End of 'make_op' function */
 
 /**
@@ -73,15 +43,7 @@ pINode make_op(const pINode &l, Ops op, const pINode &r)
  */
 pINode make_un(Ops op, const pINode &operand)
 {
-  switch (op)
-  {
-  case Ops::NEG:
-    return std::make_shared<NEGNode>(operand);
-  case Ops::NOT:
-    return std::make_shared<NOTNode>(operand);
-  default:
-    throw std::runtime_error("Operator is not implemented\n");
-  }
+  return std::make_shared<UNOPNode>(op, operand);
 }
 
 /**

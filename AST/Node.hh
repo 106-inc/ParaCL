@@ -169,11 +169,14 @@ public:
 /**
  * @brief Operator node class
  */
-class OPNode : public INode
+class OPNode final : public INode
 {
 protected:
   pINode left_{};
   pINode right_{};
+
+  /* To determine operator's type */
+  Ops op_type_;
 
 public:
   /**
@@ -181,27 +184,97 @@ public:
    * @param[in] left    left node of operator
    * @param[in] right   right node of operator
    */
-  OPNode(const pINode &left, const pINode &right) : left_(left), right_(right)
+  OPNode(const pINode &left, Ops op_type, const pINode &right) : left_(left), right_(right), op_type_(op_type)
   {
   }
+
+  int calc() const override;
 };
 
 /**
  * @class UNOPNode
  * @brief Operator node class
  */
-class UNOPNode : public INode
+class UNOPNode final : public INode
 {
 protected:
   pINode operand_{};
+
+  /* To determine operator's type */
+  Ops op_type_;
 
 public:
   /**
    * Operator's node constructor
    * @param[in] operand  pointer to operand's node
    */
-  UNOPNode(const pINode &operand) : operand_(operand)
+  UNOPNode(Ops op_type, const pINode &operand) : operand_(operand), op_type_(op_type)
   {
+  }
+
+  int calc() const override;
+};
+
+/**
+ * @brief Assignment operator's node class
+ */
+class ASNode final : public INode
+{
+private:
+  std::shared_ptr<VNode> dst_; // variable to assign
+  pINode expr_;                // expression
+public:
+  /**
+   * @brief Assignment node class ctor
+   * @param[in] dst pointer to destination variable node
+   * @param[in] expr pointer to expression node(-s)
+   */
+  ASNode(const std::shared_ptr<VNode> &dst, const pINode &expr) : dst_(dst), expr_(expr)
+  {
+  }
+
+  /**
+   * @brief Calculate an assignment function
+   * @return calculated assigned value
+   */
+  int calc() const override
+  {
+    int expr_res = expr_->calc();
+
+    dst_->set_val(expr_res);
+
+    return expr_res;
+  } /* End of 'calc' function */
+};
+
+/**
+ * @brief return operand node class
+ * 
+ */
+class RETNode final : public INode
+{
+private:
+  pINode expr_;
+
+public:
+
+  /**
+   * @brief Construct a new RETNode object - return node operand
+   * 
+   * @param[in] expr shared pointer to expression node
+   */
+  RETNode(const pINode &expr) : expr_(expr)
+  {
+  }
+
+  /**
+   * @brief calculate ret value function
+   * 
+   * @return int return value
+   */
+  int calc() const override
+  {
+    return expr_->calc();
   }
 };
 
