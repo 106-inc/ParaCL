@@ -68,9 +68,9 @@ var_table::iterator Scope::check_n_insert(const std::string &var_name)
 
 int OPNode::calc() const
 {
-  int left_val = ValStack.top();
-  ValStack.pop();
   int right_val = ValStack.top();
+  ValStack.pop();
+  int left_val = ValStack.top();
   ValStack.pop();
 
   int res = 0;
