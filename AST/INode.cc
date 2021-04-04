@@ -83,7 +83,7 @@ pINode make_if(const pINode &cond, const pIScope &isc, const pIScope &esc /* = n
  * @param[in] par shared pointer to parent node
  * @return shared pointer to created Scope
  */
-pIScope make_scope(const pIScope &par /* = nullptr */ )
+pIScope make_scope(const pIScope &par /* = nullptr */)
 {
   auto new_psc = std::make_shared<Scope>(par);
 
@@ -99,7 +99,7 @@ pIScope make_scope(const pIScope &par /* = nullptr */ )
  * @param[in] par shared pointer to parent node
  * @return shared pointer to created Scope
  */
-pIScope make_br_scope(const pIScope &par )
+pIScope make_br_scope(const pIScope &par)
 {
   auto new_psc = std::make_shared<Scope>(par);
 
