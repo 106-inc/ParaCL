@@ -11,19 +11,22 @@ std::stack<StkFrame> FrameStack{};
  */
 void Interp::interpret()
 {
+  /* We have to start from smth. Let it be global scope. */
   FrameStack.emplace(globl_, 0);
 
   while (!FrameStack.empty())
   {
-    auto &fr_top = FrameStack.top();   // fr_top == (global, 0)
+    auto &fr_top = FrameStack.top();
 
-    // get the current node ptr
-    pINode pNode = fr_top.node;   // == global 
+    /* Get the current node ptr */
+    pINode pNode = fr_top.node;
     
-    size_t childs_am = pNode->get_ch_size(); // 2
-    // get child of current node 
-    int i_next = fr_top.state; // 0
+    size_t childs_am = pNode->get_ch_size();
 
+    /* Index of child that we will visit now */
+    int i_next = fr_top.state;
+
+    /* If there is no more children - calculate current node and pop it from stack. */
     if (i_next == static_cast<int>(States::END))
     {
       fr_top.node->calc();
@@ -33,18 +36,21 @@ void Interp::interpret()
     if (i_next < 0)
       throw std::runtime_error{"Negative child index"};
 
-    // go to next state
+    /* Changing child index to next */
     fr_top.state++;
 
+    /* If index is out of range - set state to END. */
     if (fr_top.state >= childs_am)
       fr_top.state = static_cast<int>(States::END);
 
-    auto pch = pNode->get_i_child(i_next); // 
+    /* Get pointer to child */
+    auto pch = pNode->get_i_child(i_next); 
     if (pch == nullptr)
     {
       fr_top.state = static_cast<int>(States::END);
       continue;
     }
+    /* Append frame stack */
     FrameStack.emplace(pch, 0);
 
     if (pch->get_ch_size() == 0)
