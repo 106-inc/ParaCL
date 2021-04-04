@@ -3,11 +3,15 @@
 
 /////////////////////////////////////
 ///// STL containers ///////////////
+#include <stack>
 #include <vector>
 /////////////////////////////////////
 
+#include <limits>
+
 ////// OUR HEADERS //////////////////
 #include "INode.hh"
+#include "Interp.hh"
 /////////////////////////////////////
 
 namespace AST
@@ -23,13 +27,13 @@ private:
   std::vector<pINode> nodes_{};
 
   // Pointer to parent scope
-  std::weak_ptr<IScope> parent_{};
+  std::weak_ptr<IScope> parent_;
 
   var_table var_tbl_;
 
 public:
   // constructor by parent scope ptr
-  Scope(const pIScope &parent = nullptr) : parent_(parent)
+  Scope(const pIScope &parent) : parent_(parent)
   {
   }
 
@@ -44,13 +48,13 @@ public:
    */
   int calc() const override
   {
-    int ret_val{};
-
-    for (auto &&node : nodes_)
-      ret_val = node->calc();
-
-    return ret_val;
+    return 0; 
   } /* End of 'calc' function */
+
+  pINode get_i_child(size_t i) const override
+  {
+    return nodes_.at(i);
+  }
 
   /**
    * @brief Add node to scope function
@@ -60,6 +64,7 @@ public:
   void push(const pINode &node) override
   {
     nodes_.push_back(node);
+    childs_am_ = nodes_.size();
   } /* End of 'push' function */
 
   it_bool get_var(const std::string &var_name) override;
@@ -77,7 +82,7 @@ private:
    */
   var_table::iterator insert_var(const std::string &var_name)
   {
-    auto it_bl = var_tbl_.insert({var_name, {}});
+    auto it_bl = var_tbl_.insert({var_name, {0}});
 
     return it_bl.first;
   } /* End of 'insert_var' function */
@@ -126,6 +131,7 @@ public:
    */
   int calc() const override
   {
+    ValStack.push(location_->second);
     return location_->second;
   }
 
@@ -162,6 +168,7 @@ public:
    */
   int calc() const override
   {
+    ValStack.push(val_);
     return val_;
   }
 };
@@ -169,11 +176,14 @@ public:
 /**
  * @brief Operator node class
  */
-class OPNode : public INode
+class OPNode final : public INode
 {
-protected:
+private:
   pINode left_{};
   pINode right_{};
+
+  /* To determine operator's type */
+  Ops op_type_;
 
 public:
   /**
@@ -181,27 +191,132 @@ public:
    * @param[in] left    left node of operator
    * @param[in] right   right node of operator
    */
-  OPNode(const pINode &left, const pINode &right) : left_(left), right_(right)
+  OPNode(const pINode &left, Ops op_type, const pINode &right) : INode(2), left_(left), right_(right), op_type_(op_type)
   {
   }
+
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= childs_am_)
+      throw std::runtime_error{"Incorrect children amount"};
+
+    return i == 1 ? right_ : left_;
+  }
+
+  int calc() const override;
 };
 
 /**
  * @class UNOPNode
  * @brief Operator node class
  */
-class UNOPNode : public INode
+class UNOPNode final : public INode
 {
-protected:
+private:
   pINode operand_{};
+
+  /* To determine operator's type */
+  Ops op_type_;
 
 public:
   /**
    * Operator's node constructor
    * @param[in] operand  pointer to operand's node
    */
-  UNOPNode(const pINode &operand) : operand_(operand)
+  UNOPNode(Ops op_type, const pINode &operand) : INode(1), operand_(operand), op_type_(op_type)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= childs_am_)
+      throw std::runtime_error{"Incorrect children amount"};
+
+    return operand_;
+  }
+
+  int calc() const override;
+};
+
+/**
+ * @brief Assignment operator's node class
+ */
+class ASNode final : public INode
+{
+private:
+  std::shared_ptr<VNode> dst_; // variable to assign
+  pINode expr_;                // expression
+public:
+  /**
+   * @brief Assignment node class ctor
+   * @param[in] dst pointer to destination variable node
+   * @param[in] expr pointer to expression node(-s)
+   */
+  ASNode(const std::shared_ptr<VNode> &dst, const pINode &expr) : INode(2), dst_(dst), expr_(expr)
+  {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= childs_am_)
+      throw std::runtime_error{"Incorrect children amount"};
+
+    return i == 1 ? expr_ : dst_;
+  }
+
+  /**
+   * @brief Calculate an assignment function
+   * @return calculated assigned value
+   */
+  int calc() const override
+  {
+    int expr_res = ValStack.top();
+    ValStack.pop();
+
+    ValStack.pop(); // delete dummy var value
+
+    dst_->set_val(expr_res);
+
+    ValStack.push(expr_res);
+    return expr_res;
+  } /* End of 'calc' function */
+};
+
+/**
+ * @brief return operand node class
+ *
+ */
+class RETNode final : public INode
+{
+private:
+  pINode expr_;
+
+public:
+  /**
+   * @brief Construct a new RETNode object - return node operand
+   *
+   * @param[in] expr shared pointer to expression node
+   */
+  RETNode(const pINode &expr) : INode(1), expr_(expr)
+  {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= childs_am_)
+      throw std::runtime_error{"Incorrect children amount"};
+
+    return expr_;
+  }
+
+  /**
+   * @brief calculate ret value function
+   *
+   * @return int return value
+   */
+  int calc() const override
+  {
+    return expr_->calc();
   }
 };
 
@@ -215,8 +330,26 @@ private:
   pIScope scope_{};
 
 public:
-  WHNode(const pINode &cond, const pIScope &scope) : cond_(cond), scope_(scope)
+  WHNode(const pINode &cond, const pIScope &scope)
+      : INode(std::numeric_limits<size_t>::max()), cond_(cond), scope_(scope)
+  // because while potentially has infinity number of children (iterations)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    i %= 2;
+
+    if (i == 0)
+      return cond_;
+
+    int cond_calc = ValStack.top();
+    ValStack.pop();
+
+    if (cond_calc)
+      return scope_;
+
+    return nullptr;
   }
 
   /**
@@ -225,9 +358,6 @@ public:
    */
   int calc() const override
   {
-    while (cond_->calc())
-      scope_->calc();
-
     return 0;
   }
 };
@@ -245,8 +375,28 @@ private:
   pIScope else_scope_{};
 
 public:
-  IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr) : cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
+  IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr)
+      : INode(2), cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= childs_am_)
+      throw std::runtime_error{"Incorrect children amount"};
+
+    if (i == 0)
+      return cond_;
+
+    int calc_cond = ValStack.top();
+    ValStack.pop();
+
+    if (calc_cond)
+      return if_scope_;
+    else if (else_scope_ != nullptr)
+      return else_scope_;
+
+    return nullptr;
   }
 
   /**
@@ -255,11 +405,6 @@ public:
    */
   int calc() const override
   {
-    if (cond_->calc())
-      if_scope_->calc();
-    else if (else_scope_ != nullptr)
-      else_scope_->calc();
-
     return 0;
   }
 };
@@ -273,8 +418,16 @@ private:
   pINode expr_;
 
 public:
-  PNode(const pINode &expr) : expr_(expr)
+  PNode(const pINode &expr) : INode(1), expr_(expr)
   {
+  }
+
+  pINode get_i_child(size_t i) const override
+  {
+    if (i >= childs_am_)
+      throw std::runtime_error{"Incorrect children amount"};
+
+    return expr_;
   }
 
   /**
@@ -282,7 +435,10 @@ public:
    */
   int calc() const override
   {
-    std::cout << expr_->calc() << std::endl;
+    int val = ValStack.top();
+    ValStack.pop();
+
+    std::cout << val << std::endl;
     return 0;
   }
 };
@@ -306,6 +462,8 @@ public:
     std::cin >> value;
     if (!std::cin.good())
       throw std::runtime_error{"Invalid symbol at stdin"};
+
+    ValStack.push(value);
 
     return value;
   } /* End of 'calc' function */

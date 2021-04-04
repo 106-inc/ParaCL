@@ -6,14 +6,10 @@
 #include <iostream>
 #include <vector>
 
-#include "../parser/parser.hh"
+#include "parser.hh"
 
 #ifndef yyFlexLexer
 #include <FlexLexer.h>
-#endif /* yyFlexLexer */
-
-#ifndef yyFlexLexer
-//#include "../FB_BLD/lex.yy.cc"
 #endif /* yyFlexLexer */
 
 enum

@@ -1,5 +1,5 @@
 #include "INode.hh"
-#include "OPNode.hh"
+#include "Node.hh"
 
 /**
  * @file INode.cc
@@ -31,37 +31,7 @@ pINode make_cst(int val)
  */
 pINode make_op(const pINode &l, Ops op, const pINode &r)
 {
-  switch (op)
-  {
-  case Ops::ADD:
-    return std::make_shared<PLNode>(l, r);
-  case Ops::SUB:
-    return std::make_shared<SBNode>(l, r);
-  case Ops::MUL:
-    return std::make_shared<MLNode>(l, r);
-  case Ops::DIV:
-    return std::make_shared<DVNode>(l, r);
-  case Ops::MOD:
-    return std::make_shared<MDNode>(l, r);
-  case Ops::GREATER:
-    return std::make_shared<GNode>(l, r);
-  case Ops::GR_EQ:
-    return std::make_shared<GENode>(l, r);
-  case Ops::LESS:
-    return std::make_shared<LNode>(l, r);
-  case Ops::LS_EQ:
-    return std::make_shared<LENode>(l, r);
-  case Ops::IS_EQ:
-    return std::make_shared<EQNode>(l, r);
-  case Ops::NOT_EQ:
-    return std::make_shared<NEQNode>(l, r);
-  case Ops::AND:
-    return std::make_shared<ANDNode>(l, r);
-  case Ops::OR:
-    return std::make_shared<ORNode>(l, r);
-  default:
-    throw std::runtime_error("Operator is not implemented\n");
-  }
+  return std::make_shared<OPNode>(l, op, r);
 } /* End of 'make_op' function */
 
 /**
@@ -73,15 +43,7 @@ pINode make_op(const pINode &l, Ops op, const pINode &r)
  */
 pINode make_un(Ops op, const pINode &operand)
 {
-  switch (op)
-  {
-  case Ops::NEG:
-    return std::make_shared<NEGNode>(operand);
-  case Ops::NOT:
-    return std::make_shared<NOTNode>(operand);
-  default:
-    throw std::runtime_error("Operator is not implemented\n");
-  }
+  return std::make_shared<UNOPNode>(op, operand);
 }
 
 /**
@@ -93,6 +55,7 @@ pINode make_un(Ops op, const pINode &operand)
  */
 pINode make_while(const pINode &cond, const pIScope &sc)
 {
+  FrameStack.pop();
   return std::make_shared<WHNode>(cond, sc);
 } /* End of 'make_while' function */
 
@@ -106,6 +69,11 @@ pINode make_while(const pINode &cond, const pIScope &sc)
  */
 pINode make_if(const pINode &cond, const pIScope &isc, const pIScope &esc /* = nullptr */)
 {
+  size_t end = (esc == nullptr) ? 1 : 2;
+
+  for (size_t i = 0; i < end; ++i)
+    FrameStack.pop();
+
   return std::make_shared<IFNode>(cond, isc, esc);
 } /* End of 'make_if' function */
 
@@ -115,9 +83,30 @@ pINode make_if(const pINode &cond, const pIScope &isc, const pIScope &esc /* = n
  * @param[in] par shared pointer to parent node
  * @return shared pointer to created Scope
  */
-pIScope make_scope(const pIScope &par /* = nullptr */)
+pIScope make_scope(const pIScope &par /* = nullptr */ )
 {
-  return std::make_shared<Scope>(par);
+  auto new_psc = std::make_shared<Scope>(par);
+
+  if (par)
+    par->push(new_psc);
+
+  return new_psc;
+} /* End of 'create_scope' function */
+
+/**
+ * @fn make_br_scope
+ * @brief Create scope function
+ * @param[in] par shared pointer to parent node
+ * @return shared pointer to created Scope
+ */
+pIScope make_br_scope(const pIScope &par )
+{
+  auto new_psc = std::make_shared<Scope>(par);
+
+  if (par)
+    FrameStack.emplace(new_psc, 0);
+
+  return new_psc;
 } /* End of 'create_scope' function */
 
 /**

@@ -13,7 +13,7 @@
 %code requires
 {
 #include <string>
-#include "../AST/INode.hh"
+#include "INode.hh"
 
 namespace yy
 {
@@ -26,7 +26,7 @@ extern AST::pIScope CUR_SCOPE;
 
 %code
 {
-#include "../driver/driver.hh"
+#include "driver.hh"
 
 namespace yy
 { parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver); }
@@ -83,10 +83,11 @@ extern AST::pIScope CUR_SCOPE;
 %nterm<AST::pIScope>
 
   scope
+  br_scope
   cl_sc
   ;
 
-%nterm<AST::pIScope> cur_stm
+%nterm<AST::pIScope> br_stm
 
 %nterm<AST::pINode> 
   stm
@@ -138,7 +139,11 @@ program:     stms                           { /* program starting */ };
 
 scope:       op_sc stms cl_sc               { $$ = $3; };
 
+br_scope:    op_br_sc stms cl_sc            { $$ = $3; };
+
 op_sc:       LB                             { CUR_SCOPE = AST::make_scope(CUR_SCOPE); };
+
+op_br_sc:    LB                             { CUR_SCOPE = AST::make_br_scope(CUR_SCOPE); };
 
 cl_sc:       RB                             {
                                               $$ = CUR_SCOPE;
@@ -147,14 +152,14 @@ cl_sc:       RB                             {
 
 stms:        stm                            { CUR_SCOPE->push($1); };
            | stms stm                       { CUR_SCOPE->push($2); };
-           | scope                          { CUR_SCOPE->push($1); };
-           | stms scope                     { CUR_SCOPE->push($2); };
+           | scope                          { /* nothing */ };
+           | stms scope                     { /* nothing */ };
 
-cur_stm:     stm                            {
-                                              $$ = AST::make_scope(CUR_SCOPE);
+br_stm:     stm                             {
+                                              $$ = AST::make_br_scope(CUR_SCOPE);
                                               $$->push($1);
                                             };
-           | scope                          { $$ = $1; };
+           | br_scope                       { $$ = $1; };
 
 stm:         assign                         { $$ = $1; };
            | if                             { $$ = $1; };
@@ -212,15 +217,15 @@ call_argv:   INT                            { SOMETHING };
 */
 
 if:          IF LP expr[e] RP 
-               cur_stm[s]                   { $$ = AST::make_if($e, $s); };
+               br_stm[s]                   { $$ = AST::make_if($e, $s); };
            | IF LP expr[e] RP 
-               cur_stm[s1]
+               br_stm[s1]
              ELSE 
-               cur_stm[s2]                  { $$ = AST::make_if($e, $s1, $s2); };
+               br_stm[s2]                  { $$ = AST::make_if($e, $s1, $s2); };
             /* dangling else */ /* this rule creates shift-reduce conflict  */
 
 while:       WHILE LP expr[e] RP
-               cur_stm[s]                   { $$ = AST::make_while($e, $s); };
+               br_stm[s]                   { $$ = AST::make_while($e, $s); };
 
 pm:          ADD                            { $$ = AST::Ops::ADD; }; 
            | MIN                            { $$ = AST::Ops::SUB; }; 
