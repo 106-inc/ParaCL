@@ -13,13 +13,15 @@ int main(int argc, char **argv)
 
   CUR_SCOPE = root;
 
+  AST::Interp interp(root);
+
   try
   {
     yy::Driver driver(argv[1]);
     if (!driver.parse())
       return 1;
 
-    root->calc();
+    interp.interpret();
   }
   catch (std::runtime_error &err)
   {
