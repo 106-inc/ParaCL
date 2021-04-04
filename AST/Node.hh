@@ -27,13 +27,13 @@ private:
   std::vector<pINode> nodes_{};
 
   // Pointer to parent scope
-  std::weak_ptr<IScope> parent_{};
+  std::weak_ptr<IScope> parent_;
 
   var_table var_tbl_;
 
 public:
   // constructor by parent scope ptr
-  Scope(const pIScope &parent = nullptr) : parent_(parent)
+  Scope(const pIScope &parent) : parent_(parent)
   {
   }
 
