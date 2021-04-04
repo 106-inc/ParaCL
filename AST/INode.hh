@@ -122,6 +122,7 @@ pINode make_ref(const std::string &var_name);
 pINode make_print(const pINode &expr);
 pINode make_scan();
 pIScope make_scope(const pIScope &par = nullptr);
+pIScope make_br_scope(const pIScope &par);
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*
