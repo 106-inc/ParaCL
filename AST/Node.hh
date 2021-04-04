@@ -7,6 +7,8 @@
 #include <vector>
 /////////////////////////////////////
 
+#include <limits>
+
 ////// OUR HEADERS //////////////////
 #include "INode.hh"
 #include "Interp.hh"
@@ -46,20 +48,12 @@ public:
    */
   int calc() const override
   {
-    int ret_val{};
-
-    for (auto &&node : nodes_)
-      ret_val = node->calc();
-
-    return ret_val;
+    return 0; 
   } /* End of 'calc' function */
 
   pINode get_i_child(size_t i) const override
   {
-    if (i >= nodes_.size())
-      return nullptr;
-
-    return nodes_[i];
+    return nodes_.at(i);
   }
 
   /**
@@ -88,7 +82,7 @@ private:
    */
   var_table::iterator insert_var(const std::string &var_name)
   {
-    auto it_bl = var_tbl_.insert({var_name, {}});
+    auto it_bl = var_tbl_.insert({var_name, {0}});
 
     return it_bl.first;
   } /* End of 'insert_var' function */
@@ -137,6 +131,7 @@ public:
    */
   int calc() const override
   {
+    ValStack.push(location_->second);
     return location_->second;
   }
 
@@ -173,6 +168,7 @@ public:
    */
   int calc() const override
   {
+    ValStack.push(val_);
     return val_;
   }
 };
@@ -202,7 +198,7 @@ public:
   pINode get_i_child(size_t i) const override
   {
     if (i >= childs_am_)
-      return nullptr;
+      throw std::runtime_error{"Incorrect children amount"};
 
     return i == 1 ? right_ : left_;
   }
@@ -233,7 +229,10 @@ public:
 
   pINode get_i_child(size_t i) const override
   {
-    return i >= childs_am_ ? nullptr : operand_;
+    if (i >= childs_am_)
+      throw std::runtime_error{"Incorrect children amount"};
+
+    return operand_;
   }
 
   int calc() const override;
@@ -260,7 +259,7 @@ public:
   pINode get_i_child(size_t i) const override
   {
     if (i >= childs_am_)
-      return nullptr;
+      throw std::runtime_error{"Incorrect children amount"};
 
     return i == 1 ? expr_ : dst_;
   }
@@ -271,10 +270,14 @@ public:
    */
   int calc() const override
   {
-    int expr_res = expr_->calc();
+    int expr_res = ValStack.top();
+    ValStack.pop();
+
+    ValStack.pop(); // delete dummy var value
 
     dst_->set_val(expr_res);
 
+    ValStack.push(expr_res);
     return expr_res;
   } /* End of 'calc' function */
 };
@@ -300,7 +303,10 @@ public:
 
   pINode get_i_child(size_t i) const override
   {
-    return i >= childs_am_ ? nullptr : expr_;
+    if (i >= childs_am_)
+      throw std::runtime_error{"Incorrect children amount"};
+
+    return expr_;
   }
 
   /**
@@ -324,16 +330,26 @@ private:
   pIScope scope_{};
 
 public:
-  WHNode(const pINode &cond, const pIScope &scope) : INode(2), cond_(cond), scope_(scope)
+  WHNode(const pINode &cond, const pIScope &scope)
+      : INode(std::numeric_limits<size_t>::max()), cond_(cond), scope_(scope)
+  // because while potentially has infinity number of children (iterations)
   {
   }
 
   pINode get_i_child(size_t i) const override
   {
-    if (i >= childs_am_)
-      return nullptr;
+    i %= 2;
 
-    return i == 1 ? scope_ : cond_;
+    if (i == 0)
+      return cond_;
+
+    int cond_calc = ValStack.top();
+    ValStack.pop();
+
+    if (cond_calc)
+      return scope_;
+
+    return nullptr;
   }
 
   /**
@@ -342,9 +358,6 @@ public:
    */
   int calc() const override
   {
-    while (cond_->calc())
-      scope_->calc();
-
     return 0;
   }
 };
@@ -363,24 +376,27 @@ private:
 
 public:
   IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr)
-      : INode(el_sc == nullptr ? 2 : 3), cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
+      : INode(2), cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
   {
   }
 
   pINode get_i_child(size_t i) const override
   {
     if (i >= childs_am_)
-      return nullptr;
+      throw std::runtime_error{"Incorrect children amount"};
 
-    switch (i)
-    {
-    case 0:
+    if (i == 0)
       return cond_;
-    case 1:
+
+    int calc_cond = ValStack.top();
+    ValStack.pop();
+
+    if (calc_cond)
       return if_scope_;
-    default:
+    else if (else_scope_ != nullptr)
       return else_scope_;
-    }
+
+    return nullptr;
   }
 
   /**
@@ -389,11 +405,6 @@ public:
    */
   int calc() const override
   {
-    if (cond_->calc())
-      if_scope_->calc();
-    else if (else_scope_ != nullptr)
-      else_scope_->calc();
-
     return 0;
   }
 };
@@ -413,7 +424,10 @@ public:
 
   pINode get_i_child(size_t i) const override
   {
-    return i >= childs_am_ ? nullptr : expr_;
+    if (i >= childs_am_)
+      throw std::runtime_error{"Incorrect children amount"};
+
+    return expr_;
   }
 
   /**
@@ -421,7 +435,10 @@ public:
    */
   int calc() const override
   {
-    std::cout << expr_->calc() << std::endl;
+    int val = ValStack.top();
+    ValStack.pop();
+
+    std::cout << val << std::endl;
     return 0;
   }
 };
@@ -445,6 +462,8 @@ public:
     std::cin >> value;
     if (!std::cin.good())
       throw std::runtime_error{"Invalid symbol at stdin"};
+
+    ValStack.push(value);
 
     return value;
   } /* End of 'calc' function */
