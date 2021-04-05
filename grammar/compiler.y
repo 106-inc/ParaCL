@@ -225,15 +225,15 @@ call_argv:   INT                            { SOMETHING };
 */
 
 if:          IF LP expr[e] RP 
-               br_stm[s]                   { $$ = AST::make_if($e, $s); };
+               br_stm[s]                    { $$ = AST::make_if($e, $s); };
            | IF LP expr[e] RP 
                br_stm[s1]
              ELSE 
-               br_stm[s2]                  { $$ = AST::make_if_else($e, $s1, $s2); };
+               br_stm[s2]                   { $$ = AST::make_if_else($e, $s1, $s2); };
             /* dangling else */ /* this rule creates shift-reduce conflict  */
 
 while:       WHILE LP expr[e] RP
-               br_stm[s]                   { $$ = AST::make_while($e, $s); };
+               br_stm[s]                    { $$ = AST::make_while($e, $s); };
 
 pm:          ADD                            { $$ = AST::Ops::ADD; }; 
            | MIN                            { $$ = AST::Ops::SUB; }; 
@@ -253,7 +253,7 @@ eq_ty:       IS_EQ                          { $$ = AST::Ops::IS_EQ; };
 un:          MIN                            { $$ = AST::Ops::NEG; };
            | NOT                            { $$ = AST::Ops::NOT; };
 
-print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
+print:       PRINT expr SCOLON              { $$ = AST::make_print($2); };
 
 %%
 

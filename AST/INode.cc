@@ -84,7 +84,6 @@ pINode make_if(pINode &cond, pIScope &isc)
   return std::make_unique<IFNode>(cond, isc);
 } /* End of 'make_if_else' function */
 
-
 /**
  * @fn make_scope
  * @brief Create scope function
@@ -147,7 +146,7 @@ pINode make_asgn(const std::string &var_name, pINode &expr)
 {
   auto it = CUR_SCOPE->check_n_insert(var_name);
   auto pvar = std::make_unique<VNode>(it);
-  
+
   return std::make_unique<ASNode>(pvar, expr);
 } /* End of 'make_ass' function */
 
