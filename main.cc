@@ -24,6 +24,7 @@ int main(int argc, char **argv)
   catch (std::runtime_error &err)
   {
     std::cerr << err.what() << std::endl;
+
   }
 
   return 0;
