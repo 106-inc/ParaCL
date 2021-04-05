@@ -55,7 +55,6 @@ pINode make_un(Ops op, const pINode &operand)
  */
 pINode make_while(const pINode &cond, const pIScope &sc)
 {
-  FrameStack.pop();
   return std::make_shared<WHNode>(cond, sc);
 } /* End of 'make_while' function */
 
@@ -69,11 +68,6 @@ pINode make_while(const pINode &cond, const pIScope &sc)
  */
 pINode make_if(const pINode &cond, const pIScope &isc, const pIScope &esc /* = nullptr */)
 {
-  size_t end = (esc == nullptr) ? 1 : 2;
-
-  for (size_t i = 0; i < end; ++i)
-    FrameStack.pop();
-
   return std::make_shared<IFNode>(cond, isc, esc);
 } /* End of 'make_if' function */
 
@@ -86,25 +80,6 @@ pINode make_if(const pINode &cond, const pIScope &isc, const pIScope &esc /* = n
 pIScope make_scope(const pIScope &par /* = nullptr */)
 {
   auto new_psc = std::make_shared<Scope>(par);
-
-  if (par)
-    par->push(new_psc);
-
-  return new_psc;
-} /* End of 'create_scope' function */
-
-/**
- * @fn make_br_scope
- * @brief Create scope function
- * @param[in] par shared pointer to parent node
- * @return shared pointer to created Scope
- */
-pIScope make_br_scope(const pIScope &par)
-{
-  auto new_psc = std::make_shared<Scope>(par);
-
-  if (par)
-    FrameStack.emplace(new_psc, 0);
 
   return new_psc;
 } /* End of 'create_scope' function */

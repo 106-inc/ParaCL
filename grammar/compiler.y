@@ -83,8 +83,10 @@ extern AST::pIScope CUR_SCOPE;
 %nterm<AST::pIScope>
 
   scope
+  op_sc
+
   br_scope
-  cl_sc
+  op_br_sc
   ;
 
 %nterm<AST::pIScope> br_stm
@@ -137,18 +139,23 @@ extern AST::pIScope CUR_SCOPE;
 
 program:     stms                           { /* program starting */ };
 
-scope:       op_sc stms cl_sc               { $$ = $3; };
+scope:       op_sc stms cl_sc               { $$ = $1; };
 
-br_scope:    op_br_sc stms cl_sc            { $$ = $3; };
+br_scope:    op_br_sc stms cl_sc            { $$ = $1; };
 
-op_sc:       LB                             { CUR_SCOPE = AST::make_scope(CUR_SCOPE); };
-
-op_br_sc:    LB                             { CUR_SCOPE = AST::make_br_scope(CUR_SCOPE); };
-
-cl_sc:       RB                             {
+op_sc:       LB                             { 
+                                              auto par_tmp = CUR_SCOPE;
+                                              CUR_SCOPE = AST::make_scope(par_tmp);
+                                              if (par_tmp) par_tmp->push(CUR_SCOPE);
                                               $$ = CUR_SCOPE;
-                                              CUR_SCOPE = CUR_SCOPE->reset_scope();
                                             };
+
+op_br_sc:    LB                             { 
+                                              CUR_SCOPE = AST::make_scope(CUR_SCOPE); 
+                                              $$ = CUR_SCOPE;
+                                            };
+
+cl_sc:       RB                             { CUR_SCOPE = CUR_SCOPE->reset_scope(); };
 
 stms:        stm                            { CUR_SCOPE->push($1); };
            | stms stm                       { CUR_SCOPE->push($2); };
@@ -156,7 +163,7 @@ stms:        stm                            { CUR_SCOPE->push($1); };
            | stms scope                     { /* nothing */ };
 
 br_stm:     stm                             {
-                                              $$ = AST::make_br_scope(CUR_SCOPE);
+                                              $$ = AST::make_scope(CUR_SCOPE);
                                               $$->push($1);
                                             };
            | br_scope                       { $$ = $1; };
