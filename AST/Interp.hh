@@ -1,8 +1,8 @@
 #ifndef __INTERP_H__
 #define __INTERP_H__
 
-#include <stack>
 #include <limits>
+#include <stack>
 
 #include "INode.hh"
 

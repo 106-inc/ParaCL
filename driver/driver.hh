@@ -6,8 +6,8 @@
 #include <iostream>
 #include <vector>
 
-#include "parser.hh"
 #include "Interp.hh"
+#include "parser.hh"
 
 #ifndef yyFlexLexer
 #include <FlexLexer.h>

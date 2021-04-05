@@ -147,7 +147,6 @@ pINode make_asgn(const std::string &var_name, pINode &expr)
   return std::make_unique<ASNode>(pvar, expr);
 } /* End of 'make_ass' function */
 
-
 ////////////////////////// SCOPE METHODS /////////////////
 
 /**
