@@ -5,9 +5,11 @@
  * @file INode.cc
  * @brief Realization of functions from 'INode.hh' file
  */
+
 namespace AST
 {
 
+  std::stack<pIScope> ScopeStack{};
 // TODO: rewrite comments
 
 /**
@@ -55,7 +57,7 @@ pINode make_un(Ops op, const pINode &operand)
  */
 pINode make_while(const pINode &cond, const pIScope &sc)
 {
-  FrameStack.pop();
+  ScopeStack.pop();
   return std::make_shared<WHNode>(cond, sc);
 } /* End of 'make_while' function */
 
@@ -69,10 +71,9 @@ pINode make_while(const pINode &cond, const pIScope &sc)
  */
 pINode make_if(const pINode &cond, const pIScope &isc, const pIScope &esc /* = nullptr */)
 {
-  size_t end = (esc == nullptr) ? 1 : 2;
-
-  for (size_t i = 0; i < end; ++i)
-    FrameStack.pop();
+  ScopeStack.pop();
+  if (esc)
+    ScopeStack.pop();
 
   return std::make_shared<IFNode>(cond, isc, esc);
 } /* End of 'make_if' function */
@@ -104,7 +105,7 @@ pIScope make_br_scope(const pIScope &par )
   auto new_psc = std::make_shared<Scope>(par);
 
   if (par)
-    FrameStack.emplace(new_psc, 0);
+    ScopeStack.push(new_psc);
 
   return new_psc;
 } /* End of 'create_scope' function */
