@@ -2,6 +2,7 @@
 
 for ((i = 0; i < 30; i++))
 do
+mkdir -p build
 cd build
 rm -rf *
 cmake .. > /dev/null
