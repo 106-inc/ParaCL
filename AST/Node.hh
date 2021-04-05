@@ -48,7 +48,7 @@ public:
    */
   int calc() const override
   {
-    return 0; 
+    return 0;
   } /* End of 'calc' function */
 
   pINode get_i_child(size_t i) const override

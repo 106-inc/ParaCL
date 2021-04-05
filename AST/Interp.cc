@@ -20,7 +20,7 @@ void Interp::interpret()
 
     /* Get the current node ptr */
     pINode pNode = fr_top.node;
-    
+
     size_t childs_am = pNode->get_ch_size();
 
     /* Index of child that we will visit now */
@@ -44,7 +44,7 @@ void Interp::interpret()
       fr_top.state = static_cast<int>(States::END);
 
     /* Get pointer to child */
-    auto pch = pNode->get_i_child(i_next); 
+    auto pch = pNode->get_i_child(i_next);
     if (pch == nullptr)
     {
       fr_top.state = static_cast<int>(States::END);
@@ -55,7 +55,6 @@ void Interp::interpret()
 
     if (pch->get_ch_size() == 0)
       FrameStack.top().state = static_cast<int>(States::END);
-
   }
 } /* End of 'interpret' function */
 } // namespace AST
