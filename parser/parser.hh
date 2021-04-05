@@ -8,7 +8,6 @@
 #include <FlexLexer.h>
 #endif /* yyFlexLexer */
 
-#include "INode.hh"
 #include "compiler.tab.hh"
 
 class OurFlexLexer : public yyFlexLexer

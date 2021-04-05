@@ -2,14 +2,12 @@
 #define __INTERP_H__
 
 #include <stack>
+#include <limits>
 
 #include "INode.hh"
 
 namespace AST
 {
-struct StkFrame;
-
-extern std::stack<int> ValStack;
 
 enum class States : int
 {

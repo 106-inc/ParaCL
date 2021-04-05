@@ -2,7 +2,7 @@
 
 namespace AST
 {
-std::stack<int> ValStack{};
+struct StkFrame;
 std::stack<StkFrame> FrameStack{};
 
 /**
@@ -40,7 +40,7 @@ void Interp::interpret()
     fr_top.state++;
 
     /* If index is out of range - set state to END. */
-    if (fr_top.state >= childs_am)
+    if (childs_am != std::numeric_limits<size_t>::max() && fr_top.state >= static_cast<int>(childs_am))
       fr_top.state = static_cast<int>(States::END);
 
     /* Get pointer to child */

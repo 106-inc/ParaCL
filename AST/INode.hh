@@ -42,7 +42,7 @@ protected:
 public:
   virtual int calc() const = 0;
 
-  virtual INode *get_i_child(size_t i) const
+  virtual INode *get_i_child(size_t) const
   {
     return nullptr;
   }

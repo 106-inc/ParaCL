@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "parser.hh"
+#include "Interp.hh"
 
 #ifndef yyFlexLexer
 #include <FlexLexer.h>
@@ -45,7 +46,5 @@ public:
 };
 
 } // namespace yy
-
-// namespace yy
 
 #endif // PARACL_DRIVER_HH

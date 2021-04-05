@@ -4,18 +4,17 @@
 /////////////////////////////////////
 ///// STL containers ///////////////
 #include <vector>
+#include <stack>
 /////////////////////////////////////
 
 #include <limits>
 
 ////// OUR HEADERS //////////////////
 #include "INode.hh"
-#include "Interp.hh"
 /////////////////////////////////////
 
 namespace AST
 {
-
 // Scope structure
 class Scope : public IScope // final(?)
 {
@@ -128,11 +127,7 @@ public:
    * Calculate value of a variable function
    * @return current value of a variable
    */
-  int calc() const override
-  {
-    ValStack.push(location_->second);
-    return location_->second;
-  }
+  int calc() const override;
 
   /**
    * Set value of variable function
@@ -165,11 +160,7 @@ public:
    * Calculate the value of node
    * @return value of a node
    */
-  int calc() const override
-  {
-    ValStack.push(val_);
-    return val_;
-  }
+  int calc() const override;
 };
 
 /**
@@ -268,18 +259,7 @@ public:
    * @brief Calculate an assignment function
    * @return calculated assigned value
    */
-  int calc() const override
-  {
-    int expr_res = ValStack.top();
-    ValStack.pop();
-
-    ValStack.pop(); // delete dummy var value
-
-    dst_->set_val(expr_res);
-
-    ValStack.push(expr_res);
-    return expr_res;
-  } /* End of 'calc' function */
+  int calc() const override;
 };
 
 /**
@@ -336,21 +316,7 @@ public:
   {
   }
 
-  INode *get_i_child(size_t i) const override
-  {
-    i %= 2;
-
-    if (i == 0)
-      return cond_.get();
-
-    int cond_calc = ValStack.top();
-    ValStack.pop();
-
-    if (cond_calc)
-      return scope_.get();
-
-    return nullptr;
-  }
+  INode *get_i_child(size_t i) const override;
 
   /**
    * @brief Calculate while node function
@@ -385,24 +351,7 @@ public:
   {
   }
 
-  INode *get_i_child(size_t i) const override
-  {
-    if (i >= childs_am_)
-      throw std::runtime_error{"Incorrect children amount"};
-
-    if (i == 0)
-      return cond_.get();
-
-    int calc_cond = ValStack.top();
-    ValStack.pop();
-
-    if (calc_cond)
-      return if_scope_.get();
-    else if (else_scope_ != nullptr)
-      return else_scope_.get();
-
-    return nullptr;
-  }
+  INode *get_i_child(size_t i) const override;
 
   /**
    * Interpret If node function
@@ -438,14 +387,7 @@ public:
   /**
    * Interpret print node function
    */
-  int calc() const override
-  {
-    int val = ValStack.top();
-    ValStack.pop();
-
-    std::cout << val << std::endl;
-    return 0;
-  }
+  int calc() const override;
 };
 
 /**
@@ -460,18 +402,7 @@ public:
    * @brief Interpret read node function
    * @return read value
    */
-  int calc() const override
-  {
-    int value{};
-
-    std::cin >> value;
-    if (!std::cin.good())
-      throw std::runtime_error{"Invalid symbol at stdin"};
-
-    ValStack.push(value);
-
-    return value;
-  } /* End of 'calc' function */
+  int calc() const override;
 
   ~RNode() = default;
 };

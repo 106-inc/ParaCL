@@ -1,4 +1,4 @@
-#include "AST/Node.hh"
+#include "Interp.hh"
 #include "driver.hh"
 
 int main(int argc, char **argv)
