@@ -60,7 +60,7 @@ public:
    * @param[in] node node to add
    * @return none
    */
-  void push(pINode node) override
+  void push(pINode &node) override
   {
     nodes_.push_back(std::move(node));
     childs_am_ = nodes_.size();
@@ -190,7 +190,7 @@ public:
    * @param[in] left    left node of operator
    * @param[in] right   right node of operator
    */
-  OPNode(pINode left, Ops op_type, pINode right)
+  OPNode(pINode &left, Ops op_type, pINode &right)
       : INode(2), left_(std::move(left)), right_(std::move(right)), op_type_(op_type)
   {
   }
@@ -223,7 +223,7 @@ public:
    * Operator's node constructor
    * @param[in] operand  pointer to operand's node
    */
-  UNOPNode(Ops op_type, pINode operand) : INode(1), operand_(std::move(operand)), op_type_(op_type)
+  UNOPNode(Ops op_type, pINode &operand) : INode(1), operand_(std::move(operand)), op_type_(op_type)
   {
   }
 
@@ -252,7 +252,7 @@ public:
    * @param[in] dst pointer to destination variable node
    * @param[in] expr pointer to expression node(-s)
    */
-  ASNode(std::unique_ptr<VNode> dst, pINode expr) : INode(2), dst_(std::move(dst)), expr_(std::move(expr))
+  ASNode(std::unique_ptr<VNode> &dst, pINode &expr) : INode(2), dst_(std::move(dst)), expr_(std::move(expr))
   {
   }
 
@@ -297,7 +297,7 @@ public:
    *
    * @param[in] expr shared pointer to expression node
    */
-  RETNode(pINode expr) : INode(1), expr_(std::move(expr))
+  RETNode(pINode &expr) : INode(1), expr_(std::move(expr))
   {
   }
 
@@ -330,7 +330,7 @@ private:
   pIScope scope_{};
 
 public:
-  WHNode(pINode cond, pIScope scope)
+  WHNode(pINode &cond, pIScope &scope)
       : INode(std::numeric_limits<size_t>::max()), cond_(std::move(cond)), scope_(std::move(scope))
   // because while potentially has infinity number of children (iterations)
   {
@@ -375,8 +375,13 @@ private:
   pIScope else_scope_{};
 
 public:
-  IFNode(pINode cond, pIScope if_sc, pIScope el_sc = nullptr)
+  IFNode(pINode &cond, pIScope &if_sc, pIScope &el_sc)
       : INode(2), cond_(std::move(cond)), if_scope_(std::move(if_sc)), else_scope_(std::move(el_sc))
+  {
+  }
+
+  IFNode(pINode &cond, pIScope &if_sc)
+      : INode(2), cond_(std::move(cond)), if_scope_(std::move(if_sc)), else_scope_(nullptr)
   {
   }
 
@@ -418,7 +423,7 @@ private:
   pINode expr_;
 
 public:
-  PNode(pINode expr) : INode(1), expr_(std::move(expr))
+  PNode(pINode &expr) : INode(1), expr_(std::move(expr))
   {
   }
 

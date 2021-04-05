@@ -70,7 +70,7 @@ protected:
 
 public:
   // TODO: docs
-  virtual void push(pINode node) = 0;
+  virtual void push(pINode &node) = 0;
 
   virtual IScope *reset_scope() const = 0;
 
@@ -113,13 +113,14 @@ enum class Ops
 };
 
 pINode make_cst(int val);
-pINode make_op(pINode l, Ops op, pINode r);
-pINode make_un(Ops op, pINode operand);
-pINode make_while(pINode cond, pIScope sc);
-pINode make_if(pINode cond, pIScope isc, pIScope esc = nullptr);
-pINode make_asgn(const std::string &var_name, pINode expr);
+pINode make_op(pINode &l, Ops op, pINode &r);
+pINode make_un(Ops op, pINode &operand);
+pINode make_while(pINode &cond, pIScope &sc);
+pINode make_if_else(pINode &cond, pIScope &isc, pIScope &esc);
+pINode make_if(pINode &cond, pIScope &isc);
+pINode make_asgn(const std::string &var_name, pINode &expr);
 pINode make_ref(const std::string &var_name);
-pINode make_print(pINode expr);
+pINode make_print(pINode &expr);
 pINode make_scan();
 pIScope make_scope(IScope *par = nullptr);
 

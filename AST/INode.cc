@@ -29,9 +29,9 @@ pINode make_cst(int val)
  * @param[in] r  right node of operator
  * @return shared pointer to created Node
  */
-pINode make_op(pINode l, Ops op, pINode r)
+pINode make_op(pINode &l, Ops op, pINode &r)
 {
-  return std::make_unique<OPNode>(std::move(l), op, std::move(r));
+  return std::make_unique<OPNode>(l, op, r);
 } /* End of 'make_op' function */
 
 /**
@@ -41,9 +41,9 @@ pINode make_op(pINode l, Ops op, pINode r)
  * @param[in] operand shared pointer to operand node
  * @return shared pointer to created node
  */
-pINode make_un(Ops op, pINode operand)
+pINode make_un(Ops op, pINode &operand)
 {
-  return std::make_unique<UNOPNode>(op, std::move(operand));
+  return std::make_unique<UNOPNode>(op, operand);
 }
 
 /**
@@ -53,23 +53,37 @@ pINode make_un(Ops op, pINode operand)
  * @param[in] sc shared pointer to scope
  * @return shared pointer to created Node
  */
-pINode make_while(pINode cond, pIScope sc)
+pINode make_while(pINode &cond, pIScope &sc)
 {
-  return std::make_unique<WHNode>(std::move(cond), std::move(sc));
+  return std::make_unique<WHNode>(cond, sc);
 } /* End of 'make_while' function */
+
+/**
+ * @fn make_if_else
+ * @brief Create if_else node fucntion
+ * @param[in] cond condition
+ * @param[in] isc if scope
+ * @param[in] esc else scope
+ * @return pointer to created Node
+ */
+pINode make_if_else(pINode &cond, pIScope &isc, pIScope &esc)
+{
+  return std::make_unique<IFNode>(cond, isc, esc);
+} /* End of 'make_if_else' function */
 
 /**
  * @fn make_if
  * @brief Create if node fucntion
- * @param[in] cond shared ptr to condition
- * @param[in] isc shared ptr to if scope
- * @param[in] esc shared  ptr to else scope (nullptr default)
- * @return shared  pointer to created Node
+ * @param[in] cond condition
+ * @param[in] isc if scope
+ * @param[in] esc else scope
+ * @return pointer to created Node
  */
-pINode make_if(pINode cond, pIScope isc, pIScope esc /* = nullptr */)
+pINode make_if(pINode &cond, pIScope &isc)
 {
-  return std::make_unique<IFNode>(std::move(cond), std::move(isc), std::move(esc));
-} /* End of 'make_if' function */
+  return std::make_unique<IFNode>(cond, isc);
+} /* End of 'make_if_else' function */
+
 
 /**
  * @fn make_scope
@@ -108,9 +122,9 @@ pINode make_ref(const std::string &var_name)
  * @param[in] expr shared pointer to expression node
  * @return shared pointer to created node
  */
-pINode make_print(pINode expr)
+pINode make_print(pINode &expr)
 {
-  return std::make_unique<PNode>(std::move(expr));
+  return std::make_unique<PNode>(expr);
 }
 
 /**
@@ -129,11 +143,12 @@ pINode make_scan()
  * @param[in] expr expression to assign
  * @return shared pointer to created node
  */
-pINode make_asgn(const std::string &var_name, pINode expr)
+pINode make_asgn(const std::string &var_name, pINode &expr)
 {
   auto it = CUR_SCOPE->check_n_insert(var_name);
-
-  return std::make_unique<ASNode>(std::make_unique<VNode>(it), std::move(expr));
+  auto pvar = std::make_unique<VNode>(it);
+  
+  return std::make_unique<ASNode>(pvar, expr);
 } /* End of 'make_ass' function */
 
 } // namespace AST
