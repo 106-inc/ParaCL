@@ -11,7 +11,8 @@ yy::location OurFlexLexer::get_cur_location()
 
 bool OurFlexLexer::is_empty_line(const char *str)
 {
-  return ((str[0] == '\n') || str[0] == '\v');
+  char sym = str[0];
+  return std::isspace(sym) && std::iscntrl(sym);
 }
 
 int OurFlexLexer::get_last_line_()
