@@ -3,7 +3,6 @@
 
 /////////////////////////////////////
 ///// STL containers ///////////////
-#include <stack>
 #include <vector>
 /////////////////////////////////////
 
@@ -27,19 +26,19 @@ private:
   std::vector<pINode> nodes_{};
 
   // Pointer to parent scope
-  std::weak_ptr<IScope> parent_;
+  IScope *parent_;
 
   var_table var_tbl_;
 
 public:
   // constructor by parent scope ptr
-  Scope(const pIScope &parent) : parent_(parent)
+  Scope(IScope *parent) : parent_(parent)
   {
   }
 
-  pIScope reset_scope() const override
+  IScope *reset_scope() const override
   {
-    return parent_.lock();
+    return parent_;
   }
 
   /**
@@ -51,9 +50,9 @@ public:
     return 0;
   } /* End of 'calc' function */
 
-  pINode get_i_child(size_t i) const override
+  INode *get_i_child(size_t i) const override
   {
-    return nodes_.at(i);
+    return nodes_.at(i).get();
   }
 
   /**
@@ -61,9 +60,9 @@ public:
    * @param[in] node node to add
    * @return none
    */
-  void push(const pINode &node) override
+  void push(pINode node) override
   {
-    nodes_.push_back(node);
+    nodes_.push_back(std::move(node));
     childs_am_ = nodes_.size();
   } /* End of 'push' function */
 
@@ -191,16 +190,17 @@ public:
    * @param[in] left    left node of operator
    * @param[in] right   right node of operator
    */
-  OPNode(const pINode &left, Ops op_type, const pINode &right) : INode(2), left_(left), right_(right), op_type_(op_type)
+  OPNode(pINode left, Ops op_type, pINode right)
+      : INode(2), left_(std::move(left)), right_(std::move(right)), op_type_(op_type)
   {
   }
 
-  pINode get_i_child(size_t i) const override
+  INode *get_i_child(size_t i) const override
   {
     if (i >= childs_am_)
       throw std::runtime_error{"Incorrect children amount"};
 
-    return i == 1 ? right_ : left_;
+    return i == 1 ? right_.get() : left_.get();
   }
 
   int calc() const override;
@@ -223,16 +223,16 @@ public:
    * Operator's node constructor
    * @param[in] operand  pointer to operand's node
    */
-  UNOPNode(Ops op_type, const pINode &operand) : INode(1), operand_(operand), op_type_(op_type)
+  UNOPNode(Ops op_type, pINode operand) : INode(1), operand_(std::move(operand)), op_type_(op_type)
   {
   }
 
-  pINode get_i_child(size_t i) const override
+  INode *get_i_child(size_t i) const override
   {
     if (i >= childs_am_)
       throw std::runtime_error{"Incorrect children amount"};
 
-    return operand_;
+    return operand_.get();
   }
 
   int calc() const override;
@@ -244,7 +244,7 @@ public:
 class ASNode final : public INode
 {
 private:
-  std::shared_ptr<VNode> dst_; // variable to assign
+  std::unique_ptr<VNode> dst_; // variable to assign
   pINode expr_;                // expression
 public:
   /**
@@ -252,16 +252,16 @@ public:
    * @param[in] dst pointer to destination variable node
    * @param[in] expr pointer to expression node(-s)
    */
-  ASNode(const std::shared_ptr<VNode> &dst, const pINode &expr) : INode(2), dst_(dst), expr_(expr)
+  ASNode(std::unique_ptr<VNode> dst, pINode expr) : INode(2), dst_(std::move(dst)), expr_(std::move(expr))
   {
   }
 
-  pINode get_i_child(size_t i) const override
+  INode *get_i_child(size_t i) const override
   {
     if (i >= childs_am_)
       throw std::runtime_error{"Incorrect children amount"};
 
-    return i == 1 ? expr_ : dst_;
+    return i == 1 ? expr_.get() : dst_.get();
   }
 
   /**
@@ -297,16 +297,16 @@ public:
    *
    * @param[in] expr shared pointer to expression node
    */
-  RETNode(const pINode &expr) : INode(1), expr_(expr)
+  RETNode(pINode expr) : INode(1), expr_(std::move(expr))
   {
   }
 
-  pINode get_i_child(size_t i) const override
+  INode *get_i_child(size_t i) const override
   {
     if (i >= childs_am_)
       throw std::runtime_error{"Incorrect children amount"};
 
-    return expr_;
+    return expr_.get();
   }
 
   /**
@@ -330,24 +330,24 @@ private:
   pIScope scope_{};
 
 public:
-  WHNode(const pINode &cond, const pIScope &scope)
-      : INode(std::numeric_limits<size_t>::max()), cond_(cond), scope_(scope)
+  WHNode(pINode cond, pIScope scope)
+      : INode(std::numeric_limits<size_t>::max()), cond_(std::move(cond)), scope_(std::move(scope))
   // because while potentially has infinity number of children (iterations)
   {
   }
 
-  pINode get_i_child(size_t i) const override
+  INode *get_i_child(size_t i) const override
   {
     i %= 2;
 
     if (i == 0)
-      return cond_;
+      return cond_.get();
 
     int cond_calc = ValStack.top();
     ValStack.pop();
 
     if (cond_calc)
-      return scope_;
+      return scope_.get();
 
     return nullptr;
   }
@@ -375,26 +375,26 @@ private:
   pIScope else_scope_{};
 
 public:
-  IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr)
-      : INode(2), cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
+  IFNode(pINode cond, pIScope if_sc, pIScope el_sc = nullptr)
+      : INode(2), cond_(std::move(cond)), if_scope_(std::move(if_sc)), else_scope_(std::move(el_sc))
   {
   }
 
-  pINode get_i_child(size_t i) const override
+  INode *get_i_child(size_t i) const override
   {
     if (i >= childs_am_)
       throw std::runtime_error{"Incorrect children amount"};
 
     if (i == 0)
-      return cond_;
+      return cond_.get();
 
     int calc_cond = ValStack.top();
     ValStack.pop();
 
     if (calc_cond)
-      return if_scope_;
+      return if_scope_.get();
     else if (else_scope_ != nullptr)
-      return else_scope_;
+      return else_scope_.get();
 
     return nullptr;
   }
@@ -418,16 +418,16 @@ private:
   pINode expr_;
 
 public:
-  PNode(const pINode &expr) : INode(1), expr_(expr)
+  PNode(pINode expr) : INode(1), expr_(std::move(expr))
   {
   }
 
-  pINode get_i_child(size_t i) const override
+  INode *get_i_child(size_t i) const override
   {
     if (i >= childs_am_)
       throw std::runtime_error{"Incorrect children amount"};
 
-    return expr_;
+    return expr_.get();
   }
 
   /**

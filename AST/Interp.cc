@@ -19,7 +19,7 @@ void Interp::interpret()
     auto &fr_top = FrameStack.top();
 
     /* Get the current node ptr */
-    pINode pNode = fr_top.node;
+    INode *pNode = fr_top.node;
 
     size_t childs_am = pNode->get_ch_size();
 

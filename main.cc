@@ -11,9 +11,9 @@ int main(int argc, char **argv)
 
   auto root = AST::make_scope();
 
-  CUR_SCOPE = root;
+  CUR_SCOPE = root.get();
 
-  AST::Interp interp(root);
+  AST::Interp interp(CUR_SCOPE);
 
   try
   {
