@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for ((i = 0; i < 15; i++))
+for ((i = 0; i < 30; i++))
 do
 cd build
 rm -rf *
