@@ -19,7 +19,7 @@ int main(int argc, char **argv)
   {
     yy::Driver driver(argv[1]);
     if (!driver.parse())
-      return 1;
+      return -1;
 
     interp.interpret();
   }
