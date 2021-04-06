@@ -173,10 +173,12 @@ stm:         assign                         { $$ = std::move($1); };
            | if                             { $$ = std::move($1); };
            | while                          { $$ = std::move($1); };
            | print                          { $$ = std::move($1); };
-        /* | expr                           { $$ = std::move($1); }; */
-        /* | RETURN expr                    { SOMETHING }; */
+        /* | expr SCOLON                    { $$ = std::move($1); }; */
+        /* | RETURN expr SCOLON             { SOMETHING };           */
+        /* | SCOLON                         { NOTHING };             */
 
 assign:      NAME ASSIGN expr SCOLON        { $$ = AST::make_asgn($1, $3); };
+        /* | NAME ASSIGN func_def SCOLON    {} */
 
 
 expr:        expr_or                        { $$ = std::move($1); };
@@ -208,7 +210,6 @@ expr_term:   LP expr[e] RP                  { $$ = std::move($e); };
            | SCAN                           { $$ = AST::make_scan(); };
         /* | scope                          { $$ = AST::make_scope(); }; */
         /* | func_call                      { $$ = AST::make_fcall(); }; */
-        /* | func_def                       { $$ = AST::make_fdef(); }; */
 
 /* 
 func_call:   NAME LP call_argv RP           { SOMETHING };
@@ -220,8 +221,8 @@ func_def:    FUNC LP def_argv RP scope      { SOMETHING };
 def_argv:    NAME                           { SOMETHING };
            | def_argv COMMA NAME            { SOMETHING };
 
-call_argv:   INT                            { SOMETHING };
-           | call_argv COMMA INT            { SOMETHING };
+call_argv:   expr                           { SOMETHING };
+           | call_argv COMMA expr           { SOMETHING };
 */
 
 if:          IF LP expr[e] RP 
