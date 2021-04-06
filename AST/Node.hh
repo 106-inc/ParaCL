@@ -80,7 +80,7 @@ private:
    */
   var_table::iterator insert_var(const std::string &var_name)
   {
-    auto it_bl = var_tbl_.insert({var_name, {0}});
+    auto it_bl = var_tbl_.emplace(var_name, detail::var_tbl_member{detail::SymType::VAR, 0});
 
     return it_bl.first;
   } /* End of 'insert_var' function */
@@ -135,7 +135,10 @@ public:
    */
   void set_val(int val)
   {
-    location_->second = val;
+    auto &lsec = location_->second;
+    if (lsec.type != detail::SymType::VAR)
+      throw std::runtime_error{"Var name is not a var name"};
+    lsec.value = val;
   }
 };
 

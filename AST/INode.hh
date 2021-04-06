@@ -23,12 +23,35 @@ class INode;
 
 using pINode = std::unique_ptr<INode>;
 using pIScope = std::unique_ptr<IScope>;
+using pFunc = std::shared_ptr<INode>;
 /**
  * @typedef var_table
  * @brief Useful typedef for variables table type
  */
-using var_table = std::unordered_map<std::string, int>;
 
+namespace detail
+{
+enum class SymType
+{
+  FUNC,
+  VAR
+};
+
+struct var_tbl_member final
+{
+  SymType type;
+  pFunc func;
+  int value;
+  
+  var_tbl_member() = default;
+
+  var_tbl_member(SymType tpe, int val, pFunc pfn = nullptr) : type(tpe), func(pfn), value(val)
+  {}
+
+};
+}
+
+using var_table = std::unordered_map<std::string, detail::var_tbl_member>;
 // node interface
 class INode
 {

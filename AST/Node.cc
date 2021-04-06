@@ -300,8 +300,8 @@ int UNOPNode::calc() const
 
 int VNode::calc() const
 {
-  ValStack.push(location_->second);
-  return location_->second;
+  ValStack.push(location_->second.value);
+  return location_->second.value;
 }
 
 int CNode::calc() const
