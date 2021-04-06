@@ -1,4 +1,8 @@
 # ParaCL
+
+![GitHub repo size](https://img.shields.io/github/repo-size/derzhavin3016/ParaCL?style=plastic)
+![GitHub last commit](https://img.shields.io/github/last-commit/derzhavin3016/ParaCL?color=red&style=plastic)
+
 |Current level|
 |:-----------:|
 |  2 |
