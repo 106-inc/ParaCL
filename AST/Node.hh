@@ -409,6 +409,15 @@ public:
 
   ~RNode() = default;
 };
+
+/**
+ * Function node class
+ */
+/*class FNode final : public INode
+{
+  
+};*/
+
 } // namespace AST
 
 #endif /* NODE_HH */

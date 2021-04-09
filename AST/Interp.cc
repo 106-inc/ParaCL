@@ -2,8 +2,6 @@
 
 namespace AST
 {
-struct StkFrame;
-std::stack<StkFrame> FrameStack{};
 
 /**
  * @brief Interpret AST function
@@ -11,6 +9,8 @@ std::stack<StkFrame> FrameStack{};
  */
 void Interp::interpret()
 {
+  std::stack<StkFrame> FrameStack{};
+
   /* We have to start from smth. Let it be global scope. */
   FrameStack.emplace(globl_, 0);
 

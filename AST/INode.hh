@@ -142,6 +142,7 @@ pINode make_while(pINode &cond, pIScope &sc);
 pINode make_if_else(pINode &cond, pIScope &isc, pIScope &esc);
 pINode make_if(pINode &cond, pIScope &isc);
 pINode make_asgn(const std::string &var_name, pINode &expr);
+//pINode make_asgn_func(const std::string &var_name, pINode &func);
 pINode make_ref(const std::string &var_name);
 pINode make_print(pINode &expr);
 pINode make_scan();

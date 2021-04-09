@@ -147,6 +147,22 @@ pINode make_asgn(const std::string &var_name, pINode &expr)
   return std::make_unique<ASNode>(pvar, expr);
 } /* End of 'make_ass' function */
 
+/**
+ * @fn make_asgn_func
+ * @brief Make assignment node function
+ * @param[in] var_name name of a variable to assign function to
+ * @param[in] func function to assign
+ * @return shared pointer to created node
+ */
+/*pINode make_asgn_func(const std::string &var_name, pINode &func)
+{
+  auto it = CUR_SCOPE->check_n_insert(var_name);
+  
+  auto pvar = std::make_unique<VNode>(it);
+
+  return std::make_unique<ASNode>(pvar, func);
+}*/
+
 ////////////////////////// SCOPE METHODS /////////////////
 
 /**
