@@ -21,6 +21,10 @@ public:
   {
   }
 
+  /**
+   * @brief Interpret AST function
+   *
+   */
   void interpret();
 };
 

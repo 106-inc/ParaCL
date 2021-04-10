@@ -1,7 +1,3 @@
-//
-// Created by anon on 21.02.2021.
-//
-
 #include "parser.hh"
 
 yy::location OurFlexLexer::get_cur_location()

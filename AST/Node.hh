@@ -1,17 +1,14 @@
 #ifndef NODE_HH
 #define NODE_HH
 
-/////////////////////////////////////
-///// STL containers ///////////////
+/* STL containers */
 #include <stack>
 #include <vector>
-/////////////////////////////////////
 
 #include <limits>
 
-////// OUR HEADERS //////////////////
+/* OUR HEADERS */
 #include "INode.hh"
-/////////////////////////////////////
 
 namespace AST
 {

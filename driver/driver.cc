@@ -2,8 +2,6 @@
 
 AST::IScope *CUR_SCOPE;
 
-//! Constructor for class Driver
-//! \param name_of_file - the name of the file from which our program is read
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
   std::string tmp_str;
@@ -29,8 +27,6 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
   plex_->switch_streams(in_file, std::cout);
 }
 
-//! Functuion for calling bison yy::parser:parse()
-//! \return bool in
 bool yy::Driver::parse()
 {
   yy::parser parser_(this);
@@ -39,10 +35,6 @@ bool yy::Driver::parse()
   return res;
 }
 
-//! The lexical analyzer function, yylex, recognizes tokens from the input stream and returns them to the parser.
-//! \param yylval
-//! \param yylloc
-//! \return token type
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type *yylloc)
 {
   yy::parser::token_type tkn_type = static_cast<yy::parser::token_type>(plex_->yylex());
@@ -70,8 +62,6 @@ yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, pars
   return tkn_type;
 }
 
-//!  Function for processing syntax error during parsing
-//! \param ctx - the context that is created when an error is found
 void yy::Driver::report_syntax_error(const parser::context &ctx)
 {
   yy::location loc = ctx.location();
@@ -116,7 +106,6 @@ void yy::Driver::report_syntax_error(const parser::context &ctx)
   std::cerr << std::endl;
 }
 
-//! Destructor for class Driver
 yy::Driver::~Driver()
 {
   in_file.close();
