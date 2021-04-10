@@ -30,7 +30,6 @@ private:
   std::vector<std::string> lines_of_prog;
 
 public:
-
   /**
    * @brief Constructor for class Driver
    * @param name_of_file - the name of the file from which our program is read
@@ -48,7 +47,8 @@ public:
   bool parse();
 
   /**
-   * @brief The lexical analyzer function, yylex, recognizes tokens from the input stream and returns them to the parser.
+   * @brief The lexical analyzer function, yylex, recognizes tokens from the input stream and returns them to the
+   * parser.
    * @param yylval
    * @param yylloc
    * @return token type

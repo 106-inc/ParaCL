@@ -431,7 +431,7 @@ public:
  */
 /*class FNode final : public INode
 {
-  
+
 };*/
 
 } // namespace AST

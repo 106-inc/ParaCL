@@ -42,14 +42,14 @@ struct var_tbl_member final
   SymType type;
   pFunc func;
   int value;
-  
+
   var_tbl_member() = default;
 
   var_tbl_member(SymType tpe, int val, pFunc pfn = nullptr) : type(tpe), func(pfn), value(val)
-  {}
-
+  {
+  }
 };
-}
+} // namespace detail
 
 using var_table = std::unordered_map<std::string, detail::var_tbl_member>;
 // node interface
@@ -207,7 +207,7 @@ pINode make_asgn(const std::string &var_name, pINode &expr);
  * @param[in] func function to assign
  * @return shared pointer to created node
  */
-//pINode make_asgn_func(const std::string &var_name, pINode &func);
+// pINode make_asgn_func(const std::string &var_name, pINode &func);
 // TODO: FINISH
 
 /**
@@ -240,9 +240,7 @@ pINode make_scan();
  */
 pIScope make_scope(IScope *par = nullptr);
 
-
-void clear(pIScope & root);
-
+void clear(pIScope &root);
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*
