@@ -27,7 +27,7 @@ void Interp::interpret()
     int i_next = fr_top.state;
 
     /* If there is no more children - calculate current node and pop it from stack. */
-    if (i_next == static_cast<int>(States::END))
+    if (i_next == END)
     {
       fr_top.node->calc();
       FrameStack.pop();
@@ -41,20 +41,20 @@ void Interp::interpret()
 
     /* If index is out of range - set state to END. */
     if (childs_am != std::numeric_limits<size_t>::max() && fr_top.state >= static_cast<int>(childs_am))
-      fr_top.state = static_cast<int>(States::END);
+      fr_top.state = END;
 
     /* Get pointer to child */
     auto pch = pNode->get_i_child(i_next);
     if (pch == nullptr)
     {
-      fr_top.state = static_cast<int>(States::END);
+      fr_top.state = END;
       continue;
     }
     /* Append frame stack */
     FrameStack.emplace(pch, 0);
 
     if (pch->get_ch_size() == 0)
-      FrameStack.top().state = static_cast<int>(States::END);
+      FrameStack.top().state = END;
   }
 } /* End of 'interpret' function */
 } // namespace AST

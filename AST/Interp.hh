@@ -9,10 +9,7 @@
 namespace AST
 {
 
-enum class States : int
-{
-  END = -1,
-};
+constexpr int END = -1;
 
 class Interp final
 {
