@@ -20,7 +20,7 @@ namespace yy
 class Driver;
 }
 
-extern AST::pIScope CUR_SCOPE;
+extern AST::IScope *CUR_SCOPE;
 
 }
 
@@ -31,7 +31,7 @@ extern AST::pIScope CUR_SCOPE;
 namespace yy
 { parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver); }
 
-extern AST::pIScope CUR_SCOPE;
+extern AST::IScope *CUR_SCOPE;
 }
 
 /* some tokens */
@@ -73,6 +73,7 @@ extern AST::pIScope CUR_SCOPE;
   PRINT
 
   ERR
+  UNKNOWN_VAR
   ;
 
 %token <int> INT
@@ -83,8 +84,9 @@ extern AST::pIScope CUR_SCOPE;
 %nterm<AST::pIScope>
 
   scope
+
   br_scope
-  cl_sc
+  op_br_sc
   ;
 
 %nterm<AST::pIScope> br_stm
@@ -137,18 +139,25 @@ extern AST::pIScope CUR_SCOPE;
 
 program:     stms                           { /* program starting */ };
 
-scope:       op_sc stms cl_sc               { $$ = $3; };
+scope:       op_sc stms cl_sc               { /* nothing */ };
 
-br_scope:    op_br_sc stms cl_sc            { $$ = $3; };
+br_scope:    op_br_sc stms cl_sc            { $$ = std::move($1); };
 
-op_sc:       LB                             { CUR_SCOPE = AST::make_scope(CUR_SCOPE); };
-
-op_br_sc:    LB                             { CUR_SCOPE = AST::make_br_scope(CUR_SCOPE); };
-
-cl_sc:       RB                             {
-                                              $$ = CUR_SCOPE;
-                                              CUR_SCOPE = CUR_SCOPE->reset_scope();
+op_sc:       LB                             { 
+                                              auto par_tmp = CUR_SCOPE;
+                                              auto u_ptr = AST::make_scope(par_tmp);
+                                              CUR_SCOPE = u_ptr.get();
+                                              
+                                              AST::pINode u_ptr_tmp = std::move(u_ptr);
+                                              if (par_tmp) par_tmp->push(u_ptr_tmp);
                                             };
+
+op_br_sc:    LB                             { 
+                                              $$ = AST::make_scope(CUR_SCOPE); 
+                                              CUR_SCOPE = $$.get();
+                                            };
+
+cl_sc:       RB                             { CUR_SCOPE = CUR_SCOPE->reset_scope(); };
 
 stms:        stm                            { CUR_SCOPE->push($1); };
            | stms stm                       { CUR_SCOPE->push($2); };
@@ -156,51 +165,52 @@ stms:        stm                            { CUR_SCOPE->push($1); };
            | stms scope                     { /* nothing */ };
 
 br_stm:     stm                             {
-                                              $$ = AST::make_br_scope(CUR_SCOPE);
+                                              $$ = AST::make_scope(CUR_SCOPE);
                                               $$->push($1);
                                             };
-           | br_scope                       { $$ = $1; };
+           | br_scope                       { $$ = std::move($1); };
 
-stm:         assign                         { $$ = $1; };
-           | if                             { $$ = $1; };
-           | while                          { $$ = $1; };
-           | print                          { $$ = $1; };
-        /* | expr                           { $$ = $1; }; */
-        /* | RETURN expr                    { SOMETHING }; */
+stm:         assign                         { $$ = std::move($1); };
+           | if                             { $$ = std::move($1); };
+           | while                          { $$ = std::move($1); };
+           | print                          { $$ = std::move($1); };
+        /* | expr SCOLON                    { $$ = std::move($1); }; */
+        /* | RETURN expr SCOLON             { SOMETHING };           */
+        /* | SCOLON                         { NOTHING };             */
 
 assign:      NAME ASSIGN expr SCOLON        { $$ = AST::make_asgn($1, $3); };
+        /* | NAME ASSIGN func_def SCOLON    {} */
 
 
-expr:        expr_or                        { $$ = $1; };
+expr:        expr_or                        { $$ = std::move($1); };
 
 expr_or:     expr_or OR expr_and            { $$ = AST::make_op($1, AST::Ops::OR, $3); };
-           | expr_and                       { $$ = $1; };
+           | expr_and                       { $$ = std::move($1); };
 
 expr_and:    expr_and AND expr_eqty         { $$ = AST::make_op($1, AST::Ops::AND, $3); };
-           | expr_eqty                      { $$ = $1; };
+           | expr_eqty                      { $$ = std::move($1); };
 
 expr_eqty:   expr_eqty eq_ty expr_cmp       { $$ = AST::make_op($1, $2, $3); };
-           | expr_cmp                       { $$ = $1; };
+           | expr_cmp                       { $$ = std::move($1); };
 
 expr_cmp:    expr_cmp cmp expr_pm           { $$ = AST::make_op($1, $2, $3); };
-           | expr_pm                        { $$ = $1; };
+           | expr_pm                        { $$ = std::move($1); };
 
 expr_pm:     expr_pm pm expr_mdm            { $$ = AST::make_op($1, $2, $3); };
-           | expr_mdm                       { $$ = $1; };
+           | expr_mdm                       { $$ = std::move($1); };
 
 expr_mdm:    expr_mdm mdm expr_term         { $$ = AST::make_op($1, $2, $3); };
-           | expr_un                        { $$ = $1; };
+           | expr_un                        { $$ = std::move($1); };
 
 expr_un:     un expr_un                     { $$ = AST::make_un($1, $2); };
-           | expr_term                      { $$ = $1; };
+           | expr_term                      { $$ = std::move($1); };
 
-expr_term:   LP expr[e] RP                  { $$ = $e; };
+expr_term:   LP expr[e] RP                  { $$ = std::move($e); };
            | NAME                           { $$ = AST::make_ref($1); };
            | INT                            { $$ = AST::make_cst($1); };
            | SCAN                           { $$ = AST::make_scan(); };
         /* | scope                          { $$ = AST::make_scope(); }; */
         /* | func_call                      { $$ = AST::make_fcall(); }; */
-        /* | func_def                       { $$ = AST::make_fdef(); }; */
 
 /* 
 func_call:   NAME LP call_argv RP           { SOMETHING };
@@ -212,20 +222,20 @@ func_def:    FUNC LP def_argv RP scope      { SOMETHING };
 def_argv:    NAME                           { SOMETHING };
            | def_argv COMMA NAME            { SOMETHING };
 
-call_argv:   INT                            { SOMETHING };
-           | call_argv COMMA INT            { SOMETHING };
+call_argv:   expr                           { SOMETHING };
+           | call_argv COMMA expr           { SOMETHING };
 */
 
 if:          IF LP expr[e] RP 
-               br_stm[s]                   { $$ = AST::make_if($e, $s); };
+               br_stm[s]                    { $$ = AST::make_if($e, $s); };
            | IF LP expr[e] RP 
                br_stm[s1]
              ELSE 
-               br_stm[s2]                  { $$ = AST::make_if($e, $s1, $s2); };
+               br_stm[s2]                   { $$ = AST::make_if_else($e, $s1, $s2); };
             /* dangling else */ /* this rule creates shift-reduce conflict  */
 
 while:       WHILE LP expr[e] RP
-               br_stm[s]                   { $$ = AST::make_while($e, $s); };
+               br_stm[s]                    { $$ = AST::make_while($e, $s); };
 
 pm:          ADD                            { $$ = AST::Ops::ADD; }; 
            | MIN                            { $$ = AST::Ops::SUB; }; 
@@ -245,7 +255,7 @@ eq_ty:       IS_EQ                          { $$ = AST::Ops::IS_EQ; };
 un:          MIN                            { $$ = AST::Ops::NEG; };
            | NOT                            { $$ = AST::Ops::NOT; };
 
-print:       PRINT expr SCOLON                    { $$ = AST::make_print($2); };
+print:       PRINT expr SCOLON              { $$ = AST::make_print($2); };
 
 %%
 

@@ -1,13 +1,13 @@
 #ifndef PARACL_PARSER_HH
 #define PARACL_PARSER_HH
 
+#include <cctype>
 #include <iostream>
 
 #ifndef yyFlexLexer
 #include <FlexLexer.h>
 #endif /* yyFlexLexer */
 
-#include "INode.hh"
 #include "compiler.tab.hh"
 
 class OurFlexLexer : public yyFlexLexer

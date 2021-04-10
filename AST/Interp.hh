@@ -1,41 +1,39 @@
 #ifndef __INTERP_H__
 #define __INTERP_H__
 
+#include <limits>
 #include <stack>
 
 #include "INode.hh"
 
 namespace AST
 {
-struct StkFrame;
 
-extern std::stack<int> ValStack;
-extern std::stack<StkFrame> FrameStack;
-
-enum class States : int
-{
-  END = -1,
-};
+constexpr int END = -1;
 
 class Interp final
 {
 private:
-  pIScope globl_;
+  IScope *globl_;
 
 public:
-  Interp(pIScope globl) : globl_(globl)
+  Interp(IScope *globl) : globl_(globl)
   {
   }
 
+  /**
+   * @brief Interpret AST function
+   *
+   */
   void interpret();
 };
 
 struct StkFrame final
 {
-  pINode node;
+  INode *node;
   int state;
 
-  StkFrame(const pINode &nd, int st) : node(nd), state(st)
+  StkFrame(INode *nd, int st) : node(nd), state(st)
   {
   }
 };

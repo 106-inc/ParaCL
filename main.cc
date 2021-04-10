@@ -1,4 +1,4 @@
-#include "AST/Node.hh"
+#include "Interp.hh"
 #include "driver.hh"
 
 int main(int argc, char **argv)
@@ -11,9 +11,9 @@ int main(int argc, char **argv)
 
   auto root = AST::make_scope();
 
-  CUR_SCOPE = root;
+  CUR_SCOPE = root.get();
 
-  AST::Interp interp(root);
+  AST::Interp interp(CUR_SCOPE);
 
   try
   {
@@ -27,6 +27,8 @@ int main(int argc, char **argv)
   {
     std::cerr << err.what() << std::endl;
   }
+
+  AST::clear(root);
 
   return 0;
 }
