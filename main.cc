@@ -9,7 +9,7 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  auto root = AST::make_scope(); // make_scope(nullptr, OUR_DELETER);
+  auto root = AST::make_scope();
 
   CUR_SCOPE = root.get();
 
@@ -27,6 +27,8 @@ int main(int argc, char **argv)
   {
     std::cerr << err.what() << std::endl;
   }
+
+  AST::clear(root);
 
   return 0;
 }
