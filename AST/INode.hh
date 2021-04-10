@@ -146,7 +146,16 @@ pINode make_asgn(const std::string &var_name, pINode &expr);
 pINode make_ref(const std::string &var_name);
 pINode make_print(pINode &expr);
 pINode make_scan();
-pIScope make_scope(IScope *par = nullptr);
+
+//template <typename Deleter>
+/* auto */pIScope make_scope(IScope *par = nullptr /* , deleter = default_delete<Scope>*/);
+
+
+class RootDeleter final
+{
+  void operator() (Scope * sc);
+};
+
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*

@@ -9,7 +9,7 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  auto root = AST::make_scope();
+  auto root = AST::make_scope(); // make_scope(nullptr, OUR_DELETER);
 
   CUR_SCOPE = root.get();
 

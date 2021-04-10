@@ -1,4 +1,5 @@
 #include "Node.hh"
+#include "Interp.hh"
 
 namespace AST
 {
@@ -87,9 +88,10 @@ pINode make_if(pINode &cond, pIScope &isc)
  * @param[in] par shared pointer to parent node
  * @return shared pointer to created Scope
  */
-pIScope make_scope(IScope *par /* = nullptr */)
+//template <typename Deleter = default_delete<Scope>>
+/*auto*/pIScope make_scope(IScope *par /* = nullptr */)
 {
-  return std::make_unique<Scope>(par);
+  return std::make_unique<Scope/*, Deleter*/>(par);
 } /* End of 'create_scope' function */
 
 /**
@@ -397,4 +399,10 @@ int RNode::calc() const
 } /* End of 'calc' function */
 
 //////////////END OF SCOPE METHODS ////////////////////////////////
+
+void RootDeleter::operator() (Scope * sc)
+{
+  /*???*/
+}
+
 } // namespace AST
