@@ -61,10 +61,19 @@ public:
    */
   void report_syntax_error(const parser::context &ctx);
 
-  //! Destructor for class Driver
+  void report_expctd_tok(const parser::context& ctx);
+
+  void report_unexpctd_tok(const parser::context& ctx);
+
+  void Runtime_err_prcsng(std::runtime_error& err, const yy::parser& parser);
+
+  using s_type = parser::symbol_kind::symbol_kind_type;
+
   ~Driver();
 };
 
 } // namespace yy
+
+// namespace yy
 
 #endif // PARACL_DRIVER_HH

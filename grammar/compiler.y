@@ -73,6 +73,7 @@ extern AST::IScope *CUR_SCOPE;
   PRINT
 
   ERR
+  UNKNOWN_VAR
   ;
 
 %token <int> INT
