@@ -65,10 +65,29 @@ public:
     childs_am_ = nodes_.size();
   } /* End of 'push' function */
 
+  /**
+   * @brief Check var in all available scopes function
+   * @param[in] var_name name of a var to get access to
+   * @return pair of iterator to var table and bool, which:
+   * TRUE - iterator is valid, variable found,
+   * FALSE - iterator is not valid (end()), variable was not found
+   */
   it_bool get_var(const std::string &var_name) override;
 
+  /**
+   * @brief Check variable in current scope function.
+   * @param[in] var_name name of a var to find
+   * @return pair of iterator to var table and bool, which:
+   * TRUE - iterator is valid, variable found,
+   * FALSE - iterator is not valid (end()), variable was not found
+   */
   it_bool loc_check(const std::string &var_name) override;
 
+  /**
+   * @brief Chek and insert (if neccesary) variable function
+   * @param[in] var_name name of a variable to possible insertion
+   * @return iterator to variable in var table (in both cases)
+   */
   var_table::iterator check_n_insert(const std::string &var_name) override;
 
 private:
