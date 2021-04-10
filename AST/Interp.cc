@@ -2,6 +2,11 @@
 
 namespace AST
 {
+
+/**
+ * @brief Interpret AST function
+ *
+ */
 void Interp::interpret()
 {
   std::stack<StkFrame> FrameStack{};

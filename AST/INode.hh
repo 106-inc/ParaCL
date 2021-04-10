@@ -7,6 +7,7 @@
 #define INODE_HH
 #include <iostream>
 #include <memory>
+#include <stack>
 #include <string>
 #include <unordered_map>
 
