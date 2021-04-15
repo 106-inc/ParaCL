@@ -1,5 +1,26 @@
+#include "llvm/ADT/APInt.h"
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/LegacyPassManager.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/Type.h"
+#include "llvm/IR/Verifier.h"
+#include "llvm/Support/TargetSelect.h"
+#include "llvm/Target/TargetMachine.h"
+#include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Scalar.h"
+#include "llvm/Transforms/Scalar/GVN.h"
+#include "llvm/Transforms/Utils.h"
+
 #include "Node.hh"
 #include "Interp.hh"
+
+extern llvm::LLVMContext *CUR_CONTEXT;
 
 namespace AST
 {
@@ -124,6 +145,14 @@ var_table::iterator Scope::check_n_insert(const std::string &var_name)
     it_n_bool.first = insert_var(var_name);
 
   return it_n_bool.first;
+}
+
+llvm::Value *Scope::codegen()
+{
+  for (auto &&nd : nodes_)
+    nd->codegen();
+
+  return nullptr;
 }
 
 int OPNode::calc() const

@@ -11,6 +11,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "llvm/IR/Value.h"
+
 /**
  * @namespace AST
  * @brief namespace for AST tree interfaces
@@ -70,6 +72,8 @@ public:
   {
     return nullptr;
   }
+
+  virtual llvm::Value *codegen() = 0;
 
   INode(const INode &) = delete;
   INode &operator=(const INode &) = delete;

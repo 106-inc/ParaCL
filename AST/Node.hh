@@ -46,6 +46,8 @@ public:
     return 0;
   } /* End of 'calc' function */
 
+  llvm::Value *codegen() override;
+
   INode *get_i_child(size_t i) const override
   {
     return nodes_.at(i).get();
@@ -121,6 +123,9 @@ public:
   {
   }
 
+
+  llvm::Value *codegen() override;
+
   /**
    * Get variable name function
    * @return name of a variable
@@ -174,6 +179,7 @@ public:
   CNode(int val) : val_(val)
   {
   }
+  llvm::Value *codegen() override;
 
   /**
    * Calculate the value of node
@@ -213,6 +219,7 @@ public:
     return i == 1 ? right_.get() : left_.get();
   }
 
+  llvm::Value *codegen() override;
   int calc() const override;
 };
 
@@ -244,7 +251,7 @@ public:
 
     return operand_.get();
   }
-
+  llvm::Value *codegen() override;
   int calc() const override;
 };
 
@@ -273,7 +280,7 @@ public:
 
     return i == 1 ? expr_.get() : dst_.get();
   }
-
+  llvm::Value *codegen() override;
   /**
    * @brief Calculate an assignment function
    * @return calculated assigned value
@@ -317,6 +324,8 @@ public:
   {
     return expr_->calc();
   }
+
+  llvm::Value *codegen() override;
 };
 
 /**
@@ -345,6 +354,8 @@ public:
   {
     return 0;
   }
+
+  llvm::Value *codegen() override;
 };
 
 /**
@@ -380,6 +391,8 @@ public:
   {
     return 0;
   }
+
+  llvm::Value *codegen() override;
 };
 
 /**
@@ -407,6 +420,8 @@ public:
    * Interpret print node function
    */
   int calc() const override;
+
+  llvm::Value *codegen() override;
 };
 
 /**
@@ -422,6 +437,8 @@ public:
    * @return read value
    */
   int calc() const override;
+
+  llvm::Value *codegen() override;
 
   ~RNode() = default;
 };
