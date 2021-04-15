@@ -5,9 +5,33 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 #include "Interp.hh"
 #include "parser.hh"
+
+/* LLVM lib */
+
+#include "llvm/ADT/APInt.h"
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/LegacyPassManager.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/Type.h"
+#include "llvm/IR/Verifier.h"
+#include "llvm/Support/TargetSelect.h"
+#include "llvm/Target/TargetMachine.h"
+#include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Scalar.h"
+#include "llvm/Transforms/Scalar/GVN.h"
+#include "llvm/Transforms/Utils.h"
+
+/* End of LLVM lib */
 
 #ifndef yyFlexLexer
 #include <FlexLexer.h>
@@ -29,6 +53,14 @@ private:
   OurFlexLexer *plex_;
   std::vector<std::string> lines_of_prog;
 
+  llvm::LLVMContext* cur_cont_;
+  llvm::IRBuilder<>* current_builder_;
+  llvm::Module* cur_module_;
+  llvm::Function* cur_func_; /* in the not distant future */
+
+
+
+
 public:
   /**
    * @brief Constructor for class Driver
@@ -45,6 +77,9 @@ public:
    * @return bool in
    */
   bool parse();
+
+  /*void codegen();*/
+  void IR_builder();
 
   /**
    * @brief The lexical analyzer function, yylex, recognizes tokens from the input stream and returns them to the
