@@ -28,7 +28,5 @@ int main(int argc, char **argv)
     std::cerr << err.what() << std::endl;
   }
 
-  AST::clear(root);
-
   return 0;
 }

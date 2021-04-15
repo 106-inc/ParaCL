@@ -241,8 +241,6 @@ pINode make_scan();
  */
 pIScope make_scope(IScope *par = nullptr);
 
-void clear(pIScope &root);
-
 ////////////////// TYPES OF NODES ////////////////////////
 /*
  * 1. Variable -> just iterator to var table OK

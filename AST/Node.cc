@@ -297,8 +297,4 @@ int RNode::calc() const
 
 //////////////END OF SCOPE METHODS ////////////////////////////////
 
-void clear(pIScope &root)
-{
-}
-
 } // namespace AST
