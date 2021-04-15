@@ -2,6 +2,16 @@
 
 AST::IScope *CUR_SCOPE = nullptr;
 
+
+#if (CODEGEN == 1)
+
+llvm::LLVMContext* CUR_CONTEXT;
+llvm::IRBuilder<>* BUILDER;
+llvm::Module* CUR_MODULE;
+llvm::Function* CUR_FUNC;
+
+#endif
+
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
   std::string tmp_str;
@@ -25,17 +35,6 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 
   plex_ = new OurFlexLexer;
   plex_->switch_streams(in_file, std::cout);
-
-
-  /* LLVM PART OF CODE */
-
-#if CODEGEN
-  cur_cont_ = new llvm::LLVMContext;
-  cur_module_ = new llvm::Module("pcl.module", *cur_cont_);
-  current_builder_ = new llvm::IRBuilder<>(*cur_cont_);
-  
-#endif
-
 }
 
 bool yy::Driver::parse()
@@ -59,44 +58,44 @@ bool yy::Driver::parse()
 
 void codegen()
 {
-  llvm::Type* prototypes[] = {llvm::Type::getInt32Ty(*cur_cont_)};
+  llvm::Type* prototypes[] = {llvm::Type::getInt32Ty(*CUR_CONTEXT)};
 
 
   /* prototype for print function */
 
   llvm::FunctionType* func_type_print = llvm::FunctionType::get(
-                                        llvm::Type::getVoidTy(*cur_cont_),
+                                        llvm::Type::getVoidTy(*CUR_CONTEXT),
                                         prototypes, false);
 
   llvm::Function::Create(func_type_print, llvm::Function::ExternalLinkage,
-                          "__pcl_print", cur_module_);
+                          "__pcl_print", CUR_MODULE);
   
 
   /* prototype for scan function */
 
   llvm::FunctionType* func_type_scan = llvm::FunctionType::get(
-                                       llvm::Type::getInt32Ty(*cur_cont_), false); 
+                                       llvm::Type::getInt32Ty(*CUR_CONTEXT), false); 
 
   llvm::Function::Create(func_type_print, llvm::Function::ExternalLinkage,
-                          "__pcl_scan", cur_module_);
+                          "__pcl_scan", CUR_MODULE);
 
 
   /* protype for start function */
 
   llvm::FunctionType* func_type = llvm::FunctionType::get(
-                                  llvm::Type::getVoidTy(*cur_cont_), false);
+                                  llvm::Type::getVoidTy(*CUR_CONTEXT), false);
 
-  cur_func_ = llvm::Function::Create(func_type, llvm::Function::ExternalLinkage,
-                          "__pcl_start", cur_module_);
+  CUR_FUNC = llvm::Function::Create(func_type, llvm::Function::ExternalLinkage,
+                          "__pcl_start", CUR_MODULE);
 
 
   /* creating basic block */
 
-  llvm::BasicBlock* bas_block = llvm::BasicBlock::Create(*cur_cont_, 
-                          "entry", cur_func_);
+  llvm::BasicBlock* bas_block = llvm::BasicBlock::Create(*CUR_CONTEXT, 
+                          "entry", CUR_FUNC);
 
-  current_builder_->SetInsertPoint(bas_block);
-  /* current_builder_->CreateRetVoid(); */
+  BUILDER->SetInsertPoint(bas_block);
+  /* BUILDER->CreateRetVoid(); */
 }
 
 #endif
@@ -113,7 +112,7 @@ void yy::Driver::IR_builder()
   if (err_code)
     llvm::errs() << err_code.message().c_str() << "\n";
 
-  cur_module_->print(out_stream, nullptr);
+  CUR_MODULE->print(out_stream, nullptr);
 
   if (out_stream.has_error())
   {
@@ -213,13 +212,6 @@ void yy::Driver::report_unexpctd_tok(const yy::parser::context &ctx)
 yy::Driver::~Driver()
 {
   delete plex_;
-
-#if CODEGEN
-  delete current_builder_;
-  delete cur_cont_;
-  delete cur_func_;
-#endif
-
 }
 
 void yy::Driver::Runtime_err_prcsng(std::runtime_error &err, const yy::parser &parser_)

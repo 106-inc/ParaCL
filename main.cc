@@ -15,6 +15,14 @@ int main(int argc, char **argv)
 
   AST::Interp interp(CUR_SCOPE);
 
+#if (CODEGEN == 1)
+
+  CUR_CONTEXT = new llvm::LLVMContext;
+  CUR_MODULE = new llvm::Module("pcl.module", *CUR_CONTEXT);
+  BUILDER = new llvm::IRBuilder<>(*CUR_CONTEXT);
+  
+#endif
+
   try
   {
     yy::Driver driver(argv[1]);
@@ -27,6 +35,16 @@ int main(int argc, char **argv)
   {
     std::cerr << err.what() << std::endl;
   }
+
+
+#if (CODEGEN == 1)
+
+  delete BUILDER;
+  delete CUR_CONTEXT;
+  delete CUR_FUNC;
+
+#endif
+
 
   return 0;
 }

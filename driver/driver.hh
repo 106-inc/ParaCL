@@ -37,6 +37,15 @@
 #include <FlexLexer.h>
 #endif /* yyFlexLexer */
 
+#if (CODEGEN == 1)
+
+extern llvm::LLVMContext* CUR_CONTEXT;
+extern llvm::IRBuilder<>* BUILDER;
+extern llvm::Module* CUR_MODULE;
+extern llvm::Function* CUR_FUNC;
+
+#endif
+
 enum
 {
   NUM_OF_TOKENS = 30
@@ -52,14 +61,6 @@ private:
 
   OurFlexLexer *plex_;
   std::vector<std::string> lines_of_prog;
-
-  llvm::LLVMContext* cur_cont_;
-  llvm::IRBuilder<>* current_builder_;
-  llvm::Module* cur_module_;
-  llvm::Function* cur_func_; /* in the not distant future */
-
-
-
 
 public:
   /**
