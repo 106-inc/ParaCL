@@ -25,6 +25,17 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 
   plex_ = new OurFlexLexer;
   plex_->switch_streams(in_file, std::cout);
+
+
+  /* LLVM PART OF CODE */
+
+#if CODEGEN
+  cur_cont_ = new llvm::LLVMContext;
+  cur_module_ = new llvm::Module("pcl.module", *cur_cont_);
+  current_builder_ = new llvm::IRBuilder<>(*cur_cont_);
+  
+#endif
+
 }
 
 bool yy::Driver::parse()
@@ -42,6 +53,73 @@ bool yy::Driver::parse()
   }
 
   return res;
+}
+
+#if 0
+
+void codegen()
+{
+  llvm::Type* prototypes[] = {llvm::Type::getInt32Ty(*cur_cont_)};
+
+
+  /* prototype for print function */
+
+  llvm::FunctionType* func_type_print = llvm::FunctionType::get(
+                                        llvm::Type::getVoidTy(*cur_cont_),
+                                        prototypes, false);
+
+  llvm::Function::Create(func_type_print, llvm::Function::ExternalLinkage,
+                          "__pcl_print", cur_module_);
+  
+
+  /* prototype for scan function */
+
+  llvm::FunctionType* func_type_scan = llvm::FunctionType::get(
+                                       llvm::Type::getInt32Ty(*cur_cont_), false); 
+
+  llvm::Function::Create(func_type_print, llvm::Function::ExternalLinkage,
+                          "__pcl_scan", cur_module_);
+
+
+  /* protype for start function */
+
+  llvm::FunctionType* func_type = llvm::FunctionType::get(
+                                  llvm::Type::getVoidTy(*cur_cont_), false);
+
+  cur_func_ = llvm::Function::Create(func_type, llvm::Function::ExternalLinkage,
+                          "__pcl_start", cur_module_);
+
+
+  /* creating basic block */
+
+  llvm::BasicBlock* bas_block = llvm::BasicBlock::Create(*cur_cont_, 
+                          "entry", cur_func_);
+
+  current_builder_->SetInsertPoint(bas_block);
+  /* current_builder_->CreateRetVoid(); */
+}
+
+#endif
+
+void yy::Driver::IR_builder()
+{
+  std::ostringstream name_of_file;
+  std::string out = "std::cout";
+  /*name_of_file << std::filesystem::path(argv[1]).filename().string() << ".ll";*/
+
+  std::error_code err_code;
+  llvm::raw_fd_ostream out_stream(out, err_code);
+
+  if (err_code)
+    llvm::errs() << err_code.message().c_str() << "\n";
+
+  cur_module_->print(out_stream, nullptr);
+
+  if (out_stream.has_error())
+  {
+    llvm::errs() << "Error printing to file: " 
+                 << out_stream.error().message() << "\n";
+  }
 }
 
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type *yylloc)
@@ -135,6 +213,13 @@ void yy::Driver::report_unexpctd_tok(const yy::parser::context &ctx)
 yy::Driver::~Driver()
 {
   delete plex_;
+
+#if CODEGEN
+  delete current_builder_;
+  delete cur_cont_;
+  delete cur_func_;
+#endif
+
 }
 
 void yy::Driver::Runtime_err_prcsng(std::runtime_error &err, const yy::parser &parser_)
