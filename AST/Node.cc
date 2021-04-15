@@ -24,11 +24,20 @@
 
 extern llvm::LLVMContext *CUR_CONTEXT;
 extern llvm::IRBuilder<> *BUILDER;
+extern llvm::Function *CUR_FUNC;
 
 namespace AST
 {
 
+std::unordered_map<std::string, llvm::Value *> NamedVals;
+
 std::stack<int> ValStack{};
+
+static llvm::AllocaInst *CreateEntryBlockAlloca(const std::string &varname)
+{
+  llvm::IRBuilder<> bldr(&CUR_FUNC->getEntryBlock(), CUR_FUNC->getEntryBlock().begin());
+  return bldr.CreateAlloca(llvm::Type::getInt32Ty(*CUR_CONTEXT), nullptr, varname.c_str());
+}
 
 pINode make_cst(int val)
 {
@@ -92,6 +101,10 @@ pINode make_asgn(const std::string &var_name, pINode &expr)
 {
   auto it = CUR_SCOPE->check_n_insert(var_name);
   auto pvar = std::make_unique<VNode>(it);
+
+#if (CODEGEN == 1)
+  NamedVals[var_name] = CreateEntryBlockAlloca(var_name);
+#endif
 
   return std::make_unique<ASNode>(pvar, expr);
 }
@@ -311,7 +324,11 @@ int VNode::calc() const
 
 llvm::Value *VNode::codegen()
 {
-  return llvm::ConstantInt::get(llvm::Type::getInt32Ty(*CUR_CONTEXT), location_->second.value);
+  auto it = NamedVals.find(location_->first);
+  if (it == NamedVals.end())
+    throw std::runtime_error{"Unrecognized variable"};
+
+  return BUILDER->CreateLoad(llvm::Type::getInt32Ty(*CUR_CONTEXT), it->second, it->first);
 }
 
 int CNode::calc() const
@@ -340,7 +357,11 @@ int ASNode::calc() const
 
 llvm::Value *ASNode::codegen()
 {
-  return 
+  auto it = NamedVals.find(dst_->get_name());
+  if (it == NamedVals.end())
+    throw std::runtime_error{"Unrecognized variable"};
+
+  return BUILDER->CreateStore(expr_->codegen(), it->second);
 }
 
 INode *WHNode::get_i_child(size_t i) const
@@ -356,6 +377,11 @@ INode *WHNode::get_i_child(size_t i) const
   if (cond_calc)
     return scope_.get();
 
+  return nullptr;
+}
+
+llvm::Value *WHNode::codegen()
+{
   return nullptr;
 }
 
@@ -378,6 +404,11 @@ INode *IFNode::get_i_child(size_t i) const
   return nullptr;
 }
 
+llvm::Value *IFNode::codegen()
+{
+  return nullptr;
+}
+
 int PNode::calc() const
 {
   int val = ValStack.top();
@@ -385,6 +416,11 @@ int PNode::calc() const
 
   std::cout << val << std::endl;
   return 0;
+}
+
+llvm::Value *PNode::codegen()
+{
+  return nullptr;
 }
 
 int RNode::calc() const
@@ -398,6 +434,11 @@ int RNode::calc() const
   ValStack.push(value);
 
   return value;
+}
+
+llvm::Value *RNode::codegen()
+{
+  return nullptr;
 }
 
 //////////////END OF SCOPE METHODS ////////////////////////////////
