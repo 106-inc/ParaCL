@@ -78,3 +78,5 @@ foreach(TARGET ${TARGETS})
 
   target_link_libraries(${TARGET} ${llvm_libs})
 endforeach()
+
+target_compile_definitions(${COMPILE_NAME} PRIVATE CODEGEN)
