@@ -79,4 +79,5 @@ foreach(TARGET ${TARGETS})
   target_link_libraries(${TARGET} ${llvm_libs})
 endforeach()
 
-target_compile_definitions(${COMPILE_NAME} PRIVATE CODEGEN)
+target_compile_definitions(${COMPILE_NAME} PRIVATE CODEGEN=1)
+target_compile_definitions(${INTERP_NAME} PRIVATE CODEGEN=0)

@@ -3,14 +3,10 @@
 AST::IScope *CUR_SCOPE = nullptr;
 
 
-#if (CODEGEN == 1)
-
-llvm::LLVMContext* CUR_CONTEXT;
-llvm::IRBuilder<>* BUILDER;
-llvm::Module* CUR_MODULE;
-llvm::Function* CUR_FUNC;
-
-#endif
+llvm::LLVMContext* CUR_CONTEXT{};
+llvm::IRBuilder<>* BUILDER{};
+llvm::Module* CUR_MODULE{};
+llvm::Function* CUR_FUNC{};
 
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
