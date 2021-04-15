@@ -20,7 +20,10 @@
 #include "Interp.hh"
 #include "Node.hh"
 
+#include <functional>
+
 extern llvm::LLVMContext *CUR_CONTEXT;
+extern llvm::IRBuilder<> *BUILDER;
 
 namespace AST
 {
@@ -155,6 +158,47 @@ llvm::Value *Scope::codegen()
   return nullptr;
 }
 
+llvm::Value *OPNode::codegen()
+{
+  auto L = left_->codegen();
+  auto R = right_->codegen();
+
+  if (L == nullptr || R == nullptr)
+    return nullptr;
+
+  switch (op_type_)
+  {
+  case Ops::ADD:
+    return BUILDER->CreateAdd(L, R);
+  case Ops::SUB:
+    return BUILDER->CreateSub(L, R);
+  case Ops::MUL:
+    return BUILDER->CreateMul(L, R);
+  case Ops::DIV:
+    return BUILDER->CreateSDiv(L, R);
+  case Ops::MOD:
+    return BUILDER->CreateSRem(L, R);
+  case Ops::GREATER:
+    return BUILDER->CreateICmpSGT(L, R);
+  case Ops::GR_EQ:
+    return BUILDER->CreateICmpSGE(L, R);
+  case Ops::LESS:
+    return BUILDER->CreateICmpSLT(L, R);
+  case Ops::LS_EQ:
+    return BUILDER->CreateICmpSLE(L, R);
+  case Ops::IS_EQ:
+    return BUILDER->CreateICmpEQ(L, R);
+  case Ops::NOT_EQ:
+    return BUILDER->CreateICmpNE(L, R);
+  case Ops::AND:
+    return BUILDER->CreateAnd(L, R);
+  case Ops::OR:
+    return BUILDER->CreateOr(L, R);
+  default:
+    throw std::runtime_error("Unrecognized binary operator number\n");
+  }
+}
+
 int OPNode::calc() const
 {
   int right_val = ValStack.top();
@@ -167,18 +211,18 @@ int OPNode::calc() const
   switch (op_type_)
   {
   case Ops::ADD:
-    res = left_val + right_val;
+    res = std::plus{}(left_val, right_val); // :)
     break;
   case Ops::SUB:
-    res = left_val - right_val;
+    res = std::minus{}(left_val, right_val); // :)
     break;
   case Ops::MUL:
-    res = left_val * right_val;
+    res = std::multiplies{}(left_val, right_val); // :)
     break;
   case Ops::DIV:
-    if (right_val == 0)
+    if (std::equal_to{}(right_val, 0))
       throw std::runtime_error{"Dividing by ZERO!"};
-    res = left_val / right_val;
+    res = std::divides{}(left_val, right_val); // :)
     break;
   case Ops::MOD:
     if (right_val == 0)
@@ -218,6 +262,23 @@ int OPNode::calc() const
   return res;
 }
 
+llvm::Value *UNOPNode::codegen()
+{
+  auto V = operand_->codegen();
+  if (V == nullptr)
+    return nullptr;
+
+  switch (op_type_)
+  {
+  case Ops::NEG:
+    return BUILDER->CreateNeg(V);
+  case Ops::NOT:
+    return BUILDER->CreateNot(V);
+  default:
+    throw std::runtime_error("Unrecognized unary operator number\n");
+  }
+}
+
 int UNOPNode::calc() const
 {
   int val = ValStack.top();
@@ -248,10 +309,20 @@ int VNode::calc() const
   return location_->second.value;
 }
 
+llvm::Value *VNode::codegen()
+{
+  return llvm::ConstantInt::get(llvm::Type::getInt32Ty(*CUR_CONTEXT), location_->second.value);
+}
+
 int CNode::calc() const
 {
   ValStack.push(val_);
   return val_;
+}
+
+llvm::Value *CNode::codegen()
+{
+  return llvm::ConstantInt::get(llvm::Type::getInt32Ty(*CUR_CONTEXT), val_);
 }
 
 int ASNode::calc() const
@@ -266,6 +337,11 @@ int ASNode::calc() const
   ValStack.push(expr_res);
   return expr_res;
 } /* End of 'calc' function */
+
+llvm::Value *ASNode::codegen()
+{
+  return 
+}
 
 INode *WHNode::get_i_child(size_t i) const
 {
