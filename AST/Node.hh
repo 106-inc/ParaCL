@@ -123,7 +123,6 @@ public:
   {
   }
 
-
   llvm::Value *codegen() override;
 
   /**

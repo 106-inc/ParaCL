@@ -17,8 +17,8 @@
 #include "llvm/Transforms/Scalar/GVN.h"
 #include "llvm/Transforms/Utils.h"
 
-#include "Node.hh"
 #include "Interp.hh"
+#include "Node.hh"
 
 extern llvm::LLVMContext *CUR_CONTEXT;
 
