@@ -98,6 +98,29 @@ void yy::Driver::codegen()
 void yy::Driver::IR_builder()
 {
   /* there is shuld be code from main */
+  std::ostringstream s;
+  s << name_of_file_ << ".ll";
+
+  //s << std::filesystem::path(argv[1]).filename().string() << ".ll";
+
+  std::cout << "Saving module to: " << s.str() << "\n";
+
+  std::error_code EC;
+  /* there is undef ref */
+  llvm::raw_fd_ostream outfile{s.str(), EC};
+
+  if (EC)
+    llvm::errs() << EC.message().c_str() << "\n";
+
+  codegen();
+
+  CUR_MODULE->print(outfile, nullptr);
+  outfile.close();
+
+  if (outfile.has_error())
+  {
+    llvm::errs() << "Error printing to file: " << outfile.error().message() << "\n";
+  }
 }
 
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type *yylloc)
