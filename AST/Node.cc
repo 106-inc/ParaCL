@@ -52,6 +52,11 @@ static llvm::Value *ZeroCmp(llvm::Value *val)
   return BUILDER->CreateICmpEQ(val, BUILDER->getInt32(0));
 }
 
+static llvm::Value *ZeroNEQ( llvm::Value *val )
+{
+  return BUILDER->CreateICmpNE(val, BUILDER->getInt32(0));
+}
+
 pINode make_cst(int val)
 {
   return std::make_unique<CNode>(val);
@@ -406,7 +411,7 @@ llvm::Value *WHNode::codegen()
   if (v_expr == nullptr)
     return nullptr;
 
-  auto v_cond = BUILDER->CreateICmpNE(v_expr, BUILDER->getInt32(0));
+  auto v_cond = ZeroNEQ(v_expr);
 
   BUILDER->CreateCondBr(v_cond, bodyBB, nextBB);
 
@@ -444,7 +449,7 @@ llvm::Value *IFNode::codegen()
   if (v_expr == nullptr)
     return nullptr;
 
-  auto v_cond = BUILDER->CreateICmpNE(v_expr, BUILDER->getInt32(0));
+  auto v_cond = ZeroNEQ(v_expr);
 
   auto &BBL = CUR_FUNC->getBasicBlockList();
 
