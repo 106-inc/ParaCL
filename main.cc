@@ -37,30 +37,29 @@ int main(int argc, char **argv)
 
 #if (CODEGEN == 1)
 
+    driver.IR_builder();
+    /*
+        std::ostringstream s;
+        s << std::filesystem::path(argv[1]).filename().string() << ".ll";
 
-  driver.IR_builder();
-/*
-    std::ostringstream s;
-    s << std::filesystem::path(argv[1]).filename().string() << ".ll";
+        std::cout << "Saving module to: " << s.str() << "\n";
 
-    std::cout << "Saving module to: " << s.str() << "\n";
+        std::error_code EC;
+        llvm::raw_fd_ostream outfile{s.str(), EC};
 
-    std::error_code EC;
-    llvm::raw_fd_ostream outfile{s.str(), EC};
+        if (EC)
+          llvm::errs() << EC.message().c_str() << "\n";
 
-    if (EC)
-      llvm::errs() << EC.message().c_str() << "\n";
+        driver.codegen();
 
-    driver.codegen();
+        CUR_MODULE->print(outfile, nullptr);
+        outfile.close();
 
-    CUR_MODULE->print(outfile, nullptr);
-    outfile.close();
-
-    if (outfile.has_error())
-    {
-      llvm::errs() << "Error printing to file: " << outfile.error().message() << "\n";
-    }
-*/
+        if (outfile.has_error())
+        {
+          llvm::errs() << "Error printing to file: " << outfile.error().message() << "\n";
+        }
+    */
     delete BUILDER;
     delete CUR_MODULE;
     delete CUR_CONTEXT;
