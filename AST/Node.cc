@@ -385,20 +385,22 @@ INode *WHNode::get_i_child(size_t i) const
 
 llvm::Value *WHNode::codegen()
 {
-  auto condBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
+  //auto & BBL = CUR_FUNC->getBasicBlockList();
 
-  auto bodyBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
-
-  auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
+  auto condBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "", CUR_FUNC);
+  auto bodyBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "", CUR_FUNC);
+  auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "", CUR_FUNC);
 
   BUILDER->CreateBr(condBB);
 
   BUILDER->SetInsertPoint(condBB);
-  auto Vcond = cond_->codegen();
-  if (Vcond == nullptr)
+  auto v_expr = cond_->codegen();
+  if (v_expr == nullptr)
     return nullptr;
 
-  BUILDER->CreateCondBr(Vcond, bodyBB, nextBB);
+  auto v_cond = BUILDER->CreateIntCast(v_expr, llvm::Type::getInt1Ty(*CUR_CONTEXT), /* is signed */ true);
+  
+  BUILDER->CreateCondBr(v_cond, bodyBB, nextBB);
 
   BUILDER->SetInsertPoint(bodyBB);
   scope_->codegen();
@@ -430,18 +432,23 @@ INode *IFNode::get_i_child(size_t i) const
 
 llvm::Value *IFNode::codegen()
 {
-  auto Vcond = cond_->codegen();
-
-  if (Vcond == nullptr)
+  auto v_expr = cond_->codegen();
+  if (v_expr == nullptr)
     return nullptr;
 
+  auto v_cond = BUILDER->CreateICmpNE(v_expr, BUILDER->getInt32(0));
+
+  auto & BBL = CUR_FUNC->getBasicBlockList();
+
   auto trueBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
+  BBL.push_back(trueBB);
 
   auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
+  BBL.push_back(nextBB);
 
   auto falseBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
-  
-  BUILDER->CreateCondBr(Vcond, trueBB, else_scope_ == nullptr ? nextBB : falseBB);
+
+  BUILDER->CreateCondBr(v_cond, trueBB, else_scope_ == nullptr ? nextBB : falseBB);
 
   BUILDER->SetInsertPoint(trueBB);
   if_scope_->codegen();
@@ -449,6 +456,7 @@ llvm::Value *IFNode::codegen()
 
   if (else_scope_ != nullptr)
   {
+    BBL.push_back(falseBB);
     BUILDER->SetInsertPoint(falseBB);
     else_scope_->codegen();
     BUILDER->CreateBr(nextBB);
