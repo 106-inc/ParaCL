@@ -12,15 +12,22 @@ extern "C" int __pcl_scan()
   int n;
   std::cin >> n;
   if (!std::cin)
-  {
-    std::cerr << "Problem reading stdin\n";
-    exit(1);
-  }
+    throw std::runtime_error{"Problem reading stdin"};
+
   return n;
 }
 
 int main()
 {
-  __pcl_start();
+  try
+  {
+    __pcl_start();
+  }
+  catch ( std::runtime_error &err )
+  {
+    std::cerr << "Error ocurred:" << std::endl;
+    std::cerr << err.what() << std::endl;
+    return -1;
+  }
   return 0;
 };
