@@ -2,10 +2,10 @@
 #ifndef PARACL_DRIVER_HH
 #define PARACL_DRIVER_HH
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <filesystem>
 
 #include "Interp.hh"
 #include "parser.hh"
@@ -41,10 +41,10 @@
 
 #if (CODEGEN == 1)
 
-extern llvm::LLVMContext* CUR_CONTEXT;
-extern llvm::IRBuilder<>* BUILDER;
-extern llvm::Module* CUR_MODULE;
-extern llvm::Function* CUR_FUNC;
+extern llvm::LLVMContext *CUR_CONTEXT;
+extern llvm::IRBuilder<> *BUILDER;
+extern llvm::Module *CUR_MODULE;
+extern llvm::Function *CUR_FUNC;
 
 #endif
 
@@ -81,7 +81,7 @@ public:
    */
   bool parse();
 
-  void codegen(); 
+  void codegen();
 
   /*void codegen();*/
   void IR_builder();
@@ -113,6 +113,5 @@ public:
 };
 
 } // namespace yy
-
 
 #endif // PARACL_DRIVER_HH
