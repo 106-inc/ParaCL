@@ -52,7 +52,7 @@ static llvm::Value *ZeroCmp(llvm::Value *val)
   return BUILDER->CreateICmpEQ(val, BUILDER->getInt32(0));
 }
 
-static llvm::Value *ZeroNEQ( llvm::Value *val )
+static llvm::Value *ZeroNEQ(llvm::Value *val)
 {
   return BUILDER->CreateICmpNE(val, BUILDER->getInt32(0));
 }
