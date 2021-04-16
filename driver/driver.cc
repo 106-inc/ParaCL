@@ -50,7 +50,7 @@ bool yy::Driver::parse()
   return res;
 }
 
-void yy::Driver::codegen( AST::pIScope &root )
+void yy::Driver::codegen()
 {
   llvm::Type* prototypes[] = {llvm::Type::getInt32Ty(*CUR_CONTEXT)};
 

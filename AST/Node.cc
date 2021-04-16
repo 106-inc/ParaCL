@@ -42,6 +42,16 @@ static llvm::AllocaInst *CreateEntryBlockAlloca(const std::string &varname)
 }
 #endif 
 
+static llvm::Value *ToInt32( llvm::Value *val, bool is_signed = false)
+{
+  return BUILDER->CreateIntCast(val, BUILDER->getInt32Ty(), is_signed);
+}
+
+static llvm::Value *ToInt1( llvm::Value *val, bool is_signed = false)
+{
+  return BUILDER->CreateIntCast(val, BUILDER->getInt1Ty(), is_signed);
+}
+
 pINode make_cst(int val)
 {
   return std::make_unique<CNode>(val);
@@ -178,7 +188,7 @@ llvm::Value *OPNode::codegen()
 {
   auto L = left_->codegen();
   auto R = right_->codegen();
-
+  llvm::Value *nV{};
   if (L == nullptr || R == nullptr)
     return nullptr;
 
@@ -195,21 +205,29 @@ llvm::Value *OPNode::codegen()
   case Ops::MOD:
     return BUILDER->CreateSRem(L, R);
   case Ops::GREATER:
-    return BUILDER->CreateICmpSGT(L, R);
+    nV = BUILDER->CreateICmpSGT(L, R);
+    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
   case Ops::GR_EQ:
-    return BUILDER->CreateICmpSGE(L, R);
+    nV = BUILDER->CreateICmpSGE(L, R);
+    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
   case Ops::LESS:
-    return BUILDER->CreateICmpSLT(L, R);
+    nV = BUILDER->CreateICmpSLT(L, R);
+    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
   case Ops::LS_EQ:
-    return BUILDER->CreateICmpSLE(L, R);
+    nV = BUILDER->CreateICmpSLE(L, R);
+    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
   case Ops::IS_EQ:
-    return BUILDER->CreateICmpEQ(L, R);
+    nV = BUILDER->CreateICmpEQ(L, R);
+    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
   case Ops::NOT_EQ:
-    return BUILDER->CreateICmpNE(L, R);
+    nV = BUILDER->CreateICmpNE(L, R);
+    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
   case Ops::AND:
-    return BUILDER->CreateAnd(L, R);
+    nV = BUILDER->CreateAnd(L, R);
+    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
   case Ops::OR:
-    return BUILDER->CreateOr(L, R);
+    nV = BUILDER->CreateOr(L, R);
+    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
   default:
     throw std::runtime_error("Unrecognized binary operator number\n");
   }
@@ -289,7 +307,7 @@ llvm::Value *UNOPNode::codegen()
   case Ops::NEG:
     return BUILDER->CreateNeg(V);
   case Ops::NOT:
-    return BUILDER->CreateNot(V);
+    return ToInt32(BUILDER->CreateNot(V));
   default:
     throw std::runtime_error("Unrecognized unary operator number\n");
   }
@@ -398,7 +416,7 @@ llvm::Value *WHNode::codegen()
   if (v_expr == nullptr)
     return nullptr;
 
-  auto v_cond = BUILDER->CreateIntCast(v_expr, llvm::Type::getInt1Ty(*CUR_CONTEXT), /* is signed */ true);
+  auto v_cond = BUILDER->CreateICmpNE(v_expr, BUILDER->getInt32(0));
   
   BUILDER->CreateCondBr(v_cond, bodyBB, nextBB);
 
