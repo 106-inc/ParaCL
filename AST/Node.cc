@@ -40,19 +40,19 @@ static llvm::AllocaInst *CreateEntryBlockAlloca(const std::string &varname)
   llvm::IRBuilder<> bldr(&CUR_FUNC->getEntryBlock(), CUR_FUNC->getEntryBlock().begin());
   return bldr.CreateAlloca(llvm::Type::getInt32Ty(*CUR_CONTEXT), nullptr, varname.c_str());
 }
-#endif 
+#endif
 
-static llvm::Value *ToInt32( llvm::Value *val, bool is_signed = false)
+static llvm::Value *ToInt32(llvm::Value *val, bool is_signed = false)
 {
   return BUILDER->CreateIntCast(val, BUILDER->getInt32Ty(), is_signed);
 }
 
-static llvm::Value *ToInt1( llvm::Value *val, bool is_signed = false)
+static llvm::Value *ToInt1(llvm::Value *val, bool is_signed = false)
 {
   return BUILDER->CreateIntCast(val, BUILDER->getInt1Ty(), is_signed);
 }
 
-static llvm::Value *ZeroCmp( llvm::Value *val )
+static llvm::Value *ZeroCmp(llvm::Value *val)
 {
   return BUILDER->CreateICmpEQ(val, BUILDER->getInt32(0));
 }
@@ -412,7 +412,7 @@ llvm::Value *WHNode::codegen()
     return nullptr;
 
   auto v_cond = BUILDER->CreateICmpNE(v_expr, BUILDER->getInt32(0));
-  
+
   BUILDER->CreateCondBr(v_cond, bodyBB, nextBB);
 
   BUILDER->SetInsertPoint(bodyBB);
@@ -451,7 +451,7 @@ llvm::Value *IFNode::codegen()
 
   auto v_cond = BUILDER->CreateICmpNE(v_expr, BUILDER->getInt32(0));
 
-  auto & BBL = CUR_FUNC->getBasicBlockList();
+  auto &BBL = CUR_FUNC->getBasicBlockList();
 
   auto trueBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "if_true", CUR_FUNC);
   auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "if_next", CUR_FUNC);

@@ -12,11 +12,9 @@ int main(int argc, char **argv)
   auto root = AST::make_scope();
   CUR_SCOPE = root.get();
 
-
 #if (CODEGEN == 0)
   AST::Interp interp(CUR_SCOPE);
 #endif
-
 
 #if (CODEGEN == 1)
 

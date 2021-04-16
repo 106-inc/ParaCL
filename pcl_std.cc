@@ -23,7 +23,7 @@ int main()
   {
     __pcl_start();
   }
-  catch ( std::runtime_error &err )
+  catch (std::runtime_error &err)
   {
     std::cerr << "Error ocurred:" << std::endl;
     std::cerr << err.what() << std::endl;

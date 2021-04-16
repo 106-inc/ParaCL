@@ -2,11 +2,10 @@
 
 AST::IScope *CUR_SCOPE = nullptr;
 
-
-llvm::LLVMContext* CUR_CONTEXT{};
-llvm::IRBuilder<>* BUILDER{};
-llvm::Module* CUR_MODULE{};
-llvm::Function* CUR_FUNC{};
+llvm::LLVMContext *CUR_CONTEXT{};
+llvm::IRBuilder<> *BUILDER{};
+llvm::Module *CUR_MODULE{};
+llvm::Function *CUR_FUNC{};
 
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
@@ -52,37 +51,25 @@ bool yy::Driver::parse()
 
 void yy::Driver::codegen()
 {
-  llvm::Type* prototypes[] = {llvm::Type::getInt32Ty(*CUR_CONTEXT)};
-
+  llvm::Type *prototypes[] = {llvm::Type::getInt32Ty(*CUR_CONTEXT)};
 
   /* prototype for print function */
 
+  llvm::FunctionType *func_type_print = llvm::FunctionType::get(llvm::Type::getVoidTy(*CUR_CONTEXT), prototypes, false);
 
-  llvm::FunctionType* func_type_print = llvm::FunctionType::get(
-                                        llvm::Type::getVoidTy(*CUR_CONTEXT),
-                                        prototypes, false);
-
-  llvm::Function::Create(func_type_print, llvm::Function::ExternalLinkage,
-                          "__pcl_print", CUR_MODULE);
-  
+  llvm::Function::Create(func_type_print, llvm::Function::ExternalLinkage, "__pcl_print", CUR_MODULE);
 
   /* prototype for scan function */
 
-  llvm::FunctionType* func_type_scan = llvm::FunctionType::get(
-                                       llvm::Type::getInt32Ty(*CUR_CONTEXT), false); 
+  llvm::FunctionType *func_type_scan = llvm::FunctionType::get(llvm::Type::getInt32Ty(*CUR_CONTEXT), false);
 
-  llvm::Function::Create(func_type_scan, llvm::Function::ExternalLinkage,
-                          "__pcl_scan", CUR_MODULE);
-
+  llvm::Function::Create(func_type_scan, llvm::Function::ExternalLinkage, "__pcl_scan", CUR_MODULE);
 
   /* protype for start function */
 
-  llvm::FunctionType* func_type = llvm::FunctionType::get(
-                                  llvm::Type::getVoidTy(*CUR_CONTEXT), false);
+  llvm::FunctionType *func_type = llvm::FunctionType::get(llvm::Type::getVoidTy(*CUR_CONTEXT), false);
 
-  CUR_FUNC = llvm::Function::Create(func_type, llvm::Function::ExternalLinkage,
-                          "__pcl_start", CUR_MODULE);
-
+  CUR_FUNC = llvm::Function::Create(func_type, llvm::Function::ExternalLinkage, "__pcl_start", CUR_MODULE);
 
   /* creating basic block */
 
