@@ -50,7 +50,7 @@ bool yy::Driver::parse()
   return res;
 }
 
-void yy::Driver::codegen( AST::pIScope &root ) const
+void yy::Driver::codegen( AST::pIScope &root )
 {
   llvm::Type* prototypes[] = {llvm::Type::getInt32Ty(*CUR_CONTEXT)};
 
@@ -86,11 +86,11 @@ void yy::Driver::codegen( AST::pIScope &root ) const
 
   /* creating basic block */
 
-  auto bas_block = llvm::BasicBlock::Create(*CUR_CONTEXT, "entry");//, CUR_FUNC);
+  auto bas_block = llvm::BasicBlock::Create(*CUR_CONTEXT, "entry", CUR_FUNC);
 
   BUILDER->SetInsertPoint(bas_block);
 
-  root->codegen();
+  parse();
 
   BUILDER->CreateRetVoid();
 }

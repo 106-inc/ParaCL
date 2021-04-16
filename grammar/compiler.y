@@ -31,6 +31,8 @@ extern AST::IScope *CUR_SCOPE;
 namespace yy
 { parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver); }
 
+void WholeProgramAction();
+
 extern AST::IScope *CUR_SCOPE;
 }
 
@@ -137,7 +139,7 @@ extern AST::IScope *CUR_SCOPE;
 %%
 
 
-program:     stms                           { /* program starting */ };
+program:     stms                           { WholeProgramAction(); };
 
 scope:       op_sc stms cl_sc               { /* nothing */ };
 
@@ -258,6 +260,13 @@ un:          MIN                            { $$ = AST::Ops::NEG; };
 print:       PRINT expr SCOLON              { $$ = AST::make_print($2); };
 
 %%
+
+void WholeProgramAction()
+  {
+    #if (CODEGEN == 1)
+      CUR_SCOPE->codegen();
+    #endif
+  }
 
 namespace yy
 {

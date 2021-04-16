@@ -26,10 +26,11 @@ int main(int argc, char **argv)
   try
   {
     yy::Driver driver(argv[1]);
+
+#if (CODEGEN == 0)
     if (!driver.parse())
       return -1;
 
-#if (CODEGEN == 0)
     interp.interpret();
 #endif
 
@@ -47,9 +48,7 @@ int main(int argc, char **argv)
     if (EC)
       llvm::errs() << EC.message().c_str() << "\n";
 
-    std::cout << "Hi\n";
     driver.codegen(root);
-    std::cout << "Hi\n";
 
     CUR_MODULE->print(outfile, nullptr);
     outfile.close();
@@ -60,8 +59,8 @@ int main(int argc, char **argv)
     }
 
     delete BUILDER;
+    delete CUR_MODULE;
     delete CUR_CONTEXT;
-    delete CUR_FUNC;
 #endif
   }
   catch (std::runtime_error &err)

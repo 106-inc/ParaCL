@@ -25,6 +25,7 @@
 extern llvm::LLVMContext *CUR_CONTEXT;
 extern llvm::IRBuilder<> *BUILDER;
 extern llvm::Function *CUR_FUNC;
+extern llvm::Module *CUR_MODULE;
 
 namespace AST
 {
@@ -438,9 +439,9 @@ llvm::Value *IFNode::codegen()
 
   auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
 
-  auto falseBB = (else_scope_ == nullptr) ? nextBB : llvm::BasicBlock::Create(*CUR_CONTEXT);
-
-  BUILDER->CreateCondBr(Vcond, trueBB, falseBB);
+  auto falseBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
+  
+  BUILDER->CreateCondBr(Vcond, trueBB, else_scope_ == nullptr ? nextBB : falseBB);
 
   BUILDER->SetInsertPoint(trueBB);
   if_scope_->codegen();
@@ -469,7 +470,13 @@ int PNode::calc() const
 
 llvm::Value *PNode::codegen()
 {
-  return nullptr;
+  auto V = expr_->codegen();
+
+  auto *CallP = CUR_MODULE->getFunction("__pcl_print");
+
+  llvm::Value *Args[] = {V};
+
+  return BUILDER->CreateCall(CallP, Args);
 }
 
 int RNode::calc() const
@@ -487,7 +494,9 @@ int RNode::calc() const
 
 llvm::Value *RNode::codegen()
 {
-  return nullptr;
+  auto *CallP = CUR_MODULE->getFunction("__pcl_scan");
+
+  return BUILDER->CreateCall(CallP);
 }
 
 //////////////END OF SCOPE METHODS ////////////////////////////////
