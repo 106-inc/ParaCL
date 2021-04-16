@@ -47,11 +47,6 @@ static llvm::Value *ToInt32(llvm::Value *val, bool is_signed = false)
   return BUILDER->CreateIntCast(val, BUILDER->getInt32Ty(), is_signed);
 }
 
-static llvm::Value *ToInt1(llvm::Value *val, bool is_signed = false)
-{
-  return BUILDER->CreateIntCast(val, BUILDER->getInt1Ty(), is_signed);
-}
-
 static llvm::Value *ZeroCmp(llvm::Value *val)
 {
   return BUILDER->CreateICmpEQ(val, BUILDER->getInt32(0));
