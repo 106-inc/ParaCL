@@ -403,11 +403,9 @@ INode *WHNode::get_i_child(size_t i) const
 
 llvm::Value *WHNode::codegen()
 {
-  //auto & BBL = CUR_FUNC->getBasicBlockList();
-
-  auto condBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "", CUR_FUNC);
-  auto bodyBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "", CUR_FUNC);
-  auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "", CUR_FUNC);
+  auto condBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "wh_cond", CUR_FUNC);
+  auto bodyBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "wh_body", CUR_FUNC);
+  auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "wh_next", CUR_FUNC);
 
   BUILDER->CreateBr(condBB);
 
@@ -458,13 +456,9 @@ llvm::Value *IFNode::codegen()
 
   auto & BBL = CUR_FUNC->getBasicBlockList();
 
-  auto trueBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
-  BBL.push_back(trueBB);
-
-  auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
-  BBL.push_back(nextBB);
-
-  auto falseBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
+  auto trueBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "if_true", CUR_FUNC);
+  auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "if_next", CUR_FUNC);
+  auto falseBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "if_false");
 
   BUILDER->CreateCondBr(v_cond, trueBB, else_scope_ == nullptr ? nextBB : falseBB);
 
