@@ -87,7 +87,7 @@ void codegen()
 
   /* creating basic block */
 
-  llvm::BasicBlock* bas_block = llvm::BasicBlock::Create(*CUR_CONTEXT, 
+  llvm::BasicBlock* bas_block =   (*CUR_CONTEXT, 
                           "entry", CUR_FUNC);
 
   BUILDER->SetInsertPoint(bas_block);
@@ -98,23 +98,7 @@ void codegen()
 
 void yy::Driver::IR_builder()
 {
-  std::ostringstream name_of_file;
-  std::string out = "std::cout";
-  /*name_of_file << std::filesystem::path(argv[1]).filename().string() << ".ll";*/
-
-  std::error_code err_code;
-  llvm::raw_fd_ostream out_stream(out, err_code);
-
-  if (err_code)
-    llvm::errs() << err_code.message().c_str() << "\n";
-
-  CUR_MODULE->print(out_stream, nullptr);
-
-  if (out_stream.has_error())
-  {
-    llvm::errs() << "Error printing to file: " 
-                 << out_stream.error().message() << "\n";
-  }
+  /* there is shuld be code from main */
 }
 
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type *yylloc)

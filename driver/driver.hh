@@ -11,7 +11,6 @@
 #include "parser.hh"
 
 /* LLVM lib */
-
 #include "llvm/ADT/APInt.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Constants.h"
@@ -30,6 +29,9 @@
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
 #include "llvm/Transforms/Utils.h"
+
+#include "llvm/ADT/StringRef.h"
+#include "llvm/Support/raw_ostream.h"
 
 /* End of LLVM lib */
 
@@ -110,6 +112,5 @@ public:
 
 } // namespace yy
 
-// namespace yy
 
 #endif // PARACL_DRIVER_HH
