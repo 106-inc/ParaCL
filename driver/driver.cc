@@ -84,11 +84,10 @@ void yy::Driver::codegen()
 
 void yy::Driver::IR_builder()
 {
-  /* there is shuld be code from main */
+  /* there is should be code from main */
   std::ostringstream s;
-  s << name_of_file_ << ".ll";
 
-  // s << std::filesystem::path(argv[1]).filename().string() << ".ll";
+  s << std::filesystem::path(name_of_file_).filename().string() << ".ll";
 
   std::cout << "Saving module to: " << s.str() << "\n";
 
@@ -105,9 +104,7 @@ void yy::Driver::IR_builder()
   outfile.close();
 
   if (outfile.has_error())
-  {
     llvm::errs() << "Error printing to file: " << outfile.error().message() << "\n";
-  }
 }
 
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type *yylloc)
