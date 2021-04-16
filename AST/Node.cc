@@ -406,6 +406,29 @@ INode *IFNode::get_i_child(size_t i) const
 
 llvm::Value *IFNode::codegen()
 {
+  auto Vcond = cond_->codegen();
+
+  auto trueBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
+
+  auto next = llvm::BasicBlock::Create(*CUR_CONTEXT);
+
+  auto falseBB = (else_scope_ == nullptr) ? next : llvm::BasicBlock::Create(*CUR_CONTEXT);
+
+  BUILDER->CreateCondBr(Vcond, trueBB, falseBB);
+
+  BUILDER->SetInsertPoint(trueBB);
+  if_scope_->codegen();
+  BUILDER->CreateBr(next);
+
+  if (else_scope_ != nullptr)
+  {
+    BUILDER->SetInsertPoint(falseBB);
+    else_scope_->codegen();
+    BUILDER->CreateBr(next);
+  }
+
+  BUILDER->SetInsertPoint(next);
+
   return nullptr;
 }
 
