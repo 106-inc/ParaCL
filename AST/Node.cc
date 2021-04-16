@@ -382,6 +382,27 @@ INode *WHNode::get_i_child(size_t i) const
 
 llvm::Value *WHNode::codegen()
 {
+  auto condBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
+
+  auto bodyBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
+
+  auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
+
+  BUILDER->CreateBr(condBB);
+
+  BUILDER->SetInsertPoint(condBB);
+  auto Vcond = cond_->codegen();
+  if (Vcond == nullptr)
+    return nullptr;
+
+  BUILDER->CreateCondBr(Vcond, bodyBB, nextBB);
+
+  BUILDER->SetInsertPoint(bodyBB);
+  scope_->codegen();
+  BUILDER->CreateBr(condBB);
+
+  BUILDER->SetInsertPoint(nextBB);
+
   return nullptr;
 }
 
@@ -408,26 +429,29 @@ llvm::Value *IFNode::codegen()
 {
   auto Vcond = cond_->codegen();
 
+  if (Vcond == nullptr)
+    return nullptr;
+
   auto trueBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
 
-  auto next = llvm::BasicBlock::Create(*CUR_CONTEXT);
+  auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT);
 
-  auto falseBB = (else_scope_ == nullptr) ? next : llvm::BasicBlock::Create(*CUR_CONTEXT);
+  auto falseBB = (else_scope_ == nullptr) ? nextBB : llvm::BasicBlock::Create(*CUR_CONTEXT);
 
   BUILDER->CreateCondBr(Vcond, trueBB, falseBB);
 
   BUILDER->SetInsertPoint(trueBB);
   if_scope_->codegen();
-  BUILDER->CreateBr(next);
+  BUILDER->CreateBr(nextBB);
 
   if (else_scope_ != nullptr)
   {
     BUILDER->SetInsertPoint(falseBB);
     else_scope_->codegen();
-    BUILDER->CreateBr(next);
+    BUILDER->CreateBr(nextBB);
   }
 
-  BUILDER->SetInsertPoint(next);
+  BUILDER->SetInsertPoint(nextBB);
 
   return nullptr;
 }
