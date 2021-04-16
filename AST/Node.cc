@@ -188,7 +188,7 @@ llvm::Value *OPNode::codegen()
 {
   auto L = left_->codegen();
   auto R = right_->codegen();
-  llvm::Value *nV{};
+
   if (L == nullptr || R == nullptr)
     return nullptr;
 
@@ -205,29 +205,21 @@ llvm::Value *OPNode::codegen()
   case Ops::MOD:
     return BUILDER->CreateSRem(L, R);
   case Ops::GREATER:
-    nV = BUILDER->CreateICmpSGT(L, R);
-    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
+    return ToInt32(BUILDER->CreateICmpSGT(L, R));
   case Ops::GR_EQ:
-    nV = BUILDER->CreateICmpSGE(L, R);
-    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
+    return ToInt32(BUILDER->CreateICmpSGE(L, R));
   case Ops::LESS:
-    nV = BUILDER->CreateICmpSLT(L, R);
-    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
+    return ToInt32(BUILDER->CreateICmpSLT(L, R));
   case Ops::LS_EQ:
-    nV = BUILDER->CreateICmpSLE(L, R);
-    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
+    return ToInt32(BUILDER->CreateICmpSLE(L, R));
   case Ops::IS_EQ:
-    nV = BUILDER->CreateICmpEQ(L, R);
-    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
+    return ToInt32(BUILDER->CreateICmpEQ(L, R));
   case Ops::NOT_EQ:
-    nV = BUILDER->CreateICmpNE(L, R);
-    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
+    return ToInt32(BUILDER->CreateICmpNE(L, R));
   case Ops::AND:
-    nV = BUILDER->CreateAnd(L, R);
-    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
+    return ToInt32(BUILDER->CreateAnd(L, R));
   case Ops::OR:
-    nV = BUILDER->CreateOr(L, R);
-    return BUILDER->CreateIntCast(nV, BUILDER->getInt32Ty(), /* is signed */ false);
+    return ToInt32(BUILDER->CreateOr(L, R));
   default:
     throw std::runtime_error("Unrecognized binary operator number\n");
   }
@@ -307,7 +299,7 @@ llvm::Value *UNOPNode::codegen()
   case Ops::NEG:
     return BUILDER->CreateNeg(V);
   case Ops::NOT:
-    return ToInt32(BUILDER->CreateNot(V));
+    return BUILDER->CreateNot(V);
   default:
     throw std::runtime_error("Unrecognized unary operator number\n");
   }
