@@ -33,11 +33,13 @@ std::unordered_map<std::string, llvm::Value *> NamedVals;
 
 std::stack<int> ValStack{};
 
+#if (CODEGEN == 1)
 static llvm::AllocaInst *CreateEntryBlockAlloca(const std::string &varname)
 {
   llvm::IRBuilder<> bldr(&CUR_FUNC->getEntryBlock(), CUR_FUNC->getEntryBlock().begin());
   return bldr.CreateAlloca(llvm::Type::getInt32Ty(*CUR_CONTEXT), nullptr, varname.c_str());
 }
+#endif 
 
 pINode make_cst(int val)
 {

@@ -20,7 +20,7 @@ int main(int argc, char **argv)
   CUR_CONTEXT = new llvm::LLVMContext;
   CUR_MODULE = new llvm::Module("pcl.module", *CUR_CONTEXT);
   BUILDER = new llvm::IRBuilder<>(*CUR_CONTEXT);
-  
+
 #endif
 
   try
@@ -29,48 +29,45 @@ int main(int argc, char **argv)
     if (!driver.parse())
       return -1;
 
+#if (CODEGEN == 0)
     interp.interpret();
+#endif
+
+#if (CODEGEN == 1)
+
+    std::ostringstream s;
+    s << std::filesystem::path(argv[1]).filename().string() << ".ll";
+
+    std::cout << "Saving module to: " << s.str() << "\n";
+
+    std::error_code EC;
+    /* there is undef ref */
+    llvm::raw_fd_ostream outfile{s.str(), EC};
+
+    if (EC)
+      llvm::errs() << EC.message().c_str() << "\n";
+
+    std::cout << "Hi\n";
+    driver.codegen(root);
+    std::cout << "Hi\n";
+
+    CUR_MODULE->print(outfile, nullptr);
+    outfile.close();
+
+    if (outfile.has_error())
+    {
+      llvm::errs() << "Error printing to file: " << outfile.error().message() << "\n";
+    }
+
+    delete BUILDER;
+    delete CUR_CONTEXT;
+    delete CUR_FUNC;
+#endif
   }
   catch (std::runtime_error &err)
   {
     std::cerr << err.what() << std::endl;
   }
-
-
-#if (CODEGEN == 1)
-
-  std::ostringstream s;
-  s << std::filesystem::path(argv[1]).filename().string() << ".ll";
-
-  std::cout << "Saving module to: " << s.str() << "\n";
-
-  std::error_code EC;
-  /* there is undef ref */
-  llvm::raw_fd_ostream outfile{s.str(), EC};
-
-  if (EC)
-    llvm::errs() << EC.message().c_str() << "\n";
-
-  CUR_MODULE->print(outfile, nullptr);
-  outfile.close();
-
-  if (outfile.has_error()) 
-  {
-    llvm::errs() << "Error printing to file: " << outfile.error().message()
-                 << "\n";
-  }
-
-#endif
-
-
-#if (CODEGEN == 1)
-
-  delete BUILDER;
-  delete CUR_CONTEXT;
-  delete CUR_FUNC;
-
-#endif
-
 
   return 0;
 }

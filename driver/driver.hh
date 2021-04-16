@@ -81,6 +81,8 @@ public:
    */
   bool parse();
 
+  void codegen( AST::pIScope &root ) const; 
+
   /*void codegen();*/
   void IR_builder();
 

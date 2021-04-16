@@ -50,14 +50,13 @@ bool yy::Driver::parse()
   return res;
 }
 
-#if 0
-
-void codegen()
+void yy::Driver::codegen( AST::pIScope &root ) const
 {
   llvm::Type* prototypes[] = {llvm::Type::getInt32Ty(*CUR_CONTEXT)};
 
 
   /* prototype for print function */
+
 
   llvm::FunctionType* func_type_print = llvm::FunctionType::get(
                                         llvm::Type::getVoidTy(*CUR_CONTEXT),
@@ -72,7 +71,7 @@ void codegen()
   llvm::FunctionType* func_type_scan = llvm::FunctionType::get(
                                        llvm::Type::getInt32Ty(*CUR_CONTEXT), false); 
 
-  llvm::Function::Create(func_type_print, llvm::Function::ExternalLinkage,
+  llvm::Function::Create(func_type_scan, llvm::Function::ExternalLinkage,
                           "__pcl_scan", CUR_MODULE);
 
 
@@ -87,14 +86,14 @@ void codegen()
 
   /* creating basic block */
 
-  llvm::BasicBlock* bas_block =   (*CUR_CONTEXT, 
-                          "entry", CUR_FUNC);
+  auto bas_block = llvm::BasicBlock::Create(*CUR_CONTEXT, "entry");//, CUR_FUNC);
 
   BUILDER->SetInsertPoint(bas_block);
-  /* BUILDER->CreateRetVoid(); */
-}
 
-#endif
+  root->codegen();
+
+  BUILDER->CreateRetVoid();
+}
 
 void yy::Driver::IR_builder()
 {
