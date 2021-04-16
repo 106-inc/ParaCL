@@ -52,6 +52,11 @@ static llvm::Value *ToInt1( llvm::Value *val, bool is_signed = false)
   return BUILDER->CreateIntCast(val, BUILDER->getInt1Ty(), is_signed);
 }
 
+static llvm::Value *ZeroCmp( llvm::Value *val )
+{
+  return BUILDER->CreateICmpEQ(val, BUILDER->getInt32(0));
+}
+
 pINode make_cst(int val)
 {
   return std::make_unique<CNode>(val);
@@ -217,9 +222,9 @@ llvm::Value *OPNode::codegen()
   case Ops::NOT_EQ:
     return ToInt32(BUILDER->CreateICmpNE(L, R));
   case Ops::AND:
-    return ToInt32(BUILDER->CreateAnd(L, R));
+    return ToInt32(BUILDER->CreateAnd(ZeroCmp(L), ZeroCmp(R)));
   case Ops::OR:
-    return ToInt32(BUILDER->CreateOr(L, R));
+    return ToInt32(BUILDER->CreateOr(ZeroCmp(L), ZeroCmp(R)));
   default:
     throw std::runtime_error("Unrecognized binary operator number\n");
   }
@@ -299,7 +304,7 @@ llvm::Value *UNOPNode::codegen()
   case Ops::NEG:
     return BUILDER->CreateNeg(V);
   case Ops::NOT:
-    return BUILDER->CreateNot(V);
+    return ToInt32(BUILDER->CreateICmpEQ(V, BUILDER->getInt32(0)));
   default:
     throw std::runtime_error("Unrecognized unary operator number\n");
   }
