@@ -201,7 +201,7 @@ expr_cmp:    expr_cmp cmp expr_pm           { $$ = AST::make_op($1, $2, $3); };
 expr_pm:     expr_pm pm expr_mdm            { $$ = AST::make_op($1, $2, $3); };
            | expr_mdm                       { $$ = std::move($1); };
 
-expr_mdm:    expr_mdm mdm expr_term         { $$ = AST::make_op($1, $2, $3); };
+expr_mdm:    expr_mdm mdm expr_un         { $$ = AST::make_op($1, $2, $3); };
            | expr_un                        { $$ = std::move($1); };
 
 expr_un:     un expr_un                     { $$ = AST::make_un($1, $2); };
