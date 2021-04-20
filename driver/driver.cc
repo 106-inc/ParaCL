@@ -2,6 +2,11 @@
 
 AST::IScope *CUR_SCOPE = nullptr;
 
+llvm::LLVMContext *CUR_CONTEXT{};
+llvm::IRBuilder<> *BUILDER{};
+llvm::Module *CUR_MODULE{};
+llvm::Function *CUR_FUNC{};
+
 yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
 {
   std::string tmp_str;
@@ -42,6 +47,64 @@ bool yy::Driver::parse()
   }
 
   return res;
+}
+
+void yy::Driver::codegen()
+{
+  llvm::Type *prototypes[] = {llvm::Type::getInt32Ty(*CUR_CONTEXT)};
+
+  /* prototype for print function */
+
+  llvm::FunctionType *func_type_print = llvm::FunctionType::get(llvm::Type::getVoidTy(*CUR_CONTEXT), prototypes, false);
+
+  llvm::Function::Create(func_type_print, llvm::Function::ExternalLinkage, "__pcl_print", CUR_MODULE);
+
+  /* prototype for scan function */
+
+  llvm::FunctionType *func_type_scan = llvm::FunctionType::get(llvm::Type::getInt32Ty(*CUR_CONTEXT), false);
+
+  llvm::Function::Create(func_type_scan, llvm::Function::ExternalLinkage, "__pcl_scan", CUR_MODULE);
+
+  /* protype for start function */
+
+  llvm::FunctionType *func_type = llvm::FunctionType::get(llvm::Type::getVoidTy(*CUR_CONTEXT), false);
+
+  CUR_FUNC = llvm::Function::Create(func_type, llvm::Function::ExternalLinkage, "__pcl_start", CUR_MODULE);
+
+  /* creating basic block */
+
+  auto bas_block = llvm::BasicBlock::Create(*CUR_CONTEXT, "entry", CUR_FUNC);
+
+  BUILDER->SetInsertPoint(bas_block);
+
+  parse();
+
+  BUILDER->CreateRetVoid();
+}
+
+void yy::Driver::IR_builder()
+{
+  /* there is should be code from main */
+  std::ostringstream s;
+
+  s << std::filesystem::path(name_of_file_).filename().string() << ".ll";
+
+  std::cout << "Saving module to: " << s.str() << "\n";
+
+  std::error_code EC;
+  /* there is undef ref */
+  llvm::raw_fd_ostream outfile{s.str(), EC};
+
+  if (EC)
+    llvm::errs() << EC.message().c_str() << "\n";
+
+  codegen();
+
+  CUR_MODULE->print(outfile, nullptr);
+  outfile.close();
+
+  if (outfile.has_error())
+    llvm::errs() << "Error printing to file: " << outfile.error().message() << "\n";
 }
 
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type *yylloc)

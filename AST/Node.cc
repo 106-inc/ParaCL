@@ -1,10 +1,61 @@
-#include "Node.hh"
+#include "llvm/ADT/APInt.h"
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/LegacyPassManager.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/Type.h"
+#include "llvm/IR/Verifier.h"
+#include "llvm/Support/TargetSelect.h"
+#include "llvm/Target/TargetMachine.h"
+#include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Scalar.h"
+#include "llvm/Transforms/Scalar/GVN.h"
+#include "llvm/Transforms/Utils.h"
+
 #include "Interp.hh"
+#include "Node.hh"
+
+#include <functional>
+
+extern llvm::LLVMContext *CUR_CONTEXT;
+extern llvm::IRBuilder<> *BUILDER;
+extern llvm::Function *CUR_FUNC;
+extern llvm::Module *CUR_MODULE;
 
 namespace AST
 {
 
+std::unordered_map<std::string, llvm::Value *> NamedVals;
+
 std::stack<int> ValStack{};
+
+#if (CODEGEN == 1)
+static llvm::AllocaInst *CreateEntryBlockAlloca(const std::string &varname)
+{
+  llvm::IRBuilder<> bldr(&CUR_FUNC->getEntryBlock(), CUR_FUNC->getEntryBlock().begin());
+  return bldr.CreateAlloca(llvm::Type::getInt32Ty(*CUR_CONTEXT), nullptr, varname.c_str());
+}
+#endif
+
+static llvm::Value *ToInt32(llvm::Value *val, bool is_signed = false)
+{
+  return BUILDER->CreateIntCast(val, BUILDER->getInt32Ty(), is_signed);
+}
+
+static llvm::Value *ZeroCmp(llvm::Value *val)
+{
+  return BUILDER->CreateICmpEQ(val, BUILDER->getInt32(0));
+}
+
+static llvm::Value *ZeroNEQ(llvm::Value *val)
+{
+  return BUILDER->CreateICmpNE(val, BUILDER->getInt32(0));
+}
 
 pINode make_cst(int val)
 {
@@ -69,6 +120,10 @@ pINode make_asgn(const std::string &var_name, pINode &expr)
   auto it = CUR_SCOPE->check_n_insert(var_name);
   auto pvar = std::make_unique<VNode>(it);
 
+#if (CODEGEN == 1)
+  NamedVals[var_name] = CreateEntryBlockAlloca(var_name);
+#endif
+
   return std::make_unique<ASNode>(pvar, expr);
 }
 
@@ -126,6 +181,55 @@ var_table::iterator Scope::check_n_insert(const std::string &var_name)
   return it_n_bool.first;
 }
 
+llvm::Value *Scope::codegen()
+{
+  for (auto &&nd : nodes_)
+    nd->codegen();
+
+  return nullptr;
+}
+
+llvm::Value *OPNode::codegen()
+{
+  auto L = left_->codegen();
+  auto R = right_->codegen();
+
+  if (L == nullptr || R == nullptr)
+    return nullptr;
+
+  switch (op_type_)
+  {
+  case Ops::ADD:
+    return BUILDER->CreateAdd(L, R);
+  case Ops::SUB:
+    return BUILDER->CreateSub(L, R);
+  case Ops::MUL:
+    return BUILDER->CreateMul(L, R);
+  case Ops::DIV:
+    return BUILDER->CreateSDiv(L, R);
+  case Ops::MOD:
+    return BUILDER->CreateSRem(L, R);
+  case Ops::GREATER:
+    return ToInt32(BUILDER->CreateICmpSGT(L, R));
+  case Ops::GR_EQ:
+    return ToInt32(BUILDER->CreateICmpSGE(L, R));
+  case Ops::LESS:
+    return ToInt32(BUILDER->CreateICmpSLT(L, R));
+  case Ops::LS_EQ:
+    return ToInt32(BUILDER->CreateICmpSLE(L, R));
+  case Ops::IS_EQ:
+    return ToInt32(BUILDER->CreateICmpEQ(L, R));
+  case Ops::NOT_EQ:
+    return ToInt32(BUILDER->CreateICmpNE(L, R));
+  case Ops::AND:
+    return ToInt32(BUILDER->CreateAnd(ZeroCmp(L), ZeroCmp(R)));
+  case Ops::OR:
+    return ToInt32(BUILDER->CreateOr(ZeroCmp(L), ZeroCmp(R)));
+  default:
+    throw std::runtime_error("Unrecognized binary operator number\n");
+  }
+}
+
 int OPNode::calc() const
 {
   int right_val = ValStack.top();
@@ -138,18 +242,18 @@ int OPNode::calc() const
   switch (op_type_)
   {
   case Ops::ADD:
-    res = left_val + right_val;
+    res = std::plus{}(left_val, right_val); // :)
     break;
   case Ops::SUB:
-    res = left_val - right_val;
+    res = std::minus{}(left_val, right_val); // :)
     break;
   case Ops::MUL:
-    res = left_val * right_val;
+    res = std::multiplies{}(left_val, right_val); // :)
     break;
   case Ops::DIV:
-    if (right_val == 0)
+    if (std::equal_to{}(right_val, 0))
       throw std::runtime_error{"Dividing by ZERO!"};
-    res = left_val / right_val;
+    res = std::divides{}(left_val, right_val); // :)
     break;
   case Ops::MOD:
     if (right_val == 0)
@@ -189,6 +293,23 @@ int OPNode::calc() const
   return res;
 }
 
+llvm::Value *UNOPNode::codegen()
+{
+  auto V = operand_->codegen();
+  if (V == nullptr)
+    return nullptr;
+
+  switch (op_type_)
+  {
+  case Ops::NEG:
+    return BUILDER->CreateNeg(V);
+  case Ops::NOT:
+    return ToInt32(BUILDER->CreateICmpEQ(V, BUILDER->getInt32(0)));
+  default:
+    throw std::runtime_error("Unrecognized unary operator number\n");
+  }
+}
+
 int UNOPNode::calc() const
 {
   int val = ValStack.top();
@@ -219,10 +340,24 @@ int VNode::calc() const
   return location_->second.value;
 }
 
+llvm::Value *VNode::codegen()
+{
+  auto it = NamedVals.find(location_->first);
+  if (it == NamedVals.end())
+    throw std::runtime_error{"Unrecognized variable"};
+
+  return BUILDER->CreateLoad(llvm::Type::getInt32Ty(*CUR_CONTEXT), it->second, it->first);
+}
+
 int CNode::calc() const
 {
   ValStack.push(val_);
   return val_;
+}
+
+llvm::Value *CNode::codegen()
+{
+  return llvm::ConstantInt::get(llvm::Type::getInt32Ty(*CUR_CONTEXT), val_);
 }
 
 int ASNode::calc() const
@@ -238,6 +373,15 @@ int ASNode::calc() const
   return expr_res;
 } /* End of 'calc' function */
 
+llvm::Value *ASNode::codegen()
+{
+  auto it = NamedVals.find(dst_->get_name());
+  if (it == NamedVals.end())
+    throw std::runtime_error{"Unrecognized variable"};
+
+  return BUILDER->CreateStore(expr_->codegen(), it->second);
+}
+
 INode *WHNode::get_i_child(size_t i) const
 {
   i %= 2;
@@ -250,6 +394,32 @@ INode *WHNode::get_i_child(size_t i) const
 
   if (cond_calc)
     return scope_.get();
+
+  return nullptr;
+}
+
+llvm::Value *WHNode::codegen()
+{
+  auto condBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "wh_cond", CUR_FUNC);
+  auto bodyBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "wh_body", CUR_FUNC);
+  auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "wh_next", CUR_FUNC);
+
+  BUILDER->CreateBr(condBB);
+
+  BUILDER->SetInsertPoint(condBB);
+  auto v_expr = cond_->codegen();
+  if (v_expr == nullptr)
+    return nullptr;
+
+  auto v_cond = ZeroNEQ(v_expr);
+
+  BUILDER->CreateCondBr(v_cond, bodyBB, nextBB);
+
+  BUILDER->SetInsertPoint(bodyBB);
+  scope_->codegen();
+  BUILDER->CreateBr(condBB);
+
+  BUILDER->SetInsertPoint(nextBB);
 
   return nullptr;
 }
@@ -273,6 +443,39 @@ INode *IFNode::get_i_child(size_t i) const
   return nullptr;
 }
 
+llvm::Value *IFNode::codegen()
+{
+  auto v_expr = cond_->codegen();
+  if (v_expr == nullptr)
+    return nullptr;
+
+  auto v_cond = ZeroNEQ(v_expr);
+
+  auto &BBL = CUR_FUNC->getBasicBlockList();
+
+  auto trueBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "if_true", CUR_FUNC);
+  auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "if_next", CUR_FUNC);
+  auto falseBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "if_false");
+
+  BUILDER->CreateCondBr(v_cond, trueBB, else_scope_ == nullptr ? nextBB : falseBB);
+
+  BUILDER->SetInsertPoint(trueBB);
+  if_scope_->codegen();
+  BUILDER->CreateBr(nextBB);
+
+  if (else_scope_ != nullptr)
+  {
+    BBL.push_back(falseBB);
+    BUILDER->SetInsertPoint(falseBB);
+    else_scope_->codegen();
+    BUILDER->CreateBr(nextBB);
+  }
+
+  BUILDER->SetInsertPoint(nextBB);
+
+  return nullptr;
+}
+
 int PNode::calc() const
 {
   int val = ValStack.top();
@@ -280,6 +483,17 @@ int PNode::calc() const
 
   std::cout << val << std::endl;
   return 0;
+}
+
+llvm::Value *PNode::codegen()
+{
+  auto V = expr_->codegen();
+
+  auto *CallP = CUR_MODULE->getFunction("__pcl_print");
+
+  llvm::Value *Args[] = {V};
+
+  return BUILDER->CreateCall(CallP, Args);
 }
 
 int RNode::calc() const
@@ -295,10 +509,13 @@ int RNode::calc() const
   return value;
 }
 
-//////////////END OF SCOPE METHODS ////////////////////////////////
-
-void clear(pIScope &root)
+llvm::Value *RNode::codegen()
 {
+  auto *CallP = CUR_MODULE->getFunction("__pcl_scan");
+
+  return BUILDER->CreateCall(CallP);
 }
+
+//////////////END OF SCOPE METHODS ////////////////////////////////
 
 } // namespace AST

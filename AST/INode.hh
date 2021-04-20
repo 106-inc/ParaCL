@@ -11,6 +11,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "llvm/IR/Value.h"
+
 /**
  * @namespace AST
  * @brief namespace for AST tree interfaces
@@ -70,6 +72,8 @@ public:
   {
     return nullptr;
   }
+
+  virtual llvm::Value *codegen() = 0;
 
   INode(const INode &) = delete;
   INode &operator=(const INode &) = delete;
@@ -240,8 +244,6 @@ pINode make_scan();
  * @return shared pointer to created Scope
  */
 pIScope make_scope(IScope *par = nullptr);
-
-void clear(pIScope &root);
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*

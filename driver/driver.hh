@@ -2,6 +2,7 @@
 #ifndef PARACL_DRIVER_HH
 #define PARACL_DRIVER_HH
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -9,9 +10,43 @@
 #include "Interp.hh"
 #include "parser.hh"
 
+/* LLVM lib */
+#include "llvm/ADT/APInt.h"
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/LegacyPassManager.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/Type.h"
+#include "llvm/IR/Verifier.h"
+#include "llvm/Support/TargetSelect.h"
+#include "llvm/Target/TargetMachine.h"
+#include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Scalar.h"
+#include "llvm/Transforms/Scalar/GVN.h"
+#include "llvm/Transforms/Utils.h"
+
+#include "llvm/ADT/StringRef.h"
+#include "llvm/Support/raw_ostream.h"
+
+/* End of LLVM lib */
+
 #ifndef yyFlexLexer
 #include <FlexLexer.h>
 #endif /* yyFlexLexer */
+
+#if (CODEGEN == 1)
+
+extern llvm::LLVMContext *CUR_CONTEXT;
+extern llvm::IRBuilder<> *BUILDER;
+extern llvm::Module *CUR_MODULE;
+extern llvm::Function *CUR_FUNC;
+
+#endif
 
 enum
 {
@@ -46,6 +81,11 @@ public:
    */
   bool parse();
 
+  void codegen();
+
+  /*void codegen();*/
+  void IR_builder();
+
   /**
    * @brief The lexical analyzer function, yylex, recognizes tokens from the input stream and returns them to the
    * parser.
@@ -73,7 +113,5 @@ public:
 };
 
 } // namespace yy
-
-// namespace yy
 
 #endif // PARACL_DRIVER_HH
