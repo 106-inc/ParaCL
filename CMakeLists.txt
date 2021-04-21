@@ -65,7 +65,7 @@ set(TARGETS  ${COMPILE_NAME} ${INTERP_NAME})
 llvm_map_components_to_libnames(llvm_libs support core codegen irreader)
 
 foreach(TARGET ${TARGETS})
-  target_compile_features(${TARGET} PRIVATE cxx_std_20)
+  target_compile_features(${TARGET} PRIVATE cxx_std_17)
   target_compile_options(${TARGET} PRIVATE ${WARN_OPTIONS})
   
   target_include_directories(${TARGET} PRIVATE ${LLVM_INCLUDE_DIRS})
