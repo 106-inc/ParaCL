@@ -22,9 +22,9 @@ set(PR_RELEASE_OPTIONS -O2)
 # some useful warnings
 set(WARN_OPTIONS
   -Wall 
-  #-Wextra
+   #-Wextra commented because it causes warnings at llvm library code
   -Wunused -Wpedantic # classic
-  -Wno-old-style-cast -Waggressive-loop-optimizations
+  -Wno-old-style-cast #-Waggressive-loop-optimizations
   -Wunreachable-code)
 
 flex_target(flex_o
