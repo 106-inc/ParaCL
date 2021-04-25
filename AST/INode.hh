@@ -89,7 +89,7 @@ public:
 };
 
 // scope interface
-struct IScope : public INode
+class IScope : public INode
 {
 protected:
   IScope(size_t c_am = 0) : INode(c_am)
