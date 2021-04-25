@@ -201,7 +201,7 @@ expr_cmp:    expr_cmp cmp expr_pm           { $$ = AST::make_op($1, $2, $3); };
 expr_pm:     expr_pm pm expr_mdm            { $$ = AST::make_op($1, $2, $3); };
            | expr_mdm                       { $$ = std::move($1); };
 
-expr_mdm:    expr_mdm mdm expr_un         { $$ = AST::make_op($1, $2, $3); };
+expr_mdm:    expr_mdm mdm expr_un           { $$ = AST::make_op($1, $2, $3); };
            | expr_un                        { $$ = std::move($1); };
 
 expr_un:     un expr_un                     { $$ = AST::make_un($1, $2); };
@@ -273,17 +273,17 @@ namespace yy
 
   void parser::error (const parser::location_type& location, const std::string& string)
   {
-  	std::cerr << string << " in (line.column): "<< location << std::endl;
+    std::cerr << string << " in (line.column): "<< location << std::endl;
   }
 
   parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)
   {
-   	return driver->yylex(yylval, yylloc);
+    return driver->yylex(yylval, yylloc);
   }
 
   void parser::report_syntax_error(parser::context const& ctx) const
   {
-  	driver->report_syntax_error(ctx);
+    driver->report_syntax_error(ctx);
   }
 
 }
