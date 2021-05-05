@@ -385,6 +385,9 @@ llvm::Value *ASNode::codegen()
 INode *WHNode::get_i_child(size_t i) const
 {
   i %= 2;
+  /*
+   * i &= 1; -- more optimized way
+   */
 
   if (i == 0)
     return cond_.get();
