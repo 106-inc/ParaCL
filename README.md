@@ -23,6 +23,7 @@ After cloning, in root directory of a repo:
 mkdir build
 cd build
 cmake ..
+make # -j (optional)
 cd ..
 ```
 After that, in directory you will have two executables: `ParaCL` - LLVMIR compiler,
