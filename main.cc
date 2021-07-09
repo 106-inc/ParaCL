@@ -11,21 +11,18 @@ int main(int argc, char **argv)
 
 #if (CODEGEN == 0)
   AST::Interp interp(CUR_SCOPE);
-#endif
-
-#if (CODEGEN == 1)
-
+#else
   CUR_CONTEXT = new llvm::LLVMContext;
   CUR_MODULE = new llvm::Module("pcl.module", *CUR_CONTEXT);
   BUILDER = new llvm::IRBuilder<>(*CUR_CONTEXT);
-
 #endif
 
-#if (CODEGEN == 1)
-  std::string out = CLI::output_filename();
-#else
+#if (CODEGEN == 0)
   std::string out{};
+#else
+  std::string out = CLI::output_filename();
 #endif
+
   try
   {
     yy::Driver driver(CLI::input_filename(), out);
@@ -35,10 +32,7 @@ int main(int argc, char **argv)
       return -1;
 
     interp.interpret();
-#endif
-
-#if (CODEGEN == 1)
-
+#else
     driver.IR_builder();
     delete BUILDER;
     delete CUR_MODULE;
