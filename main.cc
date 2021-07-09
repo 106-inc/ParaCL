@@ -17,15 +17,9 @@ int main(int argc, char **argv)
   BUILDER = new llvm::IRBuilder<>(*CUR_CONTEXT);
 #endif
 
-#if (CODEGEN == 0)
-  std::string out{};
-#else
-  std::string out = CLI::output_filename();
-#endif
-
   try
   {
-    yy::Driver driver(CLI::input_filename(), out);
+    yy::Driver driver(CLI::input_filename(), CLI::output_filename());
 
 #if (CODEGEN == 0)
     if (!driver.parse())

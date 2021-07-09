@@ -26,15 +26,23 @@ std::string &input_filename()
   return inp_fname;
 }
 
-#if (CODEGEN == 1)
-
 std::string &output_filename()
 {
+#if (CODEGEN == 0)
+
+  static std::string
+  {
+  }
+  empty;
+  return empty;
+
+#else
+
   if (out_fname.empty())
     return inp_fname;
   return out_fname;
-}
 
 #endif
+}
 
 } // namespace CLI
