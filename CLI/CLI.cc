@@ -7,8 +7,10 @@ namespace cl = llvm::cl;
 
 static cl::opt<std::string> inp_fname(cl::Positional, cl::Required, cl::desc("<input file>"));
 
+#if (CODEGEN == 1)
 static cl::opt<std::string> out_fname("o", cl::desc("Specify output filename"), cl::value_desc("filename"),
                                       cl::init(""));
+#endif
 
 namespace CLI
 {
@@ -24,11 +26,15 @@ std::string &input_filename()
   return inp_fname;
 }
 
+#if (CODEGEN == 1)
+
 std::string &output_filename()
 {
   if (out_fname.empty())
     return inp_fname;
   return out_fname;
 }
+
+#endif
 
 } // namespace CLI

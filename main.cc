@@ -21,9 +21,14 @@ int main(int argc, char **argv)
 
 #endif
 
+#if (CODEGEN == 1)
+  std::string out = CLI::output_filename();
+#else
+  std::string out{};
+#endif
   try
   {
-    yy::Driver driver(CLI::input_filename(), CLI::output_filename());
+    yy::Driver driver(CLI::input_filename(), out);
 
 #if (CODEGEN == 0)
     if (!driver.parse())
