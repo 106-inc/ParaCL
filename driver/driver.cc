@@ -7,12 +7,13 @@ llvm::IRBuilder<> *BUILDER{};
 llvm::Module *CUR_MODULE{};
 llvm::Function *CUR_FUNC{};
 
-yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
+yy::Driver::Driver(const std::string &inp_fname, const std::string &out_fname)
+    : input_fname_(inp_fname), output_fname_(out_fname)
 {
   std::string tmp_str;
 
-  in_file.open(name_of_file);
-  std::ifstream tmp(name_of_file);
+  input_fstream_.open(inp_fname);
+  std::ifstream tmp(inp_fname);
 
   if (tmp.is_open())
   {
@@ -24,12 +25,12 @@ yy::Driver::Driver(const char *name_of_file) : name_of_file_(name_of_file)
   }
   else
   {
-    std::string what = "File '" + name_of_file_ + "' does not exist";
+    std::string what = "File '" + input_fname_ + "' does not exist";
     throw std::runtime_error{what};
   }
 
   plex_ = new OurFlexLexer;
-  plex_->switch_streams(in_file, std::cout);
+  plex_->switch_streams(input_fstream_, std::cout);
 }
 
 bool yy::Driver::parse()
@@ -87,7 +88,7 @@ void yy::Driver::IR_builder()
   /* there is should be code from main */
   std::ostringstream s;
 
-  s << std::filesystem::path(name_of_file_).filename().string() << ".ll";
+  s << std::filesystem::path(output_fname_).filename().string() << ".ll";
 
   std::cout << "Saving module to: " << s.str() << "\n";
 

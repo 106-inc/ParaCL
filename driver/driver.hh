@@ -58,8 +58,10 @@ namespace yy
 class Driver final
 {
 private:
-  std::string name_of_file_;
-  std::ifstream in_file;
+  std::string input_fname_;
+  std::string output_fname_;
+
+  std::ifstream input_fstream_;
 
   OurFlexLexer *plex_;
   std::vector<std::string> lines_of_prog;
@@ -67,9 +69,9 @@ private:
 public:
   /**
    * @brief Constructor for class Driver
-   * @param name_of_file - the name of the file from which our program is read
+   * @param inp_fname - the name of the file from which our program is read
    */
-  Driver(const char *name_of_file);
+  Driver(const std::string &inp_fname, const std::string &out_fname);
 
   Driver(const Driver &drvr) = delete;
 

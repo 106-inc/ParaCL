@@ -1,13 +1,10 @@
+#include "CLI.hh"
 #include "Interp.hh"
 #include "driver.hh"
 
 int main(int argc, char **argv)
 {
-  if (argc < 2)
-  {
-    std::cout << "USAGE: " << argv[0] << " FILENAME" << std::endl;
-    return 0;
-  }
+  CLI::arg_parse(argc, argv);
 
   auto root = AST::make_scope();
   CUR_SCOPE = root.get();
@@ -26,7 +23,7 @@ int main(int argc, char **argv)
 
   try
   {
-    yy::Driver driver(argv[1]);
+    yy::Driver driver(CLI::input_filename(), CLI::output_filename());
 
 #if (CODEGEN == 0)
     if (!driver.parse())
