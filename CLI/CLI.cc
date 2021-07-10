@@ -5,35 +5,27 @@
 
 namespace cl = llvm::cl;
 
-static cl::opt<std::string> inp_fname(cl::Positional, cl::Required, cl::desc("<input file>"));
+static cl::opt<std::string> inp_fname(cl::Positional, cl::Required,
+                                      cl::desc("<input file>"));
 
 #if (CODEGEN == 1)
-static cl::opt<std::string> out_fname("o", cl::desc("Specify output filename"), cl::value_desc("filename"),
-                                      cl::init(""));
+static cl::opt<std::string> out_fname("o", cl::desc("Specify output filename"),
+                                      cl::value_desc("filename"), cl::init(""));
 #endif
 
-namespace CLI
-{
+namespace CLI {
 
-bool arg_parse(int ac, char **av)
-{
+bool arg_parse(int ac, char **av) {
   cl::ParseCommandLineOptions(ac, av);
   return true;
 }
 
-std::string &input_filename()
-{
-  return inp_fname;
-}
+std::string &input_filename() { return inp_fname; }
 
-std::string &output_filename()
-{
+std::string &output_filename() {
 #if (CODEGEN == 0)
 
-  static std::string
-  {
-  }
-  empty;
+  static std::string empty{};
   return empty;
 
 #else
