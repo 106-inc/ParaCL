@@ -24,6 +24,7 @@ namespace AST
 class IScope;
 class INode;
 
+using IntT = int32_t;
 using pINode = std::unique_ptr<INode>;
 using pIScope = std::unique_ptr<IScope>;
 using pFunc = std::shared_ptr<INode>;
@@ -44,11 +45,11 @@ struct var_tbl_member final
 {
   SymType type;
   pFunc func;
-  int value;
+  IntT value;
 
   var_tbl_member() = default;
 
-  var_tbl_member(SymType tpe, int val, pFunc pfn = nullptr) : type(tpe), func(pfn), value(val)
+  var_tbl_member(SymType tpe, IntT val, pFunc pfn = nullptr) : type(tpe), func(pfn), value(val)
   {
   }
 };
@@ -66,7 +67,7 @@ protected:
   }
 
 public:
-  virtual int calc() const = 0;
+  virtual IntT calc() const = 0;
 
   virtual INode *get_i_child(size_t) const
   {
@@ -146,7 +147,7 @@ enum class Ops
  * @param[in] val value to put to node
  * @return shared pointer to created node
  */
-pINode make_cst(int val);
+pINode make_cst(IntT val);
 
 /**
  * @fn make_op

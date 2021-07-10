@@ -41,7 +41,7 @@ public:
    * @brief Interpret the scope function (claculate)
    * @return int
    */
-  int calc() const override
+  IntT calc() const override
   {
     return 0;
   } /* End of 'calc' function */
@@ -147,13 +147,13 @@ public:
    * Calculate value of a variable function
    * @return current value of a variable
    */
-  int calc() const override;
+  IntT calc() const override;
 
   /**
    * Set value of variable function
    * @param[in] val value to set in variable
    */
-  void set_val(int val)
+  void set_val(IntT val)
   {
     auto &lsec = location_->second;
     if (lsec.type != detail::SymType::VAR)
@@ -168,14 +168,14 @@ public:
 class CNode final : public INode
 {
 private:
-  const int val_;
+  const IntT val_;
 
 public:
   /**
    * Constant node ctor
    * @param[in] val  value of a node
    */
-  CNode(int val) : val_(val)
+  CNode(IntT val) : val_(val)
   {
   }
   llvm::Value *codegen() override;
@@ -184,7 +184,7 @@ public:
    * Calculate the value of node
    * @return value of a node
    */
-  int calc() const override;
+  IntT calc() const override;
 };
 
 /**
@@ -219,7 +219,7 @@ public:
   }
 
   llvm::Value *codegen() override;
-  int calc() const override;
+  IntT calc() const override;
 };
 
 /**
@@ -251,7 +251,7 @@ public:
     return operand_.get();
   }
   llvm::Value *codegen() override;
-  int calc() const override;
+  IntT calc() const override;
 };
 
 /**
@@ -284,7 +284,7 @@ public:
    * @brief Calculate an assignment function
    * @return calculated assigned value
    */
-  int calc() const override;
+  IntT calc() const override;
 };
 
 /**
@@ -317,9 +317,9 @@ public:
   /**
    * @brief calculate ret value function
    *
-   * @return int return value
+   * @return IntT return value
    */
-  int calc() const override
+  IntT calc() const override
   {
     return expr_->calc();
   }
@@ -349,7 +349,7 @@ public:
    * @brief Calculate while node function
    * @return int
    */
-  int calc() const override
+  IntT calc() const override
   {
     return 0;
   }
@@ -386,7 +386,7 @@ public:
    * Interpret If node function
    * @return calculated result
    */
-  int calc() const override
+  IntT calc() const override
   {
     return 0;
   }
@@ -418,7 +418,7 @@ public:
   /**
    * Interpret print node function
    */
-  int calc() const override;
+  IntT calc() const override;
 
   llvm::Value *codegen() override;
 };
@@ -435,7 +435,7 @@ public:
    * @brief Interpret read node function
    * @return read value
    */
-  int calc() const override;
+  IntT calc() const override;
 
   llvm::Value *codegen() override;
 

@@ -1,15 +1,13 @@
 #include <iostream>
 
+using IntT = int32_t;
+
 extern "C" void __pcl_start();
 
-extern "C" void __pcl_print(int n)
-{
-  std::cout << n << std::endl;
-}
+extern "C" void __pcl_print(IntT n) { std::cout << n << std::endl; }
 
-extern "C" int __pcl_scan()
-{
-  int n;
+extern "C" IntT __pcl_scan() {
+  IntT n;
   std::cin >> n;
   if (!std::cin)
     throw std::runtime_error{"Problem reading stdin"};
@@ -17,14 +15,10 @@ extern "C" int __pcl_scan()
   return n;
 }
 
-int main()
-{
-  try
-  {
+int main() {
+  try {
     __pcl_start();
-  }
-  catch (std::runtime_error &err)
-  {
+  } catch (std::runtime_error &err) {
     std::cerr << "Error ocurred:" << std::endl;
     std::cerr << err.what() << std::endl;
     return -1;

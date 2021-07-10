@@ -27,77 +27,62 @@ extern llvm::IRBuilder<> *BUILDER;
 extern llvm::Function *CUR_FUNC;
 extern llvm::Module *CUR_MODULE;
 
-namespace AST
-{
-
+namespace AST {
 std::unordered_map<std::string, llvm::Value *> NamedVals;
 
-std::stack<int> ValStack{};
+std::stack<IntT> ValStack{};
 
 #if (CODEGEN == 1)
-static llvm::AllocaInst *CreateEntryBlockAlloca(const std::string &varname)
-{
-  llvm::IRBuilder<> bldr(&CUR_FUNC->getEntryBlock(), CUR_FUNC->getEntryBlock().begin());
-  return bldr.CreateAlloca(llvm::Type::getInt32Ty(*CUR_CONTEXT), nullptr, varname.c_str());
+static llvm::AllocaInst *CreateEntryBlockAlloca(const std::string &varname) {
+  llvm::IRBuilder<> bldr(&CUR_FUNC->getEntryBlock(),
+                         CUR_FUNC->getEntryBlock().begin());
+  return bldr.CreateAlloca(llvm::Type::getInt32Ty(*CUR_CONTEXT), nullptr,
+                           varname.c_str());
 }
 #endif
 
-static llvm::Value *ToInt32(llvm::Value *val, bool is_signed = false)
-{
+static llvm::Value *ToInt32(llvm::Value *val, bool is_signed = false) {
   return BUILDER->CreateIntCast(val, BUILDER->getInt32Ty(), is_signed);
 }
 
-static llvm::Value *ZeroCmp(llvm::Value *val)
-{
+static llvm::Value *ZeroCmp(llvm::Value *val) {
   return BUILDER->CreateICmpEQ(val, BUILDER->getInt32(0));
 }
 
-static llvm::Value *ZeroNEQ(llvm::Value *val)
-{
+static llvm::Value *ZeroNEQ(llvm::Value *val) {
   return BUILDER->CreateICmpNE(val, BUILDER->getInt32(0));
 }
 
-pINode make_cst(int val)
-{
-  return std::make_unique<CNode>(val);
-}
+pINode make_cst(IntT val) { return std::make_unique<CNode>(val); }
 
-pINode make_op(pINode &l, Ops op, pINode &r)
-{
+pINode make_op(pINode &l, Ops op, pINode &r) {
   return std::make_unique<OPNode>(l, op, r);
 }
 
-pINode make_un(Ops op, pINode &operand)
-{
+pINode make_un(Ops op, pINode &operand) {
   return std::make_unique<UNOPNode>(op, operand);
 }
 
-pINode make_while(pINode &cond, pIScope &sc)
-{
+pINode make_while(pINode &cond, pIScope &sc) {
   return std::make_unique<WHNode>(cond, sc);
 }
 
-pINode make_if_else(pINode &cond, pIScope &isc, pIScope &esc)
-{
+pINode make_if_else(pINode &cond, pIScope &isc, pIScope &esc) {
   return std::make_unique<IFNode>(cond, isc, esc);
 }
 
-pINode make_if(pINode &cond, pIScope &isc)
-{
+pINode make_if(pINode &cond, pIScope &isc) {
   return std::make_unique<IFNode>(cond, isc);
 }
 
-pIScope make_scope(IScope *par /* = nullptr */)
-{
+pIScope make_scope(IScope *par /* = nullptr */) {
   return std::make_unique<Scope>(par);
 }
 
-pINode make_ref(const std::string &var_name)
-{
+pINode make_ref(const std::string &var_name) {
   auto it_bl = CUR_SCOPE->get_var(var_name);
 
-  if (!it_bl.second)
-  {
+  if (!it_bl.second) {
     std::string what = "Unknown variable '" + var_name + "'";
     throw std::runtime_error{what};
   }
@@ -105,18 +90,11 @@ pINode make_ref(const std::string &var_name)
   return std::make_unique<VNode>(it_bl.first);
 }
 
-pINode make_print(pINode &expr)
-{
-  return std::make_unique<PNode>(expr);
-}
+pINode make_print(pINode &expr) { return std::make_unique<PNode>(expr); }
 
-pINode make_scan()
-{
-  return std::make_unique<RNode>();
-}
+pINode make_scan() { return std::make_unique<RNode>(); }
 
-pINode make_asgn(const std::string &var_name, pINode &expr)
-{
+pINode make_asgn(const std::string &var_name, pINode &expr) {
   auto it = CUR_SCOPE->check_n_insert(var_name);
   auto pvar = std::make_unique<VNode>(it);
 
@@ -138,8 +116,8 @@ pINode make_asgn(const std::string &var_name, pINode &expr)
 
 ////////////////////////// SCOPE METHODS /////////////////
 
-std::pair<var_table::iterator, bool> Scope::get_var(const std::string &var_name)
-{
+std::pair<var_table::iterator, bool>
+Scope::get_var(const std::string &var_name) {
   // find var in parent's scopes
   std::pair<var_table::iterator, bool> it_n_bool{loc_check(var_name)};
 
@@ -148,8 +126,7 @@ std::pair<var_table::iterator, bool> Scope::get_var(const std::string &var_name)
 
   auto pscope = reset_scope();
 
-  while (pscope != nullptr)
-  {
+  while (pscope != nullptr) {
     it_n_bool = pscope->loc_check(var_name);
 
     if (it_n_bool.second)
@@ -161,8 +138,7 @@ std::pair<var_table::iterator, bool> Scope::get_var(const std::string &var_name)
   return it_n_bool;
 }
 
-Scope::it_bool Scope::loc_check(const std::string &var_name)
-{
+Scope::it_bool Scope::loc_check(const std::string &var_name) {
   it_bool itbl{};
 
   itbl.first = var_tbl_.find(var_name);
@@ -171,8 +147,7 @@ Scope::it_bool Scope::loc_check(const std::string &var_name)
   return itbl;
 }
 
-var_table::iterator Scope::check_n_insert(const std::string &var_name)
-{
+var_table::iterator Scope::check_n_insert(const std::string &var_name) {
   it_bool it_n_bool = get_var(var_name);
 
   if (!it_n_bool.second)
@@ -181,24 +156,21 @@ var_table::iterator Scope::check_n_insert(const std::string &var_name)
   return it_n_bool.first;
 }
 
-llvm::Value *Scope::codegen()
-{
+llvm::Value *Scope::codegen() {
   for (auto &&nd : nodes_)
     nd->codegen();
 
   return nullptr;
 }
 
-llvm::Value *OPNode::codegen()
-{
+llvm::Value *OPNode::codegen() {
   auto L = left_->codegen();
   auto R = right_->codegen();
 
   if (L == nullptr || R == nullptr)
     return nullptr;
 
-  switch (op_type_)
-  {
+  switch (op_type_) {
   case Ops::ADD:
     return BUILDER->CreateAdd(L, R);
   case Ops::SUB:
@@ -230,17 +202,15 @@ llvm::Value *OPNode::codegen()
   }
 }
 
-int OPNode::calc() const
-{
-  int right_val = ValStack.top();
+IntT OPNode::calc() const {
+  auto right_val = ValStack.top();
   ValStack.pop();
-  int left_val = ValStack.top();
+  auto left_val = ValStack.top();
   ValStack.pop();
 
-  int res = 0;
+  decltype(left_val) res = 0;
 
-  switch (op_type_)
-  {
+  switch (op_type_) {
   case Ops::ADD:
     res = std::plus{}(left_val, right_val); // :)
     break;
@@ -293,14 +263,12 @@ int OPNode::calc() const
   return res;
 }
 
-llvm::Value *UNOPNode::codegen()
-{
+llvm::Value *UNOPNode::codegen() {
   auto V = operand_->codegen();
   if (V == nullptr)
     return nullptr;
 
-  switch (op_type_)
-  {
+  switch (op_type_) {
   case Ops::NEG:
     return BUILDER->CreateNeg(V);
   case Ops::NOT:
@@ -310,15 +278,13 @@ llvm::Value *UNOPNode::codegen()
   }
 }
 
-int UNOPNode::calc() const
-{
-  int val = ValStack.top();
+IntT UNOPNode::calc() const {
+  auto val = ValStack.top();
   ValStack.pop();
 
-  int res = 0;
+  decltype(val) res = 0;
 
-  switch (op_type_)
-  {
+  switch (op_type_) {
   case Ops::NEG:
     res = -val;
     break;
@@ -334,35 +300,31 @@ int UNOPNode::calc() const
   return res;
 }
 
-int VNode::calc() const
-{
+IntT VNode::calc() const {
   ValStack.push(location_->second.value);
   return location_->second.value;
 }
 
-llvm::Value *VNode::codegen()
-{
+llvm::Value *VNode::codegen() {
   auto it = NamedVals.find(location_->first);
   if (it == NamedVals.end())
     throw std::runtime_error{"Unrecognized variable"};
 
-  return BUILDER->CreateLoad(llvm::Type::getInt32Ty(*CUR_CONTEXT), it->second, it->first);
+  return BUILDER->CreateLoad(llvm::Type::getInt32Ty(*CUR_CONTEXT), it->second,
+                             it->first);
 }
 
-int CNode::calc() const
-{
+IntT CNode::calc() const {
   ValStack.push(val_);
   return val_;
 }
 
-llvm::Value *CNode::codegen()
-{
+llvm::Value *CNode::codegen() {
   return llvm::ConstantInt::get(llvm::Type::getInt32Ty(*CUR_CONTEXT), val_);
 }
 
-int ASNode::calc() const
-{
-  int expr_res = ValStack.top();
+IntT ASNode::calc() const {
+  auto expr_res = ValStack.top();
   ValStack.pop();
 
   ValStack.pop(); // delete dummy var value
@@ -373,8 +335,7 @@ int ASNode::calc() const
   return expr_res;
 } /* End of 'calc' function */
 
-llvm::Value *ASNode::codegen()
-{
+llvm::Value *ASNode::codegen() {
   auto it = NamedVals.find(dst_->get_name());
   if (it == NamedVals.end())
     throw std::runtime_error{"Unrecognized variable"};
@@ -382,8 +343,7 @@ llvm::Value *ASNode::codegen()
   return BUILDER->CreateStore(expr_->codegen(), it->second);
 }
 
-INode *WHNode::get_i_child(size_t i) const
-{
+INode *WHNode::get_i_child(size_t i) const {
   i %= 2;
   /*
    * i &= 1; -- more optimized way
@@ -392,7 +352,7 @@ INode *WHNode::get_i_child(size_t i) const
   if (i == 0)
     return cond_.get();
 
-  int cond_calc = ValStack.top();
+  IntT cond_calc = ValStack.top();
   ValStack.pop();
 
   if (cond_calc)
@@ -401,8 +361,7 @@ INode *WHNode::get_i_child(size_t i) const
   return nullptr;
 }
 
-llvm::Value *WHNode::codegen()
-{
+llvm::Value *WHNode::codegen() {
   auto condBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "wh_cond", CUR_FUNC);
   auto bodyBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "wh_body", CUR_FUNC);
   auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "wh_next", CUR_FUNC);
@@ -427,15 +386,14 @@ llvm::Value *WHNode::codegen()
   return nullptr;
 }
 
-INode *IFNode::get_i_child(size_t i) const
-{
+INode *IFNode::get_i_child(size_t i) const {
   if (i >= childs_am_)
     throw std::runtime_error{"Incorrect children amount"};
 
   if (i == 0)
     return cond_.get();
 
-  int calc_cond = ValStack.top();
+  IntT calc_cond = ValStack.top();
   ValStack.pop();
 
   if (calc_cond)
@@ -446,8 +404,7 @@ INode *IFNode::get_i_child(size_t i) const
   return nullptr;
 }
 
-llvm::Value *IFNode::codegen()
-{
+llvm::Value *IFNode::codegen() {
   auto v_expr = cond_->codegen();
   if (v_expr == nullptr)
     return nullptr;
@@ -460,14 +417,14 @@ llvm::Value *IFNode::codegen()
   auto nextBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "if_next", CUR_FUNC);
   auto falseBB = llvm::BasicBlock::Create(*CUR_CONTEXT, "if_false");
 
-  BUILDER->CreateCondBr(v_cond, trueBB, else_scope_ == nullptr ? nextBB : falseBB);
+  BUILDER->CreateCondBr(v_cond, trueBB,
+                        else_scope_ == nullptr ? nextBB : falseBB);
 
   BUILDER->SetInsertPoint(trueBB);
   if_scope_->codegen();
   BUILDER->CreateBr(nextBB);
 
-  if (else_scope_ != nullptr)
-  {
+  if (else_scope_ != nullptr) {
     BBL.push_back(falseBB);
     BUILDER->SetInsertPoint(falseBB);
     else_scope_->codegen();
@@ -479,17 +436,15 @@ llvm::Value *IFNode::codegen()
   return nullptr;
 }
 
-int PNode::calc() const
-{
-  int val = ValStack.top();
+IntT PNode::calc() const {
+  auto val = ValStack.top();
   ValStack.pop();
 
   std::cout << val << std::endl;
   return 0;
 }
 
-llvm::Value *PNode::codegen()
-{
+llvm::Value *PNode::codegen() {
   auto V = expr_->codegen();
 
   auto *CallP = CUR_MODULE->getFunction("__pcl_print");
@@ -499,9 +454,8 @@ llvm::Value *PNode::codegen()
   return BUILDER->CreateCall(CallP, Args);
 }
 
-int RNode::calc() const
-{
-  int value{};
+IntT RNode::calc() const {
+  IntT value{};
 
   std::cin >> value;
   if (!std::cin.good())
@@ -512,8 +466,7 @@ int RNode::calc() const
   return value;
 }
 
-llvm::Value *RNode::codegen()
-{
+llvm::Value *RNode::codegen() {
   auto *CallP = CUR_MODULE->getFunction("__pcl_scan");
 
   return BUILDER->CreateCall(CallP);
