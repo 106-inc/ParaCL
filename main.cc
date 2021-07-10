@@ -1,42 +1,32 @@
+#include "CLI.hh"
 #include "Interp.hh"
 #include "driver.hh"
 
 int main(int argc, char **argv)
 {
-  if (argc < 2)
-  {
-    std::cout << "USAGE: " << argv[0] << " FILENAME" << std::endl;
-    return 0;
-  }
+  CLI::arg_parse(argc, argv);
 
   auto root = AST::make_scope();
   CUR_SCOPE = root.get();
 
 #if (CODEGEN == 0)
   AST::Interp interp(CUR_SCOPE);
-#endif
-
-#if (CODEGEN == 1)
-
+#else
   CUR_CONTEXT = new llvm::LLVMContext;
   CUR_MODULE = new llvm::Module("pcl.module", *CUR_CONTEXT);
   BUILDER = new llvm::IRBuilder<>(*CUR_CONTEXT);
-
 #endif
 
   try
   {
-    yy::Driver driver(argv[1]);
+    yy::Driver driver(CLI::input_filename(), CLI::output_filename());
 
 #if (CODEGEN == 0)
     if (!driver.parse())
       return -1;
 
     interp.interpret();
-#endif
-
-#if (CODEGEN == 1)
-
+#else
     driver.IR_builder();
     delete BUILDER;
     delete CUR_MODULE;

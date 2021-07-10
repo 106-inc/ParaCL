@@ -44,6 +44,7 @@ add_executable(${INTERP_NAME}
   parser/parser.cc
   AST/Node.cc
   AST/Interp.cc
+  CLI/CLI.cc
   main.cc
   ${BISON_bison_o_OUTPUTS}
   ${FLEX_flex_o_OUTPUTS}
@@ -54,6 +55,7 @@ add_executable(${COMPILE_NAME}
   parser/parser.cc
   AST/Node.cc
   AST/Interp.cc
+  CLI/CLI.cc
   main.cc
   ${BISON_bison_o_OUTPUTS}
   ${FLEX_flex_o_OUTPUTS}
@@ -73,6 +75,7 @@ foreach(TARGET ${TARGETS})
   target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
   target_include_directories(${TARGET} PRIVATE parser)
   target_include_directories(${TARGET} PRIVATE AST)
+  target_include_directories(${TARGET} PRIVATE CLI)
   target_include_directories(${TARGET} PRIVATE driver)
 
   # Specify compiler options for debug and release
