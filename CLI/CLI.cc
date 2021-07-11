@@ -12,8 +12,8 @@ static cl::opt<std::string> out_fname("o", cl::desc("Specify output filename"), 
                                       cl::init(""));
 #endif
 
-static std::string COMPILER_VERSION{"1.0"};
-static std::string INTERPRETER_VERSION{"1.0"};
+static const std::string COMPILER_VERSION{"1.0"};
+static const std::string INTERPRETER_VERSION{"1.0"};
 
 static std::string version()
 {
