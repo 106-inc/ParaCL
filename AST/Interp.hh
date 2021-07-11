@@ -14,10 +14,10 @@ constexpr int END = -1;
 class Interp final
 {
 private:
-  IScope *globl_;
+  IScope &globl_;
 
 public:
-  Interp(IScope *globl) : globl_(globl)
+  Interp(IScope &globl) : globl_(globl)
   {
   }
 
@@ -30,10 +30,10 @@ public:
 
 struct StkFrame final
 {
-  INode *node;
+  INode &node;
   int state;
 
-  StkFrame(INode *nd, int st) : node(nd), state(st)
+  StkFrame(INode &nd, int st) : node(nd), state(st)
   {
   }
 };
