@@ -7,7 +7,7 @@ namespace AST
  * @brief Interpret AST function
  *
  */
-void Interp::interpret()
+int Interp::interpret()
 {
   std::stack<StkFrame> FrameStack{};
 
@@ -56,5 +56,6 @@ void Interp::interpret()
     if (pch->get_ch_size() == 0)
       FrameStack.top().state = END;
   }
+  return 0;
 }
 } // namespace AST

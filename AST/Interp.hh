@@ -25,7 +25,7 @@ public:
    * @brief Interpret AST function
    *
    */
-  void interpret();
+  int interpret();
 };
 
 struct StkFrame final
