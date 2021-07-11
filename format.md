@@ -3,7 +3,7 @@
 * Install clang-format
 * Create file /path_to_ParaCl/.git/hooks/pre-commit if it does not exists
 * Copy this code to pre-commit:
-  ```shell
+  ```bash
   #!/bin/bash
 
   STYLE=$(git config --get hooks.clangformat.style)
