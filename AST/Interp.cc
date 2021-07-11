@@ -19,9 +19,9 @@ void Interp::interpret()
     auto &fr_top = FrameStack.top();
 
     /* Get the current node ptr */
-    INode *pNode = fr_top.node;
+    INode &pNode = fr_top.node;
 
-    size_t childs_am = pNode->get_ch_size();
+    size_t childs_am = pNode.get_ch_size();
 
     /* Index of child that we will visit now */
     int i_next = fr_top.state;
@@ -29,7 +29,7 @@ void Interp::interpret()
     /* If there is no more children - calculate current node and pop it from stack. */
     if (i_next == END)
     {
-      fr_top.node->calc();
+      fr_top.node.calc();
       FrameStack.pop();
       continue;
     }
@@ -44,14 +44,14 @@ void Interp::interpret()
       fr_top.state = END;
 
     /* Get pointer to child */
-    auto pch = pNode->get_i_child(i_next);
+    auto pch = pNode.get_i_child(i_next);
     if (pch == nullptr)
     {
       fr_top.state = END;
       continue;
     }
     /* Append frame stack */
-    FrameStack.emplace(pch, 0);
+    FrameStack.emplace(*pch, 0);
 
     if (pch->get_ch_size() == 0)
       FrameStack.top().state = END;

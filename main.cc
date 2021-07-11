@@ -10,7 +10,7 @@ int main(int argc, char **argv)
   CUR_SCOPE = root.get();
 
 #if (CODEGEN == 0)
-  AST::Interp interp(CUR_SCOPE);
+  AST::Interp interp(*CUR_SCOPE);
 #else
   CUR_CONTEXT = new llvm::LLVMContext;
   CUR_MODULE = new llvm::Module("pcl.module", *CUR_CONTEXT);
