@@ -1,4 +1,4 @@
-// RUN: %ParaCLi %s | FileCheck %s --check-prefix=CHECK
+// RUN: %ParaCLi %s | %FileCheck %s --check-prefix=CHECK
 
 a = 1;
 b = 2;

@@ -1,4 +1,4 @@
-// RUN: %ParaCLi %s | FileCheck %s --check-prefix=CHECK
+// RUN: %ParaCLi %s | %FileCheck %s --check-prefix=CHECK
 
 print 5 > 10; // CHECK: 0
 print 5 >= 5; // CHECK-NEXT: 1

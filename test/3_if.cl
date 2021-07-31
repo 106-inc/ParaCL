@@ -1,4 +1,4 @@
-// RUN: %ParaCLi %s | FileCheck %s --check-prefix=CHECK
+// RUN: %ParaCLi %s | %FileCheck %s --check-prefix=CHECK
 
 if (0)
   print 228 + 1447; // CHECK-NOT: 1675
