@@ -1,4 +1,6 @@
+// RUN: %ParaCLi %s | FileCheck %s --check-prefix=CHECK_INTERP
+
 d = 1;
 x = 4 + d;
 if (x)
-    print x;
+    print x; // CHECK_INTERP: 5
