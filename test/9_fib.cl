@@ -1,5 +1,5 @@
 // RUN: echo 20 > %t
-// RUN: %ParaCLi %s < %t | %FileCheck %s --check-prefix=CHECK_INTERP
+// RUN: %ParaCLi %s < %t | FileCheck %s --check-prefix=CHECK_INTERP
 
 n = ?; //input fib number
 

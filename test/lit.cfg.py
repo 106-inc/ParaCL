@@ -11,3 +11,6 @@ config.test_exec_root = path.join(path.dirname(__file__), '../build/')
 
 config.substitutions.append(('%ParaCLi',
     path.join(path.dirname(__file__), '../build/ParaCLi')))
+
+config.substitutions.append(('%ParaCL',
+    path.join(path.dirname(__file__), '../build/ParaCL')))
