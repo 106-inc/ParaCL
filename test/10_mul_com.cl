@@ -1,5 +1,5 @@
-// RUN: %ParaCLi %s | %FileCheck %s --check-prefix=CHECK
+// RUN: %ParaCLi %s | %FileCheck %s --check-prefix=CHECK_INTERP
 
 r = 5;
 /* trying */
-print r; // CHECK: 5
+print r; // CHECK_INTERP: 5
