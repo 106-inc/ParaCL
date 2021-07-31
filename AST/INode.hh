@@ -62,7 +62,7 @@ class INode
 protected:
   size_t childs_am_;
 
-  INode(size_t childs_am = 0) : childs_am_(childs_am)
+  explicit INode(size_t childs_am = 0) : childs_am_(childs_am)
   {
   }
 
@@ -93,7 +93,7 @@ public:
 class IScope : public INode
 {
 protected:
-  IScope(size_t c_am = 0) : INode(c_am)
+  explicit IScope(size_t c_am = 0) : INode(c_am)
   {
   }
 

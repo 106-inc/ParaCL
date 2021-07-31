@@ -44,7 +44,7 @@ int Interp::interpret()
       fr_top.state = END;
 
     /* Get pointer to child */
-    auto pch = pNode.get_i_child(i_next);
+    auto *pch = pNode.get_i_child(i_next);
     if (pch == nullptr)
     {
       fr_top.state = END;
