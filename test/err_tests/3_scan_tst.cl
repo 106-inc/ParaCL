@@ -1,11 +1,8 @@
+// RUN: echo zzzzz > %t
+// RUN: %ParaCLi %s < %t 2> %t || true
+// RUN: FileCheck %s --check-prefix=CHECK --input-file=%t
+
 x = ?;
 print x;
 
-// TODO: обрабатывается некорректно - исправить
-
-// INPUT:
-// fse3
-
-// OUTPUT:
-// terminate called without an active exception
-// Aborted
+// CHECK: Invalid symbol at stdin
