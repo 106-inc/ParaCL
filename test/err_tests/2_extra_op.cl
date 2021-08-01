@@ -6,5 +6,5 @@
 
 x = 1 + + 2;  // обрабатывается корректно
 
-// CHECK: expected: <MIN>  or  <NOT>  or  <LP>  or  <SCAN>  or  <INT>  or  <NAME> 
+// CHECK: expected: <LP>  or  <SCAN>  or  <INT>  or  <NAME>  or  <MIN>  or  <NOT> 
 // CHECK-NEXT: before: <ADD>

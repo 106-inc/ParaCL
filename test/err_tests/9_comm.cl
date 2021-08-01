@@ -21,7 +21,7 @@ print b;
 
 
 // CHECK:      syntax error in line: 19, column: 14
-// CHECK-NEXT: expected: <MIN>  or  <NOT>  or  <LP>  or  <SCAN>  or  <INT>  or  <NAME> 
+// CHECK-NEXT: expected: <LP>  or  <SCAN>  or  <INT>  or  <NAME>  or  <MIN>  or  <NOT> 
 // CHECK-NEXT: before: <ADD>
 // CHECK-NEXT: 19   |   print a */+  + c;
 // CHECK-NEXT:      |   ~~~~~~~~~~~~~^
