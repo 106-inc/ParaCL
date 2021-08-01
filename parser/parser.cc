@@ -5,7 +5,7 @@ yy::location OurFlexLexer::get_cur_location()
   return cur_location_;
 }
 
-bool OurFlexLexer::is_empty_line(const char *str) const
+bool OurFlexLexer::is_empty_line(const char *str)
 {
   char sym = *str;
   return std::isspace(sym) && std::iscntrl(sym);

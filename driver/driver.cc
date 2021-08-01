@@ -37,16 +37,16 @@ yy::Driver::Driver(const std::string &inp_fname, const std::string &out_fname)
 
 bool yy::Driver::parse()
 {
-  yy::parser parser_(this);
+  yy::parser parser(this);
   bool res{false};
 
   try
   {
-    res = !parser_.parse();
+    res = !parser.parse();
   }
   catch (std::runtime_error &err)
   {
-    Runtime_err_prcsng(err, parser_);
+    runtime_err_processing(err, parser);
   }
 
   return res;
@@ -204,12 +204,12 @@ yy::Driver::~Driver()
   delete plex_;
 }
 
-void yy::Driver::Runtime_err_prcsng(std::runtime_error &err, const yy::parser &parser_)
+void yy::Driver::runtime_err_processing(const std::runtime_error &err, const yy::parser &parser)
 {
   //! TODO: create more cases for processing: unknown var, unknown op etc ...
   //! But now there is so dumb realization
   parser::symbol_type s_type{parser::token::token_kind_type::UNKNOWN_VAR, plex_->get_cur_location()};
-  parser::context ctx{parser_, s_type};
+  parser::context ctx{parser, s_type};
 
   std::cerr << err.what() << std::endl;
   report_syntax_error(ctx);

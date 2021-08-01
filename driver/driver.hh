@@ -107,7 +107,7 @@ public:
 
   void report_unexpctd_tok(const parser::context &ctx);
 
-  void Runtime_err_prcsng(std::runtime_error &err, const yy::parser &parser);
+  void runtime_err_processing(const std::runtime_error &err, const yy::parser &parser);
 
   using s_type = parser::symbol_kind::symbol_kind_type;
 
