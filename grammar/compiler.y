@@ -143,15 +143,14 @@ program:     stms                           { WholeProgramAction(); };
 
 scope:       op_sc stms cl_sc               { /* nothing */ };
 
-br_scope:    op_br_sc stms cl_sc            { $$ = std::move($1); };
+br_scope:    op_br_sc stms cl_sc            { $$ = $1; };
 
 op_sc:       LB                             { 
                                               auto par_tmp = CUR_SCOPE;
                                               auto u_ptr = AST::make_scope(par_tmp);
                                               CUR_SCOPE = u_ptr.get();
-                                              
-                                              AST::pINode u_ptr_tmp = std::move(u_ptr);
-                                              if (par_tmp) par_tmp->push(u_ptr_tmp);
+
+                                              if (par_tmp) par_tmp->push(u_ptr);
                                             };
 
 op_br_sc:    LB                             { 
@@ -170,13 +169,13 @@ br_stm:     stm                             {
                                               $$ = AST::make_scope(CUR_SCOPE);
                                               $$->push($1);
                                             };
-           | br_scope                       { $$ = std::move($1); };
+           | br_scope                       { $$ = $1; };
 
-stm:         assign                         { $$ = std::move($1); };
-           | if                             { $$ = std::move($1); };
-           | while                          { $$ = std::move($1); };
-           | print                          { $$ = std::move($1); };
-        /* | expr SCOLON                    { $$ = std::move($1); }; */
+stm:         assign                         { $$ = $1; };
+           | if                             { $$ = $1; };
+           | while                          { $$ = $1; };
+           | print                          { $$ = $1; };
+        /* | expr SCOLON                    { $$ = $1; }; */
         /* | RETURN expr SCOLON             { SOMETHING };           */
         /* | SCOLON                         { NOTHING };             */
 
@@ -184,30 +183,30 @@ assign:      NAME ASSIGN expr SCOLON        { $$ = AST::make_asgn($1, $3); };
         /* | NAME ASSIGN func_def SCOLON    {} */
 
 
-expr:        expr_or                        { $$ = std::move($1); };
+expr:        expr_or                        { $$ = $1; };
 
 expr_or:     expr_or OR expr_and            { $$ = AST::make_op($1, AST::Ops::OR, $3); };
-           | expr_and                       { $$ = std::move($1); };
+           | expr_and                       { $$ = $1; };
 
 expr_and:    expr_and AND expr_eqty         { $$ = AST::make_op($1, AST::Ops::AND, $3); };
-           | expr_eqty                      { $$ = std::move($1); };
+           | expr_eqty                      { $$ = $1; };
 
 expr_eqty:   expr_eqty eq_ty expr_cmp       { $$ = AST::make_op($1, $2, $3); };
-           | expr_cmp                       { $$ = std::move($1); };
+           | expr_cmp                       { $$ = $1; };
 
 expr_cmp:    expr_cmp cmp expr_pm           { $$ = AST::make_op($1, $2, $3); };
-           | expr_pm                        { $$ = std::move($1); };
+           | expr_pm                        { $$ = $1; };
 
 expr_pm:     expr_pm pm expr_mdm            { $$ = AST::make_op($1, $2, $3); };
-           | expr_mdm                       { $$ = std::move($1); };
+           | expr_mdm                       { $$ = $1; };
 
 expr_mdm:    expr_mdm mdm expr_un           { $$ = AST::make_op($1, $2, $3); };
-           | expr_un                        { $$ = std::move($1); };
+           | expr_un                        { $$ = $1; };
 
 expr_un:     un expr_un                     { $$ = AST::make_un($1, $2); };
-           | expr_term                      { $$ = std::move($1); };
+           | expr_term                      { $$ = $1; };
 
-expr_term:   LP expr[e] RP                  { $$ = std::move($e); };
+expr_term:   LP expr[e] RP                  { $$ = $e; };
            | NAME                           { $$ = AST::make_ref($1); };
            | INT                            { $$ = AST::make_cst($1); };
            | SCAN                           { $$ = AST::make_scan(); };
