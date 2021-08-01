@@ -1,5 +1,5 @@
 // RUN: echo 10 > %t
-// RUN: %ParaCLi %s < %t | FileCheck %s --check-prefix=CHECK_INTERP
+// RUN: %ParaCLi %s < %t | FileCheck-10 %s --check-prefix=CHECK_INTERP
 
 n = ?; // input
 fact = 1;

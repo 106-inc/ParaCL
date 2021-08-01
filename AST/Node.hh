@@ -22,13 +22,13 @@ private:
   std::vector<pINode> nodes_{};
 
   // Pointer to parent scope
-  IScope *parent_;
+  IScope *parent_{};
 
   var_table var_tbl_;
 
 public:
   // constructor by parent scope ptr
-  Scope(IScope *parent) : parent_(parent)
+  explicit Scope(IScope *parent) : parent_(parent)
   {
   }
 
@@ -58,9 +58,9 @@ public:
    * @param[in] node node to add
    * @return none
    */
-  void push(pINode &node) override
+  void push(const pINode &node) override
   {
-    nodes_.push_back(std::move(node));
+    nodes_.push_back(node);
     childs_am_ = nodes_.size();
   } /* End of 'push' function */
 
@@ -205,8 +205,7 @@ public:
    * @param[in] left    left node of operator
    * @param[in] right   right node of operator
    */
-  OPNode(pINode &left, Ops op_type, pINode &right)
-      : INode(2), left_(std::move(left)), right_(std::move(right)), op_type_(op_type)
+  OPNode(const pINode &left, Ops op_type, const pINode &right) : INode(2), left_(left), right_(right), op_type_(op_type)
   {
   }
 
@@ -239,7 +238,7 @@ public:
    * Operator's node constructor
    * @param[in] operand  pointer to operand's node
    */
-  UNOPNode(Ops op_type, pINode &operand) : INode(1), operand_(std::move(operand)), op_type_(op_type)
+  UNOPNode(Ops op_type, const pINode &operand) : INode(1), operand_(operand), op_type_(op_type)
   {
   }
 
@@ -260,7 +259,7 @@ public:
 class ASNode final : public INode
 {
 private:
-  std::unique_ptr<VNode> dst_; // variable to assign
+  std::shared_ptr<VNode> dst_; // variable to assign
   pINode expr_;                // expression
 public:
   /**
@@ -268,7 +267,7 @@ public:
    * @param[in] dst pointer to destination variable node
    * @param[in] expr pointer to expression node(-s)
    */
-  ASNode(std::unique_ptr<VNode> &dst, pINode &expr) : INode(2), dst_(std::move(dst)), expr_(std::move(expr))
+  ASNode(const std::shared_ptr<VNode> &dst, const pINode &expr) : INode(2), dst_(dst), expr_(expr)
   {
   }
 
@@ -294,7 +293,7 @@ public:
 class RETNode final : public INode
 {
 private:
-  pINode expr_;
+  pINode expr_{};
 
 public:
   /**
@@ -302,7 +301,7 @@ public:
    *
    * @param[in] expr shared pointer to expression node
    */
-  RETNode(pINode &expr) : INode(1), expr_(std::move(expr))
+  RETNode(const pINode &expr) : INode(1), expr_(expr)
   {
   }
 
@@ -337,8 +336,8 @@ private:
   pIScope scope_{};
 
 public:
-  WHNode(pINode &cond, pIScope &scope)
-      : INode(std::numeric_limits<size_t>::max()), cond_(std::move(cond)), scope_(std::move(scope))
+  WHNode(const pINode &cond, const pIScope &scope)
+      : INode(std::numeric_limits<size_t>::max()), cond_(cond), scope_(scope)
   // because while potentially has infinity number of children (iterations)
   {
   }
@@ -370,13 +369,8 @@ private:
   pIScope else_scope_{};
 
 public:
-  IFNode(pINode &cond, pIScope &if_sc, pIScope &el_sc)
-      : INode(2), cond_(std::move(cond)), if_scope_(std::move(if_sc)), else_scope_(std::move(el_sc))
-  {
-  }
-
-  IFNode(pINode &cond, pIScope &if_sc)
-      : INode(2), cond_(std::move(cond)), if_scope_(std::move(if_sc)), else_scope_(nullptr)
+  IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr)
+      : INode(2), cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
   {
   }
 
@@ -400,10 +394,10 @@ public:
 class PNode final : public INode
 {
 private:
-  pINode expr_;
+  pINode expr_{};
 
 public:
-  PNode(pINode &expr) : INode(1), expr_(std::move(expr))
+  PNode(const pINode &expr) : INode(1), expr_(expr)
   {
   }
 
