@@ -27,7 +27,7 @@ public:
   OurFlexLexer &operator=(OurFlexLexer &&) = delete;
 
   yy::location get_cur_location();
-  int get_last_line_() const;
+  int get_last_line() const;
 
   static bool is_empty_line(const char *str);
 

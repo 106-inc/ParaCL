@@ -11,7 +11,7 @@ bool OurFlexLexer::is_empty_line(const char *str)
   return std::isspace(sym) && std::iscntrl(sym);
 }
 
-int OurFlexLexer::get_last_line_() const
+int OurFlexLexer::get_last_line() const
 {
   return last_num_of_line;
 }
