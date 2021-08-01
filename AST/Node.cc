@@ -68,27 +68,27 @@ pINode make_op(const pINode &l, Ops op, const pINode &r)
 
 pINode make_un(Ops op, const pINode &operand)
 {
-  return std::make_unique<UNOPNode>(op, operand);
+  return std::make_shared<UNOPNode>(op, operand);
 }
 
 pINode make_while(const pINode &cond, const pIScope &sc)
 {
-  return std::make_unique<WHNode>(cond, sc);
+  return std::make_shared<WHNode>(cond, sc);
 }
 
 pINode make_if_else(const pINode &cond, const pIScope &isc, const pIScope &esc)
 {
-  return std::make_unique<IFNode>(cond, isc, esc);
+  return std::make_shared<IFNode>(cond, isc, esc);
 }
 
 pINode make_if(const pINode &cond, const pIScope &isc)
 {
-  return std::make_unique<IFNode>(cond, isc);
+  return std::make_shared<IFNode>(cond, isc);
 }
 
 pIScope make_scope(const pIScope &par /* = nullptr */)
 {
-  return std::make_unique<Scope>(par);
+  return std::make_shared<Scope>(par);
 }
 
 pINode make_ref(const std::string &var_name)
@@ -101,36 +101,36 @@ pINode make_ref(const std::string &var_name)
     throw std::runtime_error{what};
   }
 
-  return std::make_unique<VNode>(it_bl.first);
+  return std::make_shared<VNode>(it_bl.first);
 }
 
 pINode make_print(const pINode &expr)
 {
-  return std::make_unique<PNode>(expr);
+  return std::make_shared<PNode>(expr);
 }
 
 pINode make_scan()
 {
-  return std::make_unique<RNode>();
+  return std::make_shared<RNode>();
 }
 
 pINode make_asgn(const std::string &var_name, const pINode &expr)
 {
   auto it = CUR_SCOPE->check_n_insert(var_name);
-  auto pvar = std::make_unique<VNode>(it);
+  auto pvar = std::make_shared<VNode>(it);
 
 #if (CODEGEN == 1)
   NamedVals[var_name] = CreateEntryBlockAlloca(var_name);
 #endif
 
-  return std::make_unique<ASNode>(pvar, expr);
+  return std::make_shared<ASNode>(pvar, expr);
 }
 
 /*pINode make_asgn_func(const std::string &var_name, pINode &func)
 {
   auto it = CUR_SCOPE->check_n_insert(var_name);
 
-  auto pvar = std::make_unique<VNode>(it);
+  auto pvar = std::make_shared<VNode>(it);
 
   return std::make_unique<ASNode>(pvar, func);
 }*/
