@@ -65,6 +65,15 @@ public:
   } /* End of 'push' function */
 
   /**
+   * @brief Delete last node from scope
+   * @return none
+   */
+  void pop() override
+  {
+    nodes_.pop_back();
+  } /* End of 'push' function */
+
+  /**
    * @brief Check var in all available scopes function
    * @param[in] var_name name of a var to get access to
    * @return pair of iterator to var table and bool, which:

@@ -88,7 +88,10 @@ pINode make_if(const pINode &cond, const pIScope &isc)
 
 pIScope make_scope(IScope *par /* = nullptr */)
 {
-  return std::make_shared<Scope>(par);
+  auto new_scope = std::make_shared<Scope>(par);
+  if (par != nullptr)
+    par->push(new_scope);
+  return new_scope;
 }
 
 pINode make_ref(const std::string &var_name)

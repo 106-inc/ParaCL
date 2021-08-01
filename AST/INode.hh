@@ -101,6 +101,8 @@ public:
   // TODO: docs
   virtual void push(const pINode &node) = 0;
 
+  virtual void pop() = 0;
+
   virtual IScope *reset_scope() const = 0;
 
   virtual std::pair<var_table::iterator, bool> get_var(const std::string &var_name) = 0;

@@ -68,8 +68,7 @@ extern AST::IScope *CUR_SCOPE;
 
   scope
 
-  br_scope
-  op_br_sc
+  op_sc
   ;
 
 %nterm<AST::pIScope> br_stm
@@ -125,19 +124,9 @@ extern AST::IScope *CUR_SCOPE;
 
 program:     stms                           { WholeProgramAction(); };
 
-scope:       op_sc stms cl_sc               { /* nothing */ };
+scope:       op_sc stms cl_sc               { $$ = $1;};
 
-br_scope:    op_br_sc stms cl_sc            { $$ = $1; };
-
-op_sc:       LB                             { 
-                                              auto par_tmp = CUR_SCOPE;
-                                              auto u_ptr = AST::make_scope(par_tmp);
-                                              CUR_SCOPE = u_ptr.get();
-
-                                              if (par_tmp) par_tmp->push(u_ptr);
-                                            };
-
-op_br_sc:    LB                             { 
+op_sc:       LB                             {
                                               $$ = AST::make_scope(CUR_SCOPE); 
                                               CUR_SCOPE = $$.get();
                                             };
@@ -149,11 +138,11 @@ stms:        stm                            { CUR_SCOPE->push($1); };
            | scope                          { /* nothing */ };
            | stms scope                     { /* nothing */ };
 
-br_stm:     stm                             {
+br_stm:      stm                            {
                                               $$ = AST::make_scope(CUR_SCOPE);
                                               $$->push($1);
                                             };
-           | br_scope                       { $$ = $1; };
+           | scope                          { $$ = $1; };
 
 stm:         assign                         { $$ = $1; };
            | if                             { $$ = $1; };
@@ -208,15 +197,25 @@ call_argv:   expr                           { SOMETHING };
 */
 
 if:          IF LP expr[e] RP 
-               br_stm[s] %prec THEN         { $$ = AST::make_if($e, $s); };
+               br_stm[s] %prec THEN         {
+                                              $$ = AST::make_if($e, $s);
+                                              CUR_SCOPE->pop();
+                                            };
            | IF LP expr[e] RP 
                br_stm[s1]
              ELSE 
-               br_stm[s2]                   { $$ = AST::make_if_else($e, $s1, $s2); };
+               br_stm[s2]                   {
+                                              $$ = AST::make_if_else($e, $s1, $s2);
+                                              CUR_SCOPE->pop();
+                                              CUR_SCOPE->pop();
+                                            };
             /* dangling else */ /* this rule creates shift-reduce conflict  */
 
 while:       WHILE LP expr[e] RP
-               br_stm[s]                    { $$ = AST::make_while($e, $s); };
+               br_stm[s]                    {
+                                              $$ = AST::make_while($e, $s);
+                                              CUR_SCOPE->pop();
+                                            };
 
 print:       PRINT expr SCOLON              { $$ = AST::make_print($2); };
 
