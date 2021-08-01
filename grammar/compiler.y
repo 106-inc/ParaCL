@@ -105,6 +105,8 @@ extern AST::IScope *CUR_SCOPE;
 /* some tokens */
 %right ASSIGN  "="
 
+%right ELSE THEN
+
 %left OR
 %left AND 
 %left IS_EQ NOT_EQ
@@ -206,7 +208,7 @@ call_argv:   expr                           { SOMETHING };
 */
 
 if:          IF LP expr[e] RP 
-               br_stm[s]                    { $$ = AST::make_if($e, $s); };
+               br_stm[s] %prec THEN         { $$ = AST::make_if($e, $s); };
            | IF LP expr[e] RP 
                br_stm[s1]
              ELSE 
