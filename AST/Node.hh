@@ -439,7 +439,7 @@ public:
 
   llvm::Value *codegen() override;
 
-  ~RNode() = default;
+  ~RNode() override = default;
 };
 
 /**

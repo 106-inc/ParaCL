@@ -7,20 +7,20 @@ yy::location OurFlexLexer::get_cur_location()
 
 bool OurFlexLexer::is_empty_line(const char *str)
 {
-  char sym = str[0];
+  char sym = *str;
   return std::isspace(sym) && std::iscntrl(sym);
 }
 
-int OurFlexLexer::get_last_line_()
+int OurFlexLexer::get_last_line() const
 {
   return last_num_of_line;
 }
 
 void OurFlexLexer::upd_cur_loc()
 {
-  int cur_num_of_line = lineno();
+  auto cur_num_of_line = lineno();
 
-  int prev_end_column = cur_location_.end.column;
+  auto prev_end_column = cur_location_.end.column;
   cur_location_.begin.line = cur_location_.end.line = cur_num_of_line;
 
   if (is_empty_line(yytext))

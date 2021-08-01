@@ -15,7 +15,7 @@ class OurFlexLexer : public yyFlexLexer
 private:
   yy::location cur_location_{};
 
-  int last_num_of_line;
+  int last_num_of_line{};
 
 public:
   OurFlexLexer() = default;
@@ -23,16 +23,19 @@ public:
   OurFlexLexer(const OurFlexLexer &flx) = delete;
   OurFlexLexer &operator=(const OurFlexLexer &) = delete;
 
-  yy::location get_cur_location();
-  int get_last_line_();
+  OurFlexLexer(OurFlexLexer &&flx) = delete;
+  OurFlexLexer &operator=(OurFlexLexer &&) = delete;
 
-  bool is_empty_line(const char *str);
+  yy::location get_cur_location();
+  int get_last_line() const;
+
+  static bool is_empty_line(const char *str);
 
   void upd_cur_loc();
 
   int yylex() override;
 
-  ~OurFlexLexer() = default;
+  ~OurFlexLexer() override = default;
 };
 
 #endif // PARACL_PARSER_HH

@@ -1,3 +1,5 @@
+#include <array>
+
 #include "driver.hh"
 
 AST::IScope *CUR_SCOPE = nullptr;
@@ -35,16 +37,16 @@ yy::Driver::Driver(const std::string &inp_fname, const std::string &out_fname)
 
 bool yy::Driver::parse()
 {
-  yy::parser parser_(this);
-  bool res;
+  yy::parser parser(this);
+  bool res{false};
 
   try
   {
-    res = !parser_.parse();
+    res = !parser.parse();
   }
   catch (std::runtime_error &err)
   {
-    Runtime_err_prcsng(err, parser_);
+    runtime_err_processing(err, parser);
   }
 
   return res;
@@ -52,29 +54,30 @@ bool yy::Driver::parse()
 
 void yy::Driver::codegen()
 {
-  llvm::Type *prototypes[] = {llvm::Type::getInt32Ty(*CUR_CONTEXT)};
+  std::array<llvm::Type *, 1> prototypes{llvm::Type::getInt32Ty(*CUR_CONTEXT)};
 
   /* prototype for print function */
 
-  llvm::FunctionType *func_type_print = llvm::FunctionType::get(llvm::Type::getVoidTy(*CUR_CONTEXT), prototypes, false);
+  auto *func_type_print =
+      llvm::FunctionType::get(llvm::Type::getVoidTy(*CUR_CONTEXT), prototypes, /* isVarArg = */ false);
 
   llvm::Function::Create(func_type_print, llvm::Function::ExternalLinkage, "__pcl_print", CUR_MODULE);
 
   /* prototype for scan function */
 
-  llvm::FunctionType *func_type_scan = llvm::FunctionType::get(llvm::Type::getInt32Ty(*CUR_CONTEXT), false);
+  auto *func_type_scan = llvm::FunctionType::get(llvm::Type::getInt32Ty(*CUR_CONTEXT), false);
 
   llvm::Function::Create(func_type_scan, llvm::Function::ExternalLinkage, "__pcl_scan", CUR_MODULE);
 
   /* protype for start function */
 
-  llvm::FunctionType *func_type = llvm::FunctionType::get(llvm::Type::getVoidTy(*CUR_CONTEXT), false);
+  auto *func_type = llvm::FunctionType::get(llvm::Type::getVoidTy(*CUR_CONTEXT), false);
 
   CUR_FUNC = llvm::Function::Create(func_type, llvm::Function::ExternalLinkage, "__pcl_start", CUR_MODULE);
 
   /* creating basic block */
 
-  auto bas_block = llvm::BasicBlock::Create(*CUR_CONTEXT, "entry", CUR_FUNC);
+  auto *bas_block = llvm::BasicBlock::Create(*CUR_CONTEXT, "entry", CUR_FUNC);
 
   BUILDER->SetInsertPoint(bas_block);
 
@@ -110,7 +113,7 @@ void yy::Driver::IR_builder()
 
 yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, parser::location_type *yylloc)
 {
-  yy::parser::token_type tkn_type = static_cast<yy::parser::token_type>(plex_->yylex());
+  auto tkn_type = static_cast<yy::parser::token_type>(plex_->yylex());
 
   switch (tkn_type)
   {
@@ -137,8 +140,8 @@ yy::parser::token_type yy::Driver::yylex(yy::parser::semantic_type *yylval, pars
 
 void yy::Driver::report_syntax_error(const parser::context &ctx)
 {
-  yy::location loc = ctx.location();
-  parser::symbol_kind_type lookahead = ctx.token();
+  auto loc = ctx.location();
+  auto lookahead = ctx.token();
 
   std::cerr << "syntax error in ";
   std::cerr << "line: " << loc.begin.line;
@@ -176,8 +179,8 @@ void yy::Driver::report_expctd_tok(const yy::parser::context &ctx)
 void yy::Driver::report_unexpctd_tok(const yy::parser::context &ctx)
 {
   // Report the unexpected token.
-  yy::location loc = ctx.location();
-  parser::symbol_kind_type lookahead = ctx.token();
+  auto loc = ctx.location();
+  auto lookahead = ctx.token();
 
   std::cerr << "before: "
             << "<" << parser::symbol_name(lookahead) << ">" << std::endl;
@@ -201,12 +204,12 @@ yy::Driver::~Driver()
   delete plex_;
 }
 
-void yy::Driver::Runtime_err_prcsng(std::runtime_error &err, const yy::parser &parser_)
+void yy::Driver::runtime_err_processing(const std::runtime_error &err, const yy::parser &parser)
 {
   //! TODO: create more cases for processing: unknown var, unknown op etc ...
   //! But now there is so dumb realization
   parser::symbol_type s_type{parser::token::token_kind_type::UNKNOWN_VAR, plex_->get_cur_location()};
-  parser::context ctx{parser_, s_type};
+  parser::context ctx{parser, s_type};
 
   std::cerr << err.what() << std::endl;
   report_syntax_error(ctx);
