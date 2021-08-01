@@ -36,26 +36,7 @@ void WholeProgramAction();
 extern AST::IScope *CUR_SCOPE;
 }
 
-/* some tokens */
 
-%right ASSIGN   "="
-
-%left
-
-  ADD MIN
-  MUL DIV MOD
-
-  GREATER LESS
-  GR_EQ LS_EQ
-  IS_EQ NOT_EQ
-  
-  AND OR
-  ;
-
-%nonassoc
-
-  NEG NOT
-  ;
 
 %token
 
@@ -136,6 +117,22 @@ extern AST::IScope *CUR_SCOPE;
   ;
  */
 
+/* some tokens */
+%right ASSIGN  "="
+
+%left OR
+%left AND 
+%left IS_EQ NOT_EQ
+%left 
+      GREATER LESS 
+      GR_EQ LS_EQ
+      ;
+
+%left ADD MIN
+%left MUL DIV MOD 
+%left UNOP NOT
+
+
 %%
 
 
@@ -183,27 +180,15 @@ assign:      NAME ASSIGN expr SCOLON        { $$ = AST::make_asgn($1, $3); };
         /* | NAME ASSIGN func_def SCOLON    {} */
 
 
-expr:        expr_or                        { $$ = $1; };
-
-expr_or:     expr_or OR expr_and            { $$ = AST::make_op($1, AST::Ops::OR, $3); };
-           | expr_and                       { $$ = $1; };
-
-expr_and:    expr_and AND expr_eqty         { $$ = AST::make_op($1, AST::Ops::AND, $3); };
-           | expr_eqty                      { $$ = $1; };
-
-expr_eqty:   expr_eqty eq_ty expr_cmp       { $$ = AST::make_op($1, $2, $3); };
-           | expr_cmp                       { $$ = $1; };
-
-expr_cmp:    expr_cmp cmp expr_pm           { $$ = AST::make_op($1, $2, $3); };
-           | expr_pm                        { $$ = $1; };
-
-expr_pm:     expr_pm pm expr_mdm            { $$ = AST::make_op($1, $2, $3); };
-           | expr_mdm                       { $$ = $1; };
-
-expr_mdm:    expr_mdm mdm expr_un           { $$ = AST::make_op($1, $2, $3); };
+expr:        expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR, $3); };
+           | expr AND expr                  { $$ = AST::make_op($1, AST::Ops::AND, $3); };
+           | expr eq_ty expr                { $$ = AST::make_op($1, $2, $3); };
+           | expr cmp expr                  { $$ = AST::make_op($1, $2, $3); };
+           | expr pm expr                   { $$ = AST::make_op($1, $2, $3); };
+           | expr mdm expr                  { $$ = AST::make_op($1, $2, $3); };
            | expr_un                        { $$ = $1; };
 
-expr_un:     un expr_un                     { $$ = AST::make_un($1, $2); };
+expr_un:     un expr_un  %prec UNOP         { $$ = AST::make_un($1, $2); };
            | expr_term                      { $$ = $1; };
 
 expr_term:   LP expr[e] RP                  { $$ = $e; };
