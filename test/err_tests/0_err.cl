@@ -1,8 +1,8 @@
 // RUN: %ParaCLi %s 2> %t || true
-// RUN: FileCheck %s --check-prefix=CHECK --input-file=%t
+// RUN: FileCheck-10 %s --check-prefix=CHECK --input-file=%t
 
 // RUN: %ParaCL %s 2> %t || true
-// RUN: FileCheck %s --check-prefix=CHECK --input-file=%t
+// RUN: FileCheck-10 %s --check-prefix=CHECK --input-file=%t
 
 x = 5;
 y = 6

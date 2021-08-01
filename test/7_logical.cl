@@ -1,4 +1,4 @@
-// RUN: %ParaCLi %s | FileCheck %s --check-prefix=CHECK_INTERP
+// RUN: %ParaCLi %s | FileCheck-10 %s --check-prefix=CHECK_INTERP
 
 print 5 > 10; // CHECK_INTERP: 0
 print 5 >= 5; // CHECK_INTERP-NEXT: 1
