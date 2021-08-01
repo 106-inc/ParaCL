@@ -86,7 +86,7 @@ pINode make_if(const pINode &cond, const pIScope &isc)
   return std::make_shared<IFNode>(cond, isc);
 }
 
-pIScope make_scope(const pIScope &par /* = nullptr */)
+pIScope make_scope(IScope *par /* = nullptr */)
 {
   return std::make_shared<Scope>(par);
 }

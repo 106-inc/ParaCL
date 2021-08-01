@@ -243,7 +243,7 @@ pINode make_scan();
  * @param[in] par shared pointer to parent node
  * @return shared pointer to created Scope
  */
-pIScope make_scope(const pIScope &par = nullptr);
+pIScope make_scope(IScope *par = nullptr);
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*

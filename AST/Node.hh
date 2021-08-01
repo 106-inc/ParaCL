@@ -22,19 +22,19 @@ private:
   std::vector<pINode> nodes_{};
 
   // Pointer to parent scope
-  std::weak_ptr<IScope> parent_;
+  IScope *parent_{};
 
   var_table var_tbl_;
 
 public:
   // constructor by parent scope ptr
-  Scope(const pIScope &parent) : parent_(parent)
+  explicit Scope(IScope *parent) : parent_(parent)
   {
   }
 
   IScope *reset_scope() const override
   {
-    return parent_.lock().get();
+    return parent_;
   }
 
   /**
