@@ -58,35 +58,35 @@ static llvm::Value *ZeroNEQ(llvm::Value *val)
 
 pINode make_cst(IntT val)
 {
-  return std::make_unique<CNode>(val);
+  return std::make_shared<CNode>(val);
 }
 
-pINode make_op(pINode &l, Ops op, pINode &r)
+pINode make_op(const pINode &l, Ops op, const pINode &r)
 {
-  return std::make_unique<OPNode>(l, op, r);
+  return std::make_shared<OPNode>(l, op, r);
 }
 
-pINode make_un(Ops op, pINode &operand)
+pINode make_un(Ops op, const pINode &operand)
 {
   return std::make_unique<UNOPNode>(op, operand);
 }
 
-pINode make_while(pINode &cond, pIScope &sc)
+pINode make_while(const pINode &cond, const pIScope &sc)
 {
   return std::make_unique<WHNode>(cond, sc);
 }
 
-pINode make_if_else(pINode &cond, pIScope &isc, pIScope &esc)
+pINode make_if_else(const pINode &cond, const pIScope &isc, const pIScope &esc)
 {
   return std::make_unique<IFNode>(cond, isc, esc);
 }
 
-pINode make_if(pINode &cond, pIScope &isc)
+pINode make_if(const pINode &cond, const pIScope &isc)
 {
   return std::make_unique<IFNode>(cond, isc);
 }
 
-pIScope make_scope(IScope *par /* = nullptr */)
+pIScope make_scope(const pIScope &par /* = nullptr */)
 {
   return std::make_unique<Scope>(par);
 }
@@ -104,7 +104,7 @@ pINode make_ref(const std::string &var_name)
   return std::make_unique<VNode>(it_bl.first);
 }
 
-pINode make_print(pINode &expr)
+pINode make_print(const pINode &expr)
 {
   return std::make_unique<PNode>(expr);
 }
@@ -114,7 +114,7 @@ pINode make_scan()
   return std::make_unique<RNode>();
 }
 
-pINode make_asgn(const std::string &var_name, pINode &expr)
+pINode make_asgn(const std::string &var_name, const pINode &expr)
 {
   auto it = CUR_SCOPE->check_n_insert(var_name);
   auto pvar = std::make_unique<VNode>(it);
@@ -260,28 +260,28 @@ IntT OPNode::calc() const
     res = left_val % right_val;
     break;
   case Ops::GREATER:
-    res = left_val > right_val;
+    res = static_cast<decltype(res)>(left_val > right_val);
     break;
   case Ops::GR_EQ:
-    res = left_val >= right_val;
+    res = static_cast<decltype(res)>(left_val >= right_val);
     break;
   case Ops::LESS:
-    res = left_val < right_val;
+    res = static_cast<decltype(res)>(left_val < right_val);
     break;
   case Ops::LS_EQ:
-    res = left_val <= right_val;
+    res = static_cast<decltype(res)>(left_val <= right_val);
     break;
   case Ops::IS_EQ:
-    res = left_val == right_val;
+    res = static_cast<decltype(res)>(left_val == right_val);
     break;
   case Ops::NOT_EQ:
-    res = left_val != right_val;
+    res = static_cast<decltype(res)>(left_val != right_val);
     break;
   case Ops::AND:
-    res = left_val && right_val;
+    res = static_cast<decltype(res)>(static_cast<bool>(left_val) && static_cast<bool>(right_val));
     break;
   case Ops::OR:
-    res = left_val || right_val;
+    res = static_cast<decltype(res)>(static_cast<bool>(left_val) || static_cast<bool>(right_val));
     break;
   default:
     throw std::runtime_error("Unrecognized binary operator number\n");
@@ -322,7 +322,7 @@ IntT UNOPNode::calc() const
     res = -val;
     break;
   case Ops::NOT:
-    res = !val;
+    res = static_cast<decltype(res)>(!static_cast<bool>(val));
     break;
   default:
     throw std::runtime_error("Unrecognized unary operator number\n");
@@ -394,7 +394,7 @@ INode *WHNode::get_i_child(size_t i) const
   IntT cond_calc = ValStack.top();
   ValStack.pop();
 
-  if (cond_calc)
+  if (cond_calc != 0)
     return scope_.get();
 
   return nullptr;
@@ -437,7 +437,7 @@ INode *IFNode::get_i_child(size_t i) const
   IntT calc_cond = ValStack.top();
   ValStack.pop();
 
-  if (calc_cond)
+  if (calc_cond != 0)
     return if_scope_.get();
 
   if (else_scope_ != nullptr)

@@ -25,8 +25,8 @@ class IScope;
 class INode;
 
 using IntT = int32_t;
-using pINode = std::unique_ptr<INode>;
-using pIScope = std::unique_ptr<IScope>;
+using pINode = std::shared_ptr<INode>;
+using pIScope = std::shared_ptr<IScope>;
 using pFunc = std::shared_ptr<INode>;
 /**
  * @typedef var_table
@@ -99,7 +99,7 @@ protected:
 
 public:
   // TODO: docs
-  virtual void push(pINode &node) = 0;
+  virtual void push(const pINode &node) = 0;
 
   virtual IScope *reset_scope() const = 0;
 
@@ -157,7 +157,7 @@ pINode make_cst(IntT val);
  * @param[in] r  right node of operator
  * @return shared pointer to created Node
  */
-pINode make_op(pINode &l, Ops op, pINode &r);
+pINode make_op(const pINode &l, Ops op, const pINode &r);
 
 /**
  * @brief Make unary operator node function
@@ -166,7 +166,7 @@ pINode make_op(pINode &l, Ops op, pINode &r);
  * @param[in] operand shared pointer to operand node
  * @return shared pointer to created node
  */
-pINode make_un(Ops op, pINode &operand);
+pINode make_un(Ops op, const pINode &operand);
 
 /**
  * @fn make_while
@@ -175,7 +175,7 @@ pINode make_un(Ops op, pINode &operand);
  * @param[in] sc shared pointer to scope
  * @return shared pointer to created Node
  */
-pINode make_while(pINode &cond, pIScope &sc);
+pINode make_while(const pINode &cond, const pIScope &sc);
 
 /**
  * @fn make_if_else
@@ -185,7 +185,7 @@ pINode make_while(pINode &cond, pIScope &sc);
  * @param[in] esc else scope
  * @return pointer to created Node
  */
-pINode make_if_else(pINode &cond, pIScope &isc, pIScope &esc);
+pINode make_if_else(const pINode &cond, const pIScope &isc, const pIScope &esc);
 
 /**
  * @fn make_if
@@ -195,7 +195,7 @@ pINode make_if_else(pINode &cond, pIScope &isc, pIScope &esc);
  * @param[in] esc else scope
  * @return pointer to created Node
  */
-pINode make_if(pINode &cond, pIScope &isc);
+pINode make_if(const pINode &cond, const pIScope &isc);
 
 /**
  * @fn make_asgn
@@ -204,7 +204,7 @@ pINode make_if(pINode &cond, pIScope &isc);
  * @param[in] expr expression to assign
  * @return shared pointer to created node
  */
-pINode make_asgn(const std::string &var_name, pINode &expr);
+pINode make_asgn(const std::string &var_name, const pINode &expr);
 
 /**
  * @fn make_asgn_func
@@ -214,7 +214,6 @@ pINode make_asgn(const std::string &var_name, pINode &expr);
  * @return shared pointer to created node
  */
 // pINode make_asgn_func(const std::string &var_name, pINode &func);
-// TODO: FINISH
 
 /**
  * @fn make ref
@@ -230,7 +229,7 @@ pINode make_ref(const std::string &var_name);
  * @param[in] expr shared pointer to expression node
  * @return shared pointer to created node
  */
-pINode make_print(pINode &expr);
+pINode make_print(const pINode &expr);
 
 /**
  * @brief make scan node function
@@ -244,7 +243,7 @@ pINode make_scan();
  * @param[in] par shared pointer to parent node
  * @return shared pointer to created Scope
  */
-pIScope make_scope(IScope *par = nullptr);
+pIScope make_scope(const pIScope &par = nullptr);
 
 ////////////////// TYPES OF NODES ////////////////////////
 /*
