@@ -19,8 +19,7 @@
 %}
 
 WS        [ \t\n\v]+
-COMM      "//".*"\n"
-MULCOMM   "/*" (.|WS)*? "*/"
+COMM      "//".*
 
 DIGIT     [0-9]
 
