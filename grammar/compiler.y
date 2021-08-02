@@ -90,6 +90,7 @@ extern AST::IScope *CUR_SCOPE;
 
   expr
   expr_un
+  expr_bin
   expr_term
   ;
 
@@ -118,6 +119,7 @@ extern AST::IScope *CUR_SCOPE;
 %left MUL DIV MOD 
 %left NEG NOT
 
+/*%precedence ET*/
 
 %%
 
@@ -155,8 +157,12 @@ stm:         assign                         { $$ = $1; };
 assign:      NAME ASSIGN expr SCOLON        { $$ = AST::make_asgn($1, $3); };
         /* | NAME ASSIGN func_def SCOLON    {} */
 
+expr:        expr_bin                       { $$ = $1; };
+           | expr_un                        { $$ = $1; };
+       /*  | expr_term            %prec ET  { $$ = $1; }; */
 
-expr:        expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR, $3); };
+
+expr_bin:    expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR, $3); };
            | expr AND expr                  { $$ = AST::make_op($1, AST::Ops::AND, $3); };
            | expr IS_EQ expr                { $$ = AST::make_op($1, AST::Ops::IS_EQ, $3); };
            | expr NOT_EQ expr               { $$ = AST::make_op($1, AST::Ops::NOT_EQ, $3); };
@@ -169,16 +175,15 @@ expr:        expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR
            | expr MUL expr                  { $$ = AST::make_op($1, AST::Ops::MUL, $3); };
            | expr DIV expr                  { $$ = AST::make_op($1, AST::Ops::DIV, $3); };
            | expr MOD expr                  { $$ = AST::make_op($1, AST::Ops::MOD, $3); };
-           | expr_un                        { $$ = $1; };
 
 expr_un:     MIN expr_un  %prec NEG         { $$ = AST::make_un(AST::Ops::NEG, $2); };
            | NOT expr_un %prec NOT          { $$ = AST::make_un(AST::Ops::NOT, $2); };
            | expr_term                      { $$ = $1; };
 
-expr_term:   LP expr[e] RP                  { $$ = $e; };
-           | NAME                           { $$ = AST::make_ref($1); };
-           | INT                            { $$ = AST::make_cst($1); };
-           | SCAN                           { $$ = AST::make_scan(); };
+expr_term:   LP expr[e] RP   /* %prec ET */ { $$ = $e; };
+           | NAME            /* %prec ET */ { $$ = AST::make_ref($1); };
+           | INT             /* %prec ET */ { $$ = AST::make_cst($1); };
+           | SCAN            /* %prec ET */ { $$ = AST::make_scan(); };
         /* | scope                          { $$ = AST::make_scope(); }; */
         /* | func_call                      { $$ = AST::make_fcall(); }; */
 
