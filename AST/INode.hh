@@ -74,6 +74,11 @@ public:
     return nullptr;
   }
 
+  virtual bool is_scope() const
+  {
+    return false;
+  }
+
   virtual llvm::Value *codegen() = 0;
 
   INode(const INode &) = delete;
@@ -99,6 +104,12 @@ protected:
 
 public:
   // TODO: docs
+
+  bool is_scope() const override
+  {
+    return true;
+  }
+
   virtual void push(const pINode &node) = 0;
 
   virtual void pop() = 0;

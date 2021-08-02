@@ -160,7 +160,7 @@ expr_term:   LP expr[e] RP                  { $$ = $e; };
 if:          IF LP expr[e] RP 
                stm[s] %prec THEN            {
                                               $$ = AST::make_if($e, $s);
-                                              if (dynamic_cast<AST::IScope *>($s.get()) != nullptr )
+                                              if ($s->is_scope())
                                                 CUR_SCOPE->pop();
                                             };
            | IF LP expr[e] RP 
@@ -168,9 +168,9 @@ if:          IF LP expr[e] RP
              ELSE 
                stm[s2]                      {
                                               $$ = AST::make_if_else($e, $s1, $s2);
-                                              if (dynamic_cast<AST::IScope *>($s1.get()) != nullptr )
+                                              if ($s1->is_scope())
                                                 CUR_SCOPE->pop();
-                                              if (dynamic_cast<AST::IScope *>($s2.get()) != nullptr )
+                                              if ($s2->is_scope())
                                                 CUR_SCOPE->pop();
                                             };
 
