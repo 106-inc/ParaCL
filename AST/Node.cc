@@ -71,17 +71,17 @@ pINode make_un(Ops op, const pINode &operand)
   return std::make_shared<UNOPNode>(op, operand);
 }
 
-pINode make_while(const pINode &cond, const pIScope &sc)
+pINode make_while(const pINode &cond, const pINode &sc)
 {
   return std::make_shared<WHNode>(cond, sc);
 }
 
-pINode make_if_else(const pINode &cond, const pIScope &isc, const pIScope &esc)
+pINode make_if_else(const pINode &cond, const pINode &isc, const pINode &esc)
 {
   return std::make_shared<IFNode>(cond, isc, esc);
 }
 
-pINode make_if(const pINode &cond, const pIScope &isc)
+pINode make_if(const pINode &cond, const pINode &isc)
 {
   return std::make_shared<IFNode>(cond, isc);
 }

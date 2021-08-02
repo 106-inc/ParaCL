@@ -67,11 +67,8 @@ extern AST::IScope *CUR_SCOPE;
 %nterm<AST::pIScope>
 
   scope
-
   op_sc
   ;
-
-%nterm<AST::pIScope> br_stm
 
 %nterm<AST::pINode> 
   stm
@@ -94,14 +91,6 @@ extern AST::IScope *CUR_SCOPE;
   expr_term
   ;
 
- /* 
- %nterm<AST::INode *>
-
-  func_call
-  func_def
-  ;
- */
-
 /* some tokens */
 %right ASSIGN  "="
 
@@ -110,16 +99,11 @@ extern AST::IScope *CUR_SCOPE;
 %left OR
 %left AND 
 %left IS_EQ NOT_EQ
-%left 
-      GREATER LESS 
-      GR_EQ LS_EQ
-      ;
-
+%left GREATER LESS GR_EQ LS_EQ
 %left ADD MIN
 %left MUL DIV MOD 
 %left NEG NOT
 
-/*%precedence ET*/
 
 %%
 
@@ -135,31 +119,19 @@ op_sc:       LB                             {
 
 cl_sc:       RB                             { CUR_SCOPE = CUR_SCOPE->reset_scope(); };
 
-stms:        stm                            { CUR_SCOPE->push($1); };
-           | stms stm                       { CUR_SCOPE->push($2); };
-           | scope                          { /* nothing */ };
-           | stms scope                     { /* nothing */ };
-
-br_stm:      stm                            {
-                                              $$ = AST::make_scope(CUR_SCOPE);
-                                              $$->push($1);
-                                            };
-           | scope                          { $$ = $1; };
+stms:        stms stm                       { CUR_SCOPE->push($2); };
+           | stm                            { CUR_SCOPE->push($1); };
 
 stm:         assign                         { $$ = $1; };
            | if                             { $$ = $1; };
            | while                          { $$ = $1; };
            | print                          { $$ = $1; };
-        /* | expr SCOLON                    { $$ = $1; }; */
-        /* | RETURN expr SCOLON             { SOMETHING };           */
-        /* | SCOLON                         { NOTHING };             */
+           | scope                          { $$ = $1; };
 
 assign:      NAME ASSIGN expr SCOLON        { $$ = AST::make_asgn($1, $3); };
-        /* | NAME ASSIGN func_def SCOLON    {} */
 
 expr:        expr_bin                       { $$ = $1; };
            | expr_un                        { $$ = $1; };
-       /*  | expr_term            %prec ET  { $$ = $1; }; */
 
 
 expr_bin:    expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR, $3); };
@@ -177,47 +149,33 @@ expr_bin:    expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR
            | expr MOD expr                  { $$ = AST::make_op($1, AST::Ops::MOD, $3); };
 
 expr_un:     MIN expr_un  %prec NEG         { $$ = AST::make_un(AST::Ops::NEG, $2); };
-           | NOT expr_un %prec NOT          { $$ = AST::make_un(AST::Ops::NOT, $2); };
+           | NOT expr_un                    { $$ = AST::make_un(AST::Ops::NOT, $2); };
            | expr_term                      { $$ = $1; };
 
-expr_term:   LP expr[e] RP   /* %prec ET */ { $$ = $e; };
-           | NAME            /* %prec ET */ { $$ = AST::make_ref($1); };
-           | INT             /* %prec ET */ { $$ = AST::make_cst($1); };
-           | SCAN            /* %prec ET */ { $$ = AST::make_scan(); };
-        /* | scope                          { $$ = AST::make_scope(); }; */
-        /* | func_call                      { $$ = AST::make_fcall(); }; */
-
-/* 
-func_call:   NAME LP call_argv RP           { SOMETHING };
-
-func_def:    FUNC LP def_argv RP scope      { SOMETHING };
-           | FUNC LP def_argv RP COLON NAME 
-             scope                          { SOMETHING };
-
-def_argv:    NAME                           { SOMETHING };
-           | def_argv COMMA NAME            { SOMETHING };
-
-call_argv:   expr                           { SOMETHING };
-           | call_argv COMMA expr           { SOMETHING };
-*/
+expr_term:   LP expr[e] RP                  { $$ = $e; };
+           | NAME                           { $$ = AST::make_ref($1); };
+           | INT                            { $$ = AST::make_cst($1); };
+           | SCAN                           { $$ = AST::make_scan(); };
 
 if:          IF LP expr[e] RP 
-               br_stm[s] %prec THEN         {
+               stm[s] %prec THEN            {
                                               $$ = AST::make_if($e, $s);
-                                              CUR_SCOPE->pop();
+                                              if (dynamic_cast<AST::IScope *>($s.get()) != nullptr )
+                                                CUR_SCOPE->pop();
                                             };
            | IF LP expr[e] RP 
-               br_stm[s1]
+               stm[s1]
              ELSE 
-               br_stm[s2]                   {
+               stm[s2]                      {
                                               $$ = AST::make_if_else($e, $s1, $s2);
-                                              CUR_SCOPE->pop();
-                                              CUR_SCOPE->pop();
+                                              if (dynamic_cast<AST::IScope *>($s1.get()) != nullptr )
+                                                CUR_SCOPE->pop();
+                                              if (dynamic_cast<AST::IScope *>($s2.get()) != nullptr )
+                                                CUR_SCOPE->pop();
                                             };
-            /* dangling else */ /* this rule creates shift-reduce conflict  */
 
 while:       WHILE LP expr[e] RP
-               br_stm[s]                    {
+                  stm[s]                    {
                                               $$ = AST::make_while($e, $s);
                                               CUR_SCOPE->pop();
                                             };

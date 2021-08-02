@@ -342,10 +342,10 @@ class WHNode final : public INode
 {
 private:
   pINode cond_{};
-  pIScope scope_{};
+  pINode scope_{};
 
 public:
-  WHNode(const pINode &cond, const pIScope &scope)
+  WHNode(const pINode &cond, const pINode &scope)
       : INode(std::numeric_limits<size_t>::max()), cond_(cond), scope_(scope)
   // because while potentially has infinity number of children (iterations)
   {
@@ -372,13 +372,13 @@ class IFNode final : public INode
 {
 private:
   pINode cond_{};
-  pIScope if_scope_{}; // scope if condition is correct
+  pINode if_scope_{}; // scope if condition is correct
 
   /* scope if condition is incorrect (optionally) */
-  pIScope else_scope_{};
+  pINode else_scope_{};
 
 public:
-  IFNode(const pINode &cond, const pIScope &if_sc, const pIScope &el_sc = nullptr)
+  IFNode(const pINode &cond, const pINode &if_sc, const pINode &el_sc = nullptr)
       : INode(2), cond_(cond), if_scope_(if_sc), else_scope_(el_sc)
   {
   }

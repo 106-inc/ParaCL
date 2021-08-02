@@ -177,7 +177,7 @@ pINode make_un(Ops op, const pINode &operand);
  * @param[in] sc shared pointer to scope
  * @return shared pointer to created Node
  */
-pINode make_while(const pINode &cond, const pIScope &sc);
+pINode make_while(const pINode &cond, const pINode &sc);
 
 /**
  * @fn make_if_else
@@ -187,7 +187,7 @@ pINode make_while(const pINode &cond, const pIScope &sc);
  * @param[in] esc else scope
  * @return pointer to created Node
  */
-pINode make_if_else(const pINode &cond, const pIScope &isc, const pIScope &esc);
+pINode make_if_else(const pINode &cond, const pINode &isc, const pINode &esc);
 
 /**
  * @fn make_if
@@ -197,7 +197,7 @@ pINode make_if_else(const pINode &cond, const pIScope &isc, const pIScope &esc);
  * @param[in] esc else scope
  * @return pointer to created Node
  */
-pINode make_if(const pINode &cond, const pIScope &isc);
+pINode make_if(const pINode &cond, const pINode &isc);
 
 /**
  * @fn make_asgn
