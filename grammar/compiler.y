@@ -148,7 +148,7 @@ expr_bin:    expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR
            | expr DIV expr                  { $$ = AST::make_op($1, AST::Ops::DIV, $3); };
            | expr MOD expr                  { $$ = AST::make_op($1, AST::Ops::MOD, $3); };
 
-expr_un:     MIN expr_un  %prec NEG         { $$ = AST::make_un(AST::Ops::NEG, $2); };
+expr_un:     MIN expr_un        %prec NEG   { $$ = AST::make_un(AST::Ops::NEG, $2); };
            | NOT expr_un                    { $$ = AST::make_un(AST::Ops::NOT, $2); };
            | expr_term                      { $$ = $1; };
 
@@ -156,6 +156,7 @@ expr_term:   LP expr[e] RP                  { $$ = $e; };
            | NAME                           { $$ = AST::make_ref($1); };
            | INT                            { $$ = AST::make_cst($1); };
            | SCAN                           { $$ = AST::make_scan(); };
+           | scope                          { $$ = $1; };
 
 if:          IF LP expr[e] RP 
                stm[s] %prec THEN            {
