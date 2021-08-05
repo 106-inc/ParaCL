@@ -161,7 +161,7 @@ expr_term:   LP expr[e] RP                  { $$ = $e; };
 if:          IF LP expr[e] RP 
                stm[s] %prec THEN            {
                                               $$ = AST::make_if($e, $s);
-                                              if ($s->is_scope())
+                                              if ($s->is_scope)
                                                 CUR_SCOPE->pop();
                                             };
            | IF LP expr[e] RP 
@@ -169,16 +169,17 @@ if:          IF LP expr[e] RP
              ELSE 
                stm[s2]                      {
                                               $$ = AST::make_if_else($e, $s1, $s2);
-                                              if ($s1->is_scope())
+                                              if ($s1->is_scope)
                                                 CUR_SCOPE->pop();
-                                              if ($s2->is_scope())
+                                              if ($s2->is_scope)
                                                 CUR_SCOPE->pop();
                                             };
 
 while:       WHILE LP expr[e] RP
                   stm[s]                    {
                                               $$ = AST::make_while($e, $s);
-                                              CUR_SCOPE->pop();
+                                              if ($s->is_scope)
+                                                CUR_SCOPE->pop();
                                             };
 
 print:       PRINT expr SCOLON              { $$ = AST::make_print($2); };

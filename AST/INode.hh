@@ -62,21 +62,18 @@ class INode
 protected:
   size_t childs_am_;
 
-  explicit INode(size_t childs_am = 0) : childs_am_(childs_am)
+  explicit INode(size_t childs_am = 0, bool is_sc = false) : childs_am_(childs_am), is_scope(is_sc)
   {
   }
 
 public:
+  const bool is_scope{false};
+
   virtual IntT calc() const = 0;
 
   virtual INode *get_i_child(size_t) const
   {
     return nullptr;
-  }
-
-  virtual bool is_scope() const
-  {
-    return false;
   }
 
   virtual llvm::Value *codegen() = 0;
@@ -98,17 +95,12 @@ public:
 class IScope : public INode
 {
 protected:
-  explicit IScope(size_t c_am = 0) : INode(c_am)
+  explicit IScope(size_t c_am = 0) : INode(c_am, true)
   {
   }
 
 public:
   // TODO: docs
-
-  bool is_scope() const override
-  {
-    return true;
-  }
 
   virtual void push(const pINode &node) = 0;
 
