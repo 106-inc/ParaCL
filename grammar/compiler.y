@@ -156,7 +156,10 @@ expr_term:   LP expr[e] RP                  { $$ = $e; };
            | NAME                           { $$ = AST::make_ref($1); };
            | INT                            { $$ = AST::make_cst($1); };
            | SCAN                           { $$ = AST::make_scan(); };
-           | scope                          { $$ = $1; };
+           | scope                          { 
+                                              $$ = $1;
+                                              CUR_SCOPE->pop();
+                                            };
 
 if:          IF LP expr[e] RP 
                stm[s] %prec THEN            {
