@@ -3,6 +3,6 @@
 print 1 + {res = 1 + 1;}; // CHECK_INTERP: 3
 a = 228;
 print {
-  if (0)
+  if (1)
     a = a + 2;
 }; // CHECK_INTERP: 230
