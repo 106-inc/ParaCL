@@ -73,6 +73,7 @@ extern AST::IScope *CUR_SCOPE;
 %nterm<AST::pINode> 
   stm
   stms
+  oper
   ;
 
 %nterm<AST::pINode>
@@ -104,6 +105,8 @@ extern AST::IScope *CUR_SCOPE;
 %left MUL DIV MOD 
 %left NEG NOT
 
+%precedence nscope
+%precedence greedy
 
 %%
 
@@ -122,19 +125,23 @@ cl_sc:       RB                             { CUR_SCOPE = CUR_SCOPE->reset_scope
 stms:        stms stm                       { CUR_SCOPE->push($2); };
            | stm                            { CUR_SCOPE->push($1); };
 
-stm:         assign                         { $$ = $1; };
+stm:         expr SCOLON %prec greedy       { $$ = $1; }
+           | oper        %prec nscope       { $$ = $1; }
+          
+
+oper:       assign                          { $$ = $1; };
            | if                             { $$ = $1; };
            | while                          { $$ = $1; };
            | print                          { $$ = $1; };
            | scope                          { $$ = $1; };
 
 assign:      NAME ASSIGN expr SCOLON        { $$ = AST::make_asgn($1, $3); };
-
+/*
 expr:        expr_bin                       { $$ = $1; };
            | expr_un                        { $$ = $1; };
+*/
 
-
-expr_bin:    expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR, $3); };
+expr:        expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR, $3); };
            | expr AND expr                  { $$ = AST::make_op($1, AST::Ops::AND, $3); };
            | expr IS_EQ expr                { $$ = AST::make_op($1, AST::Ops::IS_EQ, $3); };
            | expr NOT_EQ expr               { $$ = AST::make_op($1, AST::Ops::NOT_EQ, $3); };
@@ -147,9 +154,8 @@ expr_bin:    expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR
            | expr MUL expr                  { $$ = AST::make_op($1, AST::Ops::MUL, $3); };
            | expr DIV expr                  { $$ = AST::make_op($1, AST::Ops::DIV, $3); };
            | expr MOD expr                  { $$ = AST::make_op($1, AST::Ops::MOD, $3); };
-
-expr_un:     MIN expr_un        %prec NEG   { $$ = AST::make_un(AST::Ops::NEG, $2); };
-           | NOT expr_un                    { $$ = AST::make_un(AST::Ops::NOT, $2); };
+           | MIN expr        %prec NEG      { $$ = AST::make_un(AST::Ops::NEG, $2); };
+           | NOT expr                       { $$ = AST::make_un(AST::Ops::NOT, $2); };
            | expr_term                      { $$ = $1; };
 
 expr_term:   LP expr[e] RP                  { $$ = $e; };
