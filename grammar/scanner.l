@@ -79,6 +79,7 @@ NAME      {LETTER}{LETTER_D}*
 
 "?"                  return yy::parser::token_type::SCAN;
 "print"              return yy::parser::token_type::PRINT;
+"putc"               return yy::parser::token_type::PUTC;
 
 {NAME}               return yy::parser::token_type::NAME;
 

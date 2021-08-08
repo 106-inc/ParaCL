@@ -236,6 +236,14 @@ pINode make_ref(const std::string &var_name);
  */
 pINode make_print(const pINode &expr);
 
+/*!
+ * @fn make_putc
+ * @brief Make putc node function
+ * @param[in] expr shared pointer to expression node
+ * @return shared pointer to created node
+ */
+pINode make_putc(const pINode &expr);
+
 /**
  * @brief make scan node function
  * @return shared pointer to created node

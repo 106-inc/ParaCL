@@ -112,6 +112,11 @@ pINode make_print(const pINode &expr)
   return std::make_shared<PNode>(expr);
 }
 
+pINode make_putc(const pINode &expr)
+{
+  return std::make_shared<PNode>(expr, /*print as char?*/ true);
+}
+
 pINode make_scan()
 {
   return std::make_shared<RNode>();
@@ -487,7 +492,11 @@ IntT PNode::calc() const
   auto val = ValStack.top();
   ValStack.pop();
 
-  std::cout << val << std::endl;
+  if (print_as_char_)
+    std::cout << static_cast<char>(val);
+  else
+    std::cout << val << std::endl;
+
   return 0;
 }
 
@@ -495,7 +504,8 @@ llvm::Value *PNode::codegen()
 {
   auto *V = expr_->codegen();
 
-  auto *CallP = CUR_MODULE->getFunction("__pcl_print");
+  std::string callee = print_as_char_ ? "__pcl_putc" : "__pcl_print";
+  auto *CallP = CUR_MODULE->getFunction(callee);
 
   return BUILDER->CreateCall(CallP, {V});
 }

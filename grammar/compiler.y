@@ -54,6 +54,7 @@ extern AST::IScope *CUR_SCOPE;
 
   SCAN
   PRINT
+  PUTC
 
   ERR
   UNKNOWN_VAR
@@ -81,6 +82,7 @@ extern AST::IScope *CUR_SCOPE;
   if
   while
   print
+  putc
   assign
   ;
 
@@ -132,6 +134,7 @@ oper:        assign                         { $$ = $1; };
            | if                             { $$ = $1; };
            | while                          { $$ = $1; };
            | print                          { $$ = $1; };
+           | putc                           { $$ = $1; };
            | scope                          { $$ = $1; };
 
 assign:      NAME ASSIGN expr SCOLON        { $$ = AST::make_asgn($1, $3); };
@@ -207,6 +210,8 @@ while:       WHILE LP expr[e] RP
                                             };
 
 print:       PRINT expr SCOLON              { $$ = AST::make_print($2); };
+
+putc:        PUTC expr SCOLON               { $$ = AST::make_putc($2); };
 
 %%
 

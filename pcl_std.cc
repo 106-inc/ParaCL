@@ -9,6 +9,11 @@ extern "C" void __pcl_print(IntT n)
   std::cout << n << std::endl;
 }
 
+extern "C" void __pcl_putc(IntT c)
+{
+  std::cout << static_cast<char>(c);
+}
+
 extern "C" IntT __pcl_scan()
 {
   IntT n{};

@@ -404,9 +404,10 @@ class PNode final : public INode
 {
 private:
   pINode expr_{};
+  bool print_as_char_{false};
 
 public:
-  PNode(const pINode &expr) : INode(1), expr_(expr)
+  PNode(const pINode &expr, bool pac = false) : INode(1), expr_(expr), print_as_char_(pac)
   {
   }
 
