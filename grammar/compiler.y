@@ -64,9 +64,6 @@ extern AST::IScope *CUR_SCOPE;
 
 /* nonterminals */
 
-%nterm<AST::Ops>
-  bin_tok;
-
 %nterm<AST::pIScope>
 
   scope
@@ -89,8 +86,8 @@ extern AST::IScope *CUR_SCOPE;
 
 %nterm<AST::pINode>
 
-  exp1 
   expr
+  gs_expr // global scope expr
   expr_term
   ;
 
@@ -127,7 +124,7 @@ cl_sc:       RB                             { CUR_SCOPE = CUR_SCOPE->reset_scope
 stms:        stms stm                       { CUR_SCOPE->push($2); };
            | stm                            { CUR_SCOPE->push($1); };
 
-stm:         exp1 SCOLON %prec greedy       { $$ = $1; }
+stm:         gs_expr SCOLON %prec greedy       { $$ = $1; }
            | oper        %prec nscope       { $$ = $1; }
            | SCOLON                         {}
 
@@ -152,24 +149,24 @@ expr:        expr OR expr                   { $$ = AST::make_op($1, AST::Ops::OR
            | expr MUL expr                  { $$ = AST::make_op($1, AST::Ops::MUL, $3); };
            | expr DIV expr                  { $$ = AST::make_op($1, AST::Ops::DIV, $3); };
            | expr MOD expr                  { $$ = AST::make_op($1, AST::Ops::MOD, $3); };
-           | MIN expr        %prec NEG      { $$ = AST::make_un(AST::Ops::NEG, $2); };
+           | MIN expr             %prec NEG { $$ = AST::make_un(AST::Ops::NEG, $2); };
            | NOT expr                       { $$ = AST::make_un(AST::Ops::NOT, $2); };
            | expr_term                      { $$ = $1; };
 
-exp1:        exp1 OR expr                   { $$ = AST::make_op($1, AST::Ops::OR, $3); };
-           | exp1 AND expr                  { $$ = AST::make_op($1, AST::Ops::AND, $3); };
-           | exp1 IS_EQ expr                { $$ = AST::make_op($1, AST::Ops::IS_EQ, $3); };
-           | exp1 NOT_EQ expr               { $$ = AST::make_op($1, AST::Ops::NOT_EQ, $3); };
-           | exp1 GREATER expr              { $$ = AST::make_op($1, AST::Ops::GREATER, $3); };
-           | exp1 LESS expr                 { $$ = AST::make_op($1, AST::Ops::LESS, $3); };
-           | exp1 LS_EQ expr                { $$ = AST::make_op($1, AST::Ops::LS_EQ, $3); };
-           | exp1 GR_EQ expr                { $$ = AST::make_op($1, AST::Ops::GR_EQ, $3); };
-           | exp1 ADD expr                  { $$ = AST::make_op($1, AST::Ops::ADD, $3); };
-           | exp1 MIN expr                  { $$ = AST::make_op($1, AST::Ops::SUB, $3); };
-           | exp1 MUL expr                  { $$ = AST::make_op($1, AST::Ops::MUL, $3); };
-           | exp1 DIV expr                  { $$ = AST::make_op($1, AST::Ops::DIV, $3); };
-           | exp1 MOD expr                  { $$ = AST::make_op($1, AST::Ops::MOD, $3); };
-           | MIN expr        %prec NEG      { $$ = AST::make_un(AST::Ops::NEG, $2); };
+gs_expr:     gs_expr OR expr                { $$ = AST::make_op($1, AST::Ops::OR, $3); };
+           | gs_expr AND expr               { $$ = AST::make_op($1, AST::Ops::AND, $3); };
+           | gs_expr IS_EQ expr             { $$ = AST::make_op($1, AST::Ops::IS_EQ, $3); };
+           | gs_expr NOT_EQ expr            { $$ = AST::make_op($1, AST::Ops::NOT_EQ, $3); };
+           | gs_expr GREATER expr           { $$ = AST::make_op($1, AST::Ops::GREATER, $3); };
+           | gs_expr LESS expr              { $$ = AST::make_op($1, AST::Ops::LESS, $3); };
+           | gs_expr LS_EQ expr             { $$ = AST::make_op($1, AST::Ops::LS_EQ, $3); };
+           | gs_expr GR_EQ expr             { $$ = AST::make_op($1, AST::Ops::GR_EQ, $3); };
+           | gs_expr ADD expr               { $$ = AST::make_op($1, AST::Ops::ADD, $3); };
+           | gs_expr MIN expr               { $$ = AST::make_op($1, AST::Ops::SUB, $3); };
+           | gs_expr MUL expr               { $$ = AST::make_op($1, AST::Ops::MUL, $3); };
+           | gs_expr DIV expr               { $$ = AST::make_op($1, AST::Ops::DIV, $3); };
+           | gs_expr MOD expr               { $$ = AST::make_op($1, AST::Ops::MOD, $3); };
+           | MIN expr             %prec NEG { $$ = AST::make_un(AST::Ops::NEG, $2); };
            | NOT expr                       { $$ = AST::make_un(AST::Ops::NOT, $2); };
            | LP expr[e] RP                  { $$ = $e; };
            | NAME                           { $$ = AST::make_ref($1); };
@@ -210,20 +207,6 @@ while:       WHILE LP expr[e] RP
                                             };
 
 print:       PRINT expr SCOLON              { $$ = AST::make_print($2); };
-
-bin_tok:     OR                             { $$ = AST::Ops::OR; };
-           | AND                            { $$ = AST::Ops::AND; };
-           | IS_EQ                          { $$ = AST::Ops::IS_EQ; };
-           | NOT_EQ                         { $$ = AST::Ops::NOT_EQ; };
-           | GREATER                        { $$ = AST::Ops::GREATER; };
-           | LESS                           { $$ = AST::Ops::LESS; };
-           | LS_EQ                          { $$ = AST::Ops::LS_EQ; };
-           | GR_EQ                          { $$ = AST::Ops::GR_EQ; };
-           | ADD                            { $$ = AST::Ops::ADD; };
-           | MIN                            { $$ = AST::Ops::SUB; };
-           | MUL                            { $$ = AST::Ops::MUL; };
-           | DIV                            { $$ = AST::Ops::DIV; };
-           | MOD                            { $$ = AST::Ops::MOD; };
 
 %%
 
