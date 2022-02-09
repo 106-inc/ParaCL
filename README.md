@@ -1,8 +1,8 @@
 # ParaCL
 
-![GitHub repo size](https://img.shields.io/github/repo-size/derzhavin3016/ParaCL?style=for-the-badge)
-![GitHub last commit](https://img.shields.io/github/last-commit/derzhavin3016/ParaCL?color=red&style=for-the-badge)
-![GitHub lines](https://img.shields.io/tokei/lines/github/derzhavin3016/ParaCL?style=for-the-badge)
+![GitHub repo size](https://img.shields.io/github/repo-size/106-inc/ParaCL?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/106-inc/ParaCL?color=red&style=for-the-badge)
+![GitHub lines](https://img.shields.io/tokei/lines/github/106-inc/ParaCL?style=for-the-badge)
 |Project|Interpreter | Compiler |
 |:--:|:-----------:| :-: |
 |Current level|  2 | 2|
